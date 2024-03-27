@@ -174,9 +174,21 @@ async function makeGraphCallAsync() {
       }
     }
 
-    let keys = Object.keys(headersToEvaluate)
-    console.log(keys);
-    
+    const startIndex = headersToEvaluate.from.indexOf('<');
+    const endIndex = headersToEvaluate.from.indexOf('>');
+    // Extract the substring between '<' and '>'
+    const substring = headersToEvaluate.from.substring(startIndex + 1, endIndex);
+
+    if(substring == headersToEvaluate.returnpath){
+      console.log('From and Return-Path match');
+    }
+
+    if( headersToEvaluate.authentication.includes('spf=pass') &&
+        headersToEvaluate.authentication.includes('dkim=pass') &&
+        headersToEvaluate.authentication.includes('dmarc=pass')){
+      console.log('Passed authentication');
+    }
+
 
 
     // If @odata.nextLink is not undefined, there are more messages
