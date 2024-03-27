@@ -143,8 +143,46 @@ async function sendMailAsync() {
 
 // <MakeGraphCallSnippet>
 async function makeGraphCallAsync() {
+  const testId = 'AQQkADAwATM0MDAAMS0xZjc2LWVlADI0LTAwAi0wMAoAEAC2aBoK6E32SrinBdjm9KFa';
   try {
-    await graphHelper.makeGraphCallAsync();
+    const messagePage = await graphHelper.getConversationId();
+    const messages = messagePage.value;
+
+    let messageId = '';
+    // Output each message's details
+    for (const message of messages) {
+      console.log(`conversation id : ${message.conversationId}`);
+      if(message.conversationId == testId){
+        messageId = message.id;
+        break;
+      }
+    }
+    const headers = await graphHelper.getInternetMessageHeaders(messageId);
+    let headersToEvaluate = {};
+    for(const h of headers.internetMessageHeaders){
+      if(h.name == 'Authentication-Results' ){
+        headersToEvaluate.authentication = h.value;
+        console.log(`${h.name} : ${h.value}`);
+      }
+      if(h.name == 'From' ){
+        headersToEvaluate.from = h.value;
+        console.log(`${h.name} : ${h.value}`);
+      }
+      if(h.name == 'Return-Path' ){
+        headersToEvaluate.returnpath = h.value;
+        console.log(`${h.name} : ${h.value}`);
+      }
+    }
+
+    let keys = Object.keys(headersToEvaluate)
+    console.log(keys);
+    
+
+
+    // If @odata.nextLink is not undefined, there are more messages
+    // available on the server
+    const moreAvailable = messagePage['@odata.nextLink'] != undefined;
+    console.log(`\nMore messages available? ${moreAvailable}`);
   } catch (err) {
     console.log(`Error making Graph call: ${err}`);
   }

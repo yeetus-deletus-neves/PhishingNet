@@ -71,7 +71,9 @@ async function getUserAsync() {
 }
 module.exports.getUserAsync = getUserAsync;
 // </GetUserSnippet>
-
+async function getEmailById(id){
+  return _userClient.api(`me/messages/${id}`).select('internetHeader')
+}
 // <GetInboxSnippet>
 async function getInboxAsync() {
   // Ensure client isn't undefined
@@ -123,8 +125,20 @@ module.exports.sendMailAsync = sendMailAsync;
 // <MakeGraphCallSnippet>
 // This function serves as a playground for testing Graph snippets
 // or other code
-async function makeGraphCallAsync() {
-  // INSERT YOUR CODE HERE
+async function getConversationId() {
+  return _userClient.api('/me/messages')
+    .select('conversationId')
+    .top(25)
+    .orderby('receivedDateTime DESC')
+    .get();
 }
-module.exports.makeGraphCallAsync = makeGraphCallAsync;
+module.exports.getConversationId = getConversationId;
 // </MakeGraphCallSnippet>
+
+async function getInternetMessageHeaders(id){
+  return _userClient.api(`me/messages/${id}`)
+    .select('internetMessageHeaders')
+    .get();
+}
+
+module.exports.getInternetMessageHeaders = getInternetMessageHeaders;
