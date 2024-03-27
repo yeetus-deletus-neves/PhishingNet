@@ -143,7 +143,7 @@ async function sendMailAsync() {
 
 // <MakeGraphCallSnippet>
 async function makeGraphCallAsync() {
-  const testId = 'AQQkADAwATM0MDAAMS0xZjc2LWVlADI0LTAwAi0wMAoAEAC2aBoK6E32SrinBdjm9KFa';
+  const testId = 'AQQkADAwATM0MDAAMS0xZjc2LWVlADI0LTAwAi0wMAoAEAA_FMn9SL31S6buool10t6g';
   try {
     const messagePage = await graphHelper.getConversationId();
     const messages = messagePage.value;
@@ -181,13 +181,26 @@ async function makeGraphCallAsync() {
 
     if(substring == headersToEvaluate.returnpath){
       console.log('From and Return-Path match');
+    }else{
+      console.log(`from ${substring} doesnt match ${headersToEvaluate.returnpath}`);
     }
 
-    if( headersToEvaluate.authentication.includes('spf=pass') &&
-        headersToEvaluate.authentication.includes('dkim=pass') &&
-        headersToEvaluate.authentication.includes('dmarc=pass')){
-      console.log('Passed authentication');
+    if( headersToEvaluate.authentication.includes('spf=pass')){
+      console.log('Passed spf authentication');
+    }else{
+      console.log('Did not pass spf authentication');
     }
+    if(headersToEvaluate.authentication.includes('dkim=pass')){
+      console.log('Passed dkim authentication');
+    }else{
+      console.log('Did not pass dkim authentication');
+    }
+    if(headersToEvaluate.authentication.includes('dmarc=pass')){
+      console.log('Passed dmarc authentication');
+    }else{
+      console.log('Did not pass dmarc authentication');
+    }
+
 
 
 
