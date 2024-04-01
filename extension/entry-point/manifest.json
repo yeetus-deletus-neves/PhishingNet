@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "Phising Net",
+    "version": "1.0",
+  
+    "description": "Alert the user to possible phising email attempts",
+  
+    "icons": {
+      "48": "icons/border-48.png"
+    },
+
+    "background": {
+        "scripts": ["extension.js"]
+    },
+
+    "content_scripts": [
+        {
+          "matches": ["*://outlook.office365.com/mail/inbox/id/*"],
+          "js": ["graphAPI.js"]
+        },
+        {
+          "matches": ["*://outlook.office.com/mail/inbox/id/*"],
+          "js": ["graphAPI.js"]
+        },
+        {
+          "matches": ["*://outlook.live.com/mail/*"],
+          "js": ["graphAPI.js"]
+        }
+    ],
+    "action":{
+      "default_popup": "pages/index.html",
+      "default_title": "Button pop up"
+    }
+}

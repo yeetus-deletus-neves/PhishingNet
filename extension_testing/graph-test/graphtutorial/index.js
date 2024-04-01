@@ -143,7 +143,7 @@ async function sendMailAsync() {
 
 // <MakeGraphCallSnippet>
 async function makeGraphCallAsync() {
-  const testId = 'AQQkADAwATM0MDAAMS0xZjc2LWVlADI0LTAwAi0wMAoAEAA_FMn9SL31S6buool10t6g';
+  const testId = 'AQQkADAwATM0MDAAMS0xZjc2LWVlADI0LTAwAi0wMAoAEABK5vbEtUItT5jLSEvk0N5j';
   try {
     const messagePage = await graphHelper.getConversationId();
     const messages = messagePage.value;

@@ -11,11 +11,7 @@
   
     "content_scripts": [
         {
-          "matches": ["*://outlook.office.com/mail/inbox/id/*"],
-          "js": ["extension_prototype.js"]
-        },
-        {
-          "matches": ["*://outlook.office365.com/mail/inbox/id/*"],
+          "matches": ["*://outlook.office.com/mail/*","*://outlook.office365.com/mail/*","*://outlook.live.com/mail/*"],
           "js": ["extension_prototype.js"]
         }
       ]
