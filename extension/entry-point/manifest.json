@@ -9,10 +9,6 @@
       "48": "icons/border-48.png"
     },
 
-    "background": {
-        "scripts": ["extension.js"]
-    },
-
     "content_scripts": [
         {
           "matches": ["*://outlook.office365.com/mail/inbox/id/*"],
@@ -23,7 +19,7 @@
           "js": ["graphAPI.js"]
         },
         {
-          "matches": ["*://outlook.live.com/mail/*"],
+          "matches": ["*://outlook.live.com/mail/0/*"],
           "js": ["graphAPI.js"]
         }
     ],

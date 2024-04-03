@@ -1,9 +1,3 @@
-document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("authenticate-link").addEventListener("click", function() {
-    initializeGraph();
-  });
-});
-
 
 function initializeGraph(){
   const tenant = "common";
@@ -16,3 +10,14 @@ function initializeGraph(){
   window.open(url);
 }
 
+
+document.addEventListener("DOMContentLoaded", function() {
+  document.getElementById("authenticate-link").addEventListener("click", function() {
+    initializeGraph();
+  });
+});
+    /*
+    "background": {
+        "scripts": ["extension.js"]
+    },
+    */
