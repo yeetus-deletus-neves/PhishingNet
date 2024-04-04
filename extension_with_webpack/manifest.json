@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Pishing Net",
+  "version": "1.0",
+
+  "description": "Warns the user of probable phishing attempts",
+
+  "action": {
+    "default_popup": "index.html"
+  },
+
+  "background":{
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "js": ["contentScript.js"]
+      }
+    ]
+}
