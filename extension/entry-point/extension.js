@@ -1,18 +1,29 @@
-mailOpen();
+import {PublicClientApplication} from "@azure/msal-browser";
 
-var currentURL = location.href;
+console.log("Hello");
 
-var observer = new MutationObserver(()=>{
-    newURL = location.href;
-    if ( currentURL != newURL){
-        currentURL = newURL;
-        mailOpen()
+const msalConfig = {
+    auth: {
+        clientId: 'cb14d1d3-9a43-4b04-9c52-555211443e63'
     }
-})
+};
 
-observer.observe(document, {subtree: true, childList: true});
+const msalInstance = new PublicClientApplication(msalConfig);
 
-function mailOpen() {
-    console.log("Hey, I am here!");
-    console.log(location.href);
-}
+async function authenticate(){
+    await msalInstance.initialize();
+    console.log("Here my boy");
+    try {
+        const loginResponse = await msalInstance.loginPopup({
+            redirectUri: "https://outlook.office.com/mail",
+            scopes: ["user.read", "mail.read"]
+        });
+    } catch (err) {
+        // handle error
+    }
+    
+};
+
+
+
+authenticate();

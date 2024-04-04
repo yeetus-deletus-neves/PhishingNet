@@ -1,4 +1,6 @@
-mailOpen();
+mailOpen(); 
+
+
 
 var currentURL = location.href;
 
@@ -12,7 +14,7 @@ var observer = new MutationObserver(()=>{
 
 observer.observe(document, {subtree: true, childList: true});
 
-function mailOpen() {
+async function mailOpen() {
     const url = location.href;
     
     const startIndex = url.indexOf("id/");
@@ -28,13 +30,12 @@ function mailOpen() {
     console.log(code);
 
     var details = {
-        'userName': 'test@gmail.com',
         "client_id" : "cb14d1d3-9a43-4b04-9c52-555211443e63",
-            "scope" : "user.read mail.read",
-            "code" : `${code}`,
-            "redirect_uri":"https://outlook.office.com/mail",
-            "grant_type":"authorization_code",
-            "client_secret":"P~N8Q~_.z7Xp6gpIUo~u8N7u6~bS1VpsKEy~1ak1"
+        "scope" : "user.read mail.read",
+        "code" : `${code}`,
+        "redirect_uri":"https://outlook.office.com/mail",
+        "grant_type":"authorization_code",
+        "client_secret":"P~N8Q~_.z7Xp6gpIUo~u8N7u6~bS1VpsKEy~1ak1"
     };
     var formBody = [];
     for (var property in details) {
@@ -50,7 +51,7 @@ function mailOpen() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Headers': '*' 
         },
         body: formBody
     })

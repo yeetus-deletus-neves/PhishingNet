@@ -8,6 +8,12 @@
     "icons": {
       "48": "icons/border-48.png"
     },
+    "background":{
+        "scripts" : ["extension.js"]
+    },
+    "host_permissions":[
+      "https://login.microsoftonline.com/common/oauth2/v2.0/token/*"
+    ],
     "content_scripts": [
         {
           "matches": ["*://outlook.office365.com/mail/inbox/id/*"],
