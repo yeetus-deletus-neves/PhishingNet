@@ -8,14 +8,22 @@
   "action": {
     "default_popup": "index.html"
   },
+  "permissions": [
+    "activeTab",
+    "webNavigation",
+    "tabs"
+  ],
 
   "background":{
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
 
   "content_scripts": [
       {
-        "matches": ["<all_urls>"],
+        "matches": ["*://outlook.office365.com/mail/inbox/id/*",
+                    "*://outlook.office.com/mail/inbox/id/*",
+                    "*://outlook.live.com/mail/0/*"],
         "js": ["contentScript.js"]
       }
     ]
