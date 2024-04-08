@@ -1,11 +1,8 @@
 import { useAuth } from "../components/AuthProvider";
 import React from "react";
+import { MsalInterface } from "../scripts/msal.js";
 
-function test(auth){
-  
 
-  console.log(auth)
-}
 
 export function AuthPage(){
   const [auth, setAuth] = useAuth();
@@ -13,7 +10,10 @@ export function AuthPage(){
     return (
         <main>
           <h1>Phishing Net</h1>
-          <button onClick={()=>{setAuth('token')}}>Authorize</button>
+          <button onClick={()=>{
+            const msal_agent = new MsalInterface();
+            msal_agent.login();
+          }}>Authorize</button>
         </main>
       );
 }

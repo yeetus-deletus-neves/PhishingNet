@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const path = require('path');
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
     mode: 'production',
@@ -17,7 +18,8 @@ module.exports = {
             patterns: [{
                 from: path.resolve('static')
             }]
-        })
+        }),
+        new NodePolyfillPlugin()
     ],
     module: {
         rules: [
