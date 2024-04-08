@@ -17,6 +17,11 @@ const loginRequest = {
     scopes: ['user.read'] // Escopos de permissão necessários (por exemplo, para o Microsoft Graph)
 };
 
+const authorizationReq = {
+    scopes : loginRequest.scopes,
+    redirectUri : msalConfig.auth.redirectUri
+};
+
 export class MsalInterface {
 
     constructor(){
@@ -25,14 +30,19 @@ export class MsalInterface {
     
 
     login() {
-        this.myMSALObj.acquireTokenPopup(loginRequest)
+        this.myMSALObj.getAuthCodeUrl(authorizationReq)
             .then(response => {
                 console.log('Login successful!');
-                console.log('Access token:', response.accessToken);
+                console.log('Access token:', response);
                 // Aqui você pode usar o access token para fazer chamadas à API protegida, como o Microsoft Graph
             })
             .catch(error => {
                 console.log('Error during login:', error);
             });
-    }
+    };
+
+    requestToken(){
+        console.log('Token requested');
+    };
+
 }
