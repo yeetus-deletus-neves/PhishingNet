@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "Pishing Net",
+    "version": "1.0",
+    "icons": {
+      "48": "icons/border-48.png"
+    },
+  
+    "description": "Warns the user of probable phishing attempts",
+  
+    "action": {
+      "default_popup": "index.html"
+    },
+    "permissions": ["activeTab"],
+
+    "content_scripts": [
+      {
+        "matches": ["*://outlook.live.com/mail/*"],
+        "js": ["match.js"]
+      }
+    ]
+}
