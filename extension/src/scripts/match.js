@@ -2,13 +2,16 @@ var currentURL = location.href;
 
 function mailOpen() {
     const url = location.href;
-    
-    const startIndex = url.indexOf("id/");
-    // Find the index of "?" after "id/"
-    const endIndex = url.indexOf("?", startIndex);
-    // Extract the substring
-    const conversationID = url.substring(startIndex+3, endIndex);
-    console.log(conversationID);
+    if(url.includes("id/")){
+        const startIndex = url.indexOf("id/");
+        // Find the index of "?" after "id/"
+        const endIndex = url.indexOf("?", startIndex);
+        // Extract the substring
+        const conversationID = url.substring(startIndex+3, endIndex);
+        console.log(conversationID);
+    }else{
+        console.log('No conversation selected');
+    }
 };
 
 var observer = new MutationObserver(()=>{

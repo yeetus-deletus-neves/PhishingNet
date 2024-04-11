@@ -11,6 +11,7 @@ const App = () => {
             }}>
                 Login
             </button>
+            <br></br>
             <button onClick={()=>{
                 console.log('Tried to sign up');
                 //window.open('sign up SPA url','_blank')
