@@ -4,9 +4,11 @@ import com.example.demo.data.UsersRepository
 import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
+import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.util.*
 
+@Service
 class UserServicesImpl(
     private val usersRepository: UsersRepository
 ): UserServices {
@@ -79,7 +81,7 @@ class UserServicesImpl(
             }
         }
 
-        return hasLower && hasCapital && hasNumber && password.length > 8
+        return hasLower && hasCapital && hasNumber && password.length >= 8
     }
 
     fun createToken(): String =

@@ -3,9 +3,12 @@ package com.example.demo.data
 import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Repository
 import java.util.*
 import kotlin.collections.ArrayList
 
+@Repository
 class `data-mem` : UsersRepository {
 
     private val userMem: LinkedList<User> = LinkedList()
