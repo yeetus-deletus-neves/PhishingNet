@@ -7,6 +7,7 @@ import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import org.springframework.stereotype.Repository
+import java.time.Instant
 import java.util.*
 
 @Repository
@@ -58,10 +59,21 @@ class `data-mem` : UsersRepository, RefreshTokenRepository, UserTokenRepository 
         return target
     }
 
-    override fun createUserToken(userID: UUID, token: String): UserToken? {
+    override fun updateUserTokenLastUsed(token: String, lastUsed: Instant): UserToken? {
+        val target = getUserToken(token)
+        if (target == null || target.lastUsed.isAfter(lastUsed) ) return null
+        val newToken = UserToken(target.userID, target.userToken, lastUsed)
+
+        userTokenMem.remove(target)
+        userTokenMem.add(newToken)
+        return newToken
+    }
+
+    override fun createUserToken(userID: UUID, token: String, lastUsed: Instant): UserToken? {
         val newToken = UserToken(
             userID,
-            token
+            token,
+            lastUsed
         )
         userTokenMem.add(newToken)
         return newToken

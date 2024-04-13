@@ -6,6 +6,7 @@ import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
 import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UserTokenRepository
+import com.example.demo.utils.Clock
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.util.*
@@ -14,7 +15,8 @@ import java.util.*
 class UserServicesImpl(
     private val usersRepository: UsersRepository,
     private val userTokenRepository: UserTokenRepository,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
+    private val clock: Clock
 ): UserServices {
 
     override fun createUser(username: String, password: String): CreateUserInfo {
@@ -41,7 +43,7 @@ class UserServicesImpl(
         val user = usersRepository.getUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
         if (password != user.password) return CreateUserTokenInfo.AuthenticationFailed
 
-        val newToken = userTokenRepository.createUserToken(user.userID, createToken())
+        val newToken = userTokenRepository.createUserToken(user.userID, password, clock.now())
         return CreateUserTokenInfo.TokenCreated(newToken!!)
     }
 
