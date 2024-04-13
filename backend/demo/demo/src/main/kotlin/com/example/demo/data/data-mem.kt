@@ -3,13 +3,14 @@ package com.example.demo.data
 import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
-import org.springframework.context.annotation.Bean
+import com.example.demo.data.repositories.RefreshTokenRepository
+import com.example.demo.data.repositories.UserTokenRepository
+import com.example.demo.data.repositories.UsersRepository
 import org.springframework.stereotype.Repository
 import java.util.*
-import kotlin.collections.ArrayList
 
 @Repository
-class `data-mem` : UsersRepository {
+class `data-mem` : UsersRepository, RefreshTokenRepository, UserTokenRepository {
 
     private val userMem: LinkedList<User> = LinkedList()
     private val userTokenMem: LinkedList<UserToken> = LinkedList()
@@ -50,6 +51,13 @@ class `data-mem` : UsersRepository {
         return getUserById(target.userID)
     }
 
+    override fun getUserToken(token: String): UserToken? {
+        val target: UserToken? = userTokenMem.find { it.userToken == token }
+
+        if (target == null) return null
+        return target
+    }
+
     override fun createUserToken(userID: UUID, token: String): UserToken? {
         val newToken = UserToken(
             userID,
@@ -59,13 +67,10 @@ class `data-mem` : UsersRepository {
         return newToken
     }
 
-    override fun getUserToken(token: String): UserToken? {
-        return userTokenMem.find { it.userToken == token }
-    }
-
     override fun deleteUserToken(token: String): UserToken? {
-        val target: UserToken = getUserToken(token) ?: return null
+        val target: UserToken? = userTokenMem.find { it.userToken == token }
 
+        if (target == null) return null
         userTokenMem.remove(target)
         return target
     }

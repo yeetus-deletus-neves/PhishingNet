@@ -1,16 +1,20 @@
 package com.example.demo.services.userServices
 
-import com.example.demo.data.UsersRepository
+import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
+import com.example.demo.data.repositories.RefreshTokenRepository
+import com.example.demo.data.repositories.UserTokenRepository
 import org.springframework.stereotype.Service
 import java.security.SecureRandom
 import java.util.*
 
 @Service
 class UserServicesImpl(
-    private val usersRepository: UsersRepository
+    private val usersRepository: UsersRepository,
+    private val userTokenRepository: UserTokenRepository,
+    private val refreshTokenRepository: RefreshTokenRepository
 ): UserServices {
 
     override fun createUser(username: String, password: String): CreateUserInfo {
@@ -37,27 +41,29 @@ class UserServicesImpl(
         val user = usersRepository.getUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
         if (password != user.password) return CreateUserTokenInfo.AuthenticationFailed
 
-        val newToken = usersRepository.createUserToken(user.userID, createToken())
+        val newToken = userTokenRepository.createUserToken(user.userID, createToken())
         return CreateUserTokenInfo.TokenCreated(newToken!!)
     }
 
-    override fun validateUserToken(userID: UUID, token: String): ValidateUserTokenInfo {
-        val token = usersRepository.getUserToken(token) ?: return ValidateUserTokenInfo.AuthenticationFailed
-        if (token.userID != userID) return ValidateUserTokenInfo.AuthenticationFailed
+    override fun validateUserToken(token: String): ValidateUserTokenInfo {
+        val myToken = userTokenRepository.getUserToken(token) ?: return ValidateUserTokenInfo.AuthenticationFailed
+        val user = usersRepository.getUserById(myToken.userID) ?: return ValidateUserTokenInfo.AuthenticationFailed
 
-        return ValidateUserTokenInfo.TokenValid(token.userID)
+        return ValidateUserTokenInfo.TokenValid(user)
     }
 
-    // TODO: NAO DEVE ESTAR EXPOSTA NA API. ESTA FUNCAO DEVE SER AUXILIAR PARA OUTRAS FUNCOES REFERETES A LOGICA
     override fun updateRefreshToken(userToken: String, newToken: String): UpdateRefreshTokenInfo {
         val user = usersRepository.getUserByToken(userToken) ?: return  UpdateRefreshTokenInfo.AuthenticationFailed
-        usersRepository.updateRefreshToken(user.userID, newToken)
+        refreshTokenRepository.updateRefreshToken(user.userID, newToken)
 
         return UpdateRefreshTokenInfo.TokenUpdated
     }
 
     override fun getRefreshToken(userToken: String): GetRefreshTokenInfo {
-        TODO("Not yet implemented")
+        val user = usersRepository.getUserByToken(userToken) ?: return  GetRefreshTokenInfo.AuthenticationFailed
+        val token = refreshTokenRepository.getRefreshToken(user.userID) ?: return GetRefreshTokenInfo.TokenNotFound
+
+        return GetRefreshTokenInfo.TokenFound(token)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +120,7 @@ sealed class CreateUserTokenInfo {
 
 sealed class ValidateUserTokenInfo {
     object AuthenticationFailed : ValidateUserTokenInfo()
-    data class TokenValid(val userID: UUID) : ValidateUserTokenInfo()
+    data class TokenValid(val user: User) : ValidateUserTokenInfo()
 }
 
 sealed class UpdateRefreshTokenInfo {
@@ -124,5 +130,6 @@ sealed class UpdateRefreshTokenInfo {
 
 sealed class GetRefreshTokenInfo {
     object AuthenticationFailed : GetRefreshTokenInfo()
+    object TokenNotFound : GetRefreshTokenInfo()
     data class TokenFound(val refreshToken: RefreshToken) : GetRefreshTokenInfo()
 }

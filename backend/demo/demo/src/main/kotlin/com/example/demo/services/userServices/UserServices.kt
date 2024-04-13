@@ -12,7 +12,7 @@ interface UserServices {
     fun getUserByToken(token: String): GetUserInfo
 
     fun createUserToken(username: String, password: String): CreateUserTokenInfo
-    fun validateUserToken(userID: UUID, token: String): ValidateUserTokenInfo
+    fun validateUserToken(token: String): ValidateUserTokenInfo
 
     fun updateRefreshToken(userToken: String, newToken: String): UpdateRefreshTokenInfo
     fun getRefreshToken(userToken: String): GetRefreshTokenInfo
