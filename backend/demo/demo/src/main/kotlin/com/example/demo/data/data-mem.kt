@@ -62,18 +62,24 @@ class `data-mem` : UsersRepository, RefreshTokenRepository, UserTokenRepository 
     override fun updateUserTokenLastUsed(token: String, lastUsed: Instant): UserToken? {
         val target = getUserToken(token)
         if (target == null || target.lastUsed.isAfter(lastUsed) ) return null
-        val newToken = UserToken(target.userID, target.userToken, lastUsed)
+        val newToken = UserToken(
+            target.userID,
+            target.userToken,
+            target.createdAt,
+            lastUsed
+        )
 
         userTokenMem.remove(target)
         userTokenMem.add(newToken)
         return newToken
     }
 
-    override fun createUserToken(userID: UUID, token: String, lastUsed: Instant): UserToken? {
+    override fun createUserToken(userID: UUID, token: String, instant: Instant): UserToken? {
         val newToken = UserToken(
             userID,
             token,
-            lastUsed
+            instant,
+            instant
         )
         userTokenMem.add(newToken)
         return newToken

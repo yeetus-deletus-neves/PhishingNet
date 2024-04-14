@@ -6,7 +6,7 @@ import java.util.*
 
 interface UserTokenRepository {
 
-    fun createUserToken(userID: UUID, token: String, lastUsed: Instant): UserToken?
+    fun createUserToken(userID: UUID, token: String, instant: Instant): UserToken?
     fun getUserToken(token: String): UserToken?
     fun updateUserTokenLastUsed(token: String, lastUsed: Instant): UserToken?
     fun deleteUserToken(token: String): UserToken?

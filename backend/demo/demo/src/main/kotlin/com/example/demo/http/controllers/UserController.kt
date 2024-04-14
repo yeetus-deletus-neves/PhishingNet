@@ -3,7 +3,7 @@ package com.example.demo.http.controllers
 import com.example.demo.http.ErrorTemplate
 import com.example.demo.http.Uris
 import com.example.demo.http.models.UserCreateInputModel
-import com.example.demo.http.models.UserHomeOutputModel
+import com.example.demo.http.models.UserOutputModel
 import com.example.demo.services.userServices.CreateUserInfo
 import com.example.demo.services.userServices.CreateUserTokenInfo
 import com.example.demo.services.userServices.GetUserInfo
@@ -22,7 +22,10 @@ class UserController(private val userServices: UserServices) {
     @PostMapping(Uris.Users.USER)
     fun create(@RequestBody input: UserCreateInputModel): ResponseEntity<*>{
         return when(val res = userServices.createUser(input.username, input.password)) {
-            is CreateUserInfo.UserCreated -> ResponseEntity.status(201).body(res.userID)
+            is CreateUserInfo.UserCreated -> ResponseEntity.status(201).body(UserOutputModel(
+                res.user.userID.toString(),
+                res.user.username
+            ))
             is CreateUserInfo.UserAlreadyExists -> ErrorTemplate.Conflict("This user already exists")
             is CreateUserInfo.UnsafePassword -> ErrorTemplate.BadRequest("Password is unsafe, it must contain capital letters, numbers, and have a length of at least 8 characters")
         }
@@ -39,9 +42,9 @@ class UserController(private val userServices: UserServices) {
     @GetMapping(Uris.Users.BY_ID)
     fun getById(@PathVariable id: String): ResponseEntity<*>{
         return when (val res = userServices.getUserById(UUID.fromString(id))){
-            is GetUserInfo.UserFound -> ResponseEntity.status(200).body(UserHomeOutputModel(
-                res.user.username,
-                res.user.userID.toString()
+            is GetUserInfo.UserFound -> ResponseEntity.status(200).body(UserOutputModel(
+                res.user.userID.toString(),
+                res.user.username
             ))
             is GetUserInfo.UserNotFound -> ErrorTemplate.NotFound("User not found")
             is GetUserInfo.AuthenticationFailed -> ErrorTemplate.Unauthorized("Authentication failed")

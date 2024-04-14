@@ -25,7 +25,7 @@ class UserServicesImpl(
 
         //TODO: Password encrypt
         val newUser = usersRepository.createUser(username, password)
-        return CreateUserInfo.UserCreated(newUser!!.userID)
+        return CreateUserInfo.UserCreated(newUser!!)
     }
 
     override fun getUserById(userID: UUID): GetUserInfo {
@@ -43,7 +43,7 @@ class UserServicesImpl(
         val user = usersRepository.getUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
         if (password != user.password) return CreateUserTokenInfo.AuthenticationFailed
 
-        val newToken = userTokenRepository.createUserToken(user.userID, password, clock.now())
+        val newToken = userTokenRepository.createUserToken(user.userID, createToken(), clock.now())
         return CreateUserTokenInfo.TokenCreated(newToken!!)
     }
 
@@ -106,7 +106,7 @@ class UserServicesImpl(
 sealed class CreateUserInfo {
     object UnsafePassword : CreateUserInfo()
     object UserAlreadyExists : CreateUserInfo()
-    data class UserCreated(val userID: UUID) : CreateUserInfo()
+    data class UserCreated(val user: User) : CreateUserInfo()
 }
 
 sealed class GetUserInfo {

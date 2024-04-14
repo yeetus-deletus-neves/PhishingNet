@@ -5,7 +5,3 @@ data class UserCreateInputModel(
     val password: String
 )
 
-data class UserHomeOutputModel(
-    val id: String,
-    val username: String
-)
