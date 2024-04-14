@@ -9,8 +9,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.stereotype.Component
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.time.Instant
 import javax.sql.DataSource
+
 
 @SpringBootApplication
 class PhishingNetApplication{
@@ -35,6 +38,16 @@ class setDataSource {
 			.create()
 			.url(url)
 			.build()
+	}
+}
+
+@Configuration
+class WebConfig : WebMvcConfigurer {
+	override fun addCorsMappings(registry: CorsRegistry) {
+		registry.addMapping("/**")
+			.allowedOrigins("*") // Troque para a origem da sua extensão
+			.allowedMethods("GET", "POST", "PUT", "DELETE")
+			.allowedHeaders("*") // Permitir todos os headers necessários
 	}
 }
 

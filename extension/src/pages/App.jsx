@@ -13,12 +13,10 @@ const App = () => {
                 console.log(`Username: ${username} / Password: ${password}`);
 
                 const tokenRsp = await defaultFetch(
-                    "http://localhost:8080/user",
+                    'http://localhost:8080/user',
                     "POST",
                     {
-                        "Content-Type" : "application/json",
-                        "Connection" : "keep-alive",
-                        "Access-Control-Allow-Origin" : "*"
+                        'Content-Type': 'application/json'
                     },
                     {
                         username: username,
