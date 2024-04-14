@@ -1,13 +1,11 @@
 package com.example.demo.data.repositories
 
 import com.example.demo.data.entities.UserToken
-import java.time.Instant
-import java.util.*
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
-interface UserTokenRepository {
+@Repository
+interface UserTokenRepository: JpaRepository<UserToken, String> {
 
-    fun createUserToken(userID: UUID, token: String, instant: Instant): UserToken?
-    fun getUserToken(token: String): UserToken?
-    fun updateUserTokenLastUsed(token: String, lastUsed: Instant): UserToken?
-    fun deleteUserToken(token: String): UserToken?
+    fun findUserTokenByTokenvalidationinfo(userToken: String): UserToken?
 }

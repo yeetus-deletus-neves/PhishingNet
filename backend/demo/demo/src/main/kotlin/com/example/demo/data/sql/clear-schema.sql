@@ -1,0 +1,1 @@
+truncate dbo.User, dbo.RefreshToken, dbo.UserToken

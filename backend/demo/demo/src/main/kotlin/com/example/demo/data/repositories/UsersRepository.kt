@@ -1,15 +1,12 @@
 package com.example.demo.data.repositories
 
-import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
-import com.example.demo.data.entities.UserToken
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 import java.util.UUID
 
-interface UsersRepository {
-
-    fun createUser(username: String, password: String): User?
-    fun deleteUser(userID: UUID): UUID?
-    fun getUserById(userID: UUID): User?
-    fun getUserByUsername(username: String): User?
-    fun getUserByToken(token: String): User?
+@Repository
+interface UsersRepository : JpaRepository<User, UUID> {
+    fun findUserById(id: UUID): User?
+    fun findUserByUsername(username: String): User?
 }

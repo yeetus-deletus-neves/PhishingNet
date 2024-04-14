@@ -1,13 +1,14 @@
 package com.example.demo.services.userServices
 
-import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.entities.RefreshToken
 import com.example.demo.data.entities.User
 import com.example.demo.data.entities.UserToken
 import com.example.demo.data.repositories.RefreshTokenRepository
+import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.utils.Clock
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
 import java.util.*
 
@@ -19,51 +20,51 @@ class UserServicesImpl(
     private val clock: Clock
 ): UserServices {
 
+    @Transactional
     override fun createUser(username: String, password: String): CreateUserInfo {
         if (!isPasswordSecure(password)) return CreateUserInfo.UnsafePassword
-        if (usersRepository.getUserByUsername(username) != null) return CreateUserInfo.UserAlreadyExists
+        if (usersRepository.findUserByUsername(username) != null) return CreateUserInfo.UserAlreadyExists
 
         //TODO: Password encrypt
-        val newUser = usersRepository.createUser(username, password)
-        return CreateUserInfo.UserCreated(newUser!!)
+        val newUser = User(username, password)
+        usersRepository.save(newUser)
+        return CreateUserInfo.UserCreated(newUser)
     }
 
+    @Transactional(readOnly = true)
     override fun getUserById(userID: UUID): GetUserInfo {
-        val user = usersRepository.getUserById(userID) ?: return  GetUserInfo.UserNotFound
+        val user = usersRepository.findUserById(userID) ?: return  GetUserInfo.UserNotFound
         return GetUserInfo.UserFound(user)
     }
 
+    @Transactional(readOnly = true)
     override fun getUserByToken(token: String): GetUserInfo {
-        val user = usersRepository.getUserByToken(token) ?: return  GetUserInfo.UserNotFound
-        return GetUserInfo.UserFound(user)
+        val myToken = userTokenRepository.findUserTokenByTokenvalidationinfo(token) ?: return  GetUserInfo.UserNotFound
+        return GetUserInfo.UserFound(myToken.userid!!)
     }
 
+    @Transactional
     override fun createUserToken(username: String, password: String): CreateUserTokenInfo {
-        //TODO: Gerenciamento de tokens (tempo e numero)
-        val user = usersRepository.getUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
-        if (password != user.password) return CreateUserTokenInfo.AuthenticationFailed
+        val user = usersRepository.findUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
+        if (password != user.passwordinfo) return CreateUserTokenInfo.AuthenticationFailed
 
-        val newToken = userTokenRepository.createUserToken(user.userID, createToken(), clock.now())
-        return CreateUserTokenInfo.TokenCreated(newToken!!)
+        val newToken = UserToken(createToken(), user, clock.now())
+        userTokenRepository.saveAndFlush(newToken)
+        return CreateUserTokenInfo.TokenCreated(newToken)
     }
 
-    override fun validateUserToken(token: String): ValidateUserTokenInfo {
-        val myToken = userTokenRepository.getUserToken(token) ?: return ValidateUserTokenInfo.AuthenticationFailed
-        val user = usersRepository.getUserById(myToken.userID) ?: return ValidateUserTokenInfo.AuthenticationFailed
-
-        return ValidateUserTokenInfo.TokenValid(user)
-    }
-
-    override fun updateRefreshToken(userToken: String, newToken: String): UpdateRefreshTokenInfo {
-        val user = usersRepository.getUserByToken(userToken) ?: return  UpdateRefreshTokenInfo.AuthenticationFailed
-        refreshTokenRepository.updateRefreshToken(user.userID, newToken)
+    @Transactional
+    override fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo {
+        val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return UpdateRefreshTokenInfo.UserNotFound
+        token.rtoken = newToken
+        refreshTokenRepository.save(token)
 
         return UpdateRefreshTokenInfo.TokenUpdated
     }
 
-    override fun getRefreshToken(userToken: String): GetRefreshTokenInfo {
-        val user = usersRepository.getUserByToken(userToken) ?: return  GetRefreshTokenInfo.AuthenticationFailed
-        val token = refreshTokenRepository.getRefreshToken(user.userID) ?: return GetRefreshTokenInfo.TokenNotFound
+    @Transactional(readOnly = true)
+    override fun getRefreshToken(user: User): GetRefreshTokenInfo {
+        val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return GetRefreshTokenInfo.TokenNotFound
 
         return GetRefreshTokenInfo.TokenFound(token)
     }
@@ -126,12 +127,12 @@ sealed class ValidateUserTokenInfo {
 }
 
 sealed class UpdateRefreshTokenInfo {
-    object AuthenticationFailed : UpdateRefreshTokenInfo()
+    object UserNotFound : UpdateRefreshTokenInfo()
     object TokenUpdated : UpdateRefreshTokenInfo()
 }
 
 sealed class GetRefreshTokenInfo {
-    object AuthenticationFailed : GetRefreshTokenInfo()
+    object UserNotFound : GetRefreshTokenInfo()
     object TokenNotFound : GetRefreshTokenInfo()
     data class TokenFound(val refreshToken: RefreshToken) : GetRefreshTokenInfo()
 }

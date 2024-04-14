@@ -1,10 +1,13 @@
 package com.example.demo.data.repositories
 
 import com.example.demo.data.entities.RefreshToken
-import java.util.*
+import com.example.demo.data.entities.User
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import java.util.UUID
 
-interface RefreshTokenRepository {
+@Repository
+interface RefreshTokenRepository : JpaRepository<RefreshToken, UUID>{
 
-    fun updateRefreshToken(userID: UUID, newToken: String): RefreshToken?
-    fun getRefreshToken(userID: UUID): RefreshToken?
+    fun findRefreshTokensByUserid(user: User): RefreshToken?
 }
