@@ -23,8 +23,12 @@ class AuthorizationHeaderProcessor(
             return null
         }
 
-        return when (val x = usersService.getUserByToken(parts[1])){
-            is GetUserInfo.UserFound -> x.user
+        val token = parts[1]
+        return when (val x = usersService.getUserByToken(token)){
+            is GetUserInfo.UserFound -> {
+                usersService.getUserByToken(token)
+                return x.user
+            }
             else -> {
                 null
             }
