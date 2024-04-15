@@ -1,1 +1,1 @@
-truncate dbo.User, dbo.RefreshToken, dbo.UserToken
+truncate dbo.User, dbo.RefreshToken, dbo.UserToken CASCADE

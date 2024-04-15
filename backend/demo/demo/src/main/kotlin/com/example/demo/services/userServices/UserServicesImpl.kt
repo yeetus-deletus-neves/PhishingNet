@@ -7,6 +7,7 @@ import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.utils.Clock
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
@@ -17,6 +18,7 @@ class UserServicesImpl(
     private val usersRepository: UsersRepository,
     private val userTokenRepository: UserTokenRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val passEncoder: PasswordEncoder,
     private val clock: Clock
 ): UserServices {
 
@@ -25,8 +27,7 @@ class UserServicesImpl(
         if (!isPasswordSecure(password)) return CreateUserInfo.UnsafePassword
         if (usersRepository.findUserByUsername(username) != null) return CreateUserInfo.UserAlreadyExists
 
-        //TODO: Password encrypt
-        val newUser = User(username, password)
+        val newUser = User(username, passEncoder.encode(password))
         usersRepository.save(newUser)
         return CreateUserInfo.UserCreated(newUser)
     }
@@ -45,8 +46,8 @@ class UserServicesImpl(
 
     @Transactional
     override fun createUserToken(username: String, password: String): CreateUserTokenInfo {
-        val user = usersRepository.findUserByUsername(username) ?: return  CreateUserTokenInfo.AuthenticationFailed
-        if (password != user.passwordinfo) return CreateUserTokenInfo.AuthenticationFailed
+        val user = usersRepository.findUserByUsername(username)
+        if ( user == null || !passEncoder.matches(password, user.passwordinfo)) return CreateUserTokenInfo.AuthenticationFailed
 
         val newToken = UserToken(createToken(), user, clock.now())
         userTokenRepository.saveAndFlush(newToken)
