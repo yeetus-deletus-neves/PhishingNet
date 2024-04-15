@@ -31,8 +31,7 @@ class setDataSource {
 	@Bean
 	@Primary
 	fun dataSource(): DataSource? {
-		val url = System.getenv("JDBC_DATABASE_URL")
-			?: "jdbc:postgresql://localhost:5433/phishingnet?user=postgres&password=admin"
+		val url = System.getenv("DB_URL")
 
 		return DataSourceBuilder
 			.create()
