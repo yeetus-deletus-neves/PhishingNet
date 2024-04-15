@@ -67,6 +67,14 @@ class UserServicesImpl(
     }
 
     @Transactional
+    override fun removeRefreshToken(user: User): RemoveRefreshTokenInfo {
+        val myToken = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return RemoveRefreshTokenInfo.AccountNotLinked
+
+        refreshTokenRepository.delete(myToken)
+        return RemoveRefreshTokenInfo.AccountUnlinked
+    }
+
+    @Transactional
     override fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo {
         val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return UpdateRefreshTokenInfo.UserNotFound
         token.rtoken = newToken
@@ -159,6 +167,11 @@ sealed class ValidateUserTokenInfo {
 sealed class CreateRefreshTokenInfo {
     object TokenAlreadyExists : CreateRefreshTokenInfo()
     object TokenCreated : CreateRefreshTokenInfo()
+}
+
+sealed class RemoveRefreshTokenInfo {
+    object AccountNotLinked : RemoveRefreshTokenInfo()
+    object AccountUnlinked : RemoveRefreshTokenInfo()
 }
 
 sealed class UpdateRefreshTokenInfo {

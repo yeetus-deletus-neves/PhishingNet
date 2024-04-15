@@ -9,11 +9,7 @@ import com.example.demo.http.models.UserCreateInputModel
 import com.example.demo.http.models.UserOutputModel
 import com.example.demo.services.userServices.*
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.UUID
 
 @RestController
@@ -31,7 +27,7 @@ class UserController(private val userServices: UserServices) {
         }
     }
 
-    @GetMapping(Uris.Users.TOKEN)
+    @PostMapping(Uris.Users.TOKEN)
     fun token(@RequestBody input: UserCreateInputModel): ResponseEntity<*>{
         return when(val res = userServices.createUserToken(input.username, input.password)){
             is CreateUserTokenInfo.TokenCreated -> ResponseEntity.status(200).body(
@@ -61,6 +57,14 @@ class UserController(private val userServices: UserServices) {
         return when (userServices.createRefreshToken(user,token.token)){
             is CreateRefreshTokenInfo.TokenCreated -> ResponseEntity.status(200).body(null)
             is CreateRefreshTokenInfo.TokenAlreadyExists -> ErrorTemplate.Conflict("Account is already linked")
+        }
+    }
+
+    @DeleteMapping(Uris.Users.UNLINK)
+    fun unlinkAccount(user: User): ResponseEntity<*>{
+        return when (userServices.removeRefreshToken(user)){
+            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseEntity.status(200).body(null)
+            is RemoveRefreshTokenInfo.AccountNotLinked -> ErrorTemplate.Conflict("Unable to remove account link: Account not linked to any Microsoft account")
         }
     }
 }
