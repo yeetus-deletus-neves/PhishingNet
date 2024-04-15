@@ -54,6 +54,19 @@ class UserServicesImpl(
     }
 
     @Transactional
+    override fun createRefreshToken(user: User, token: String): CreateRefreshTokenInfo {
+        val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
+        if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
+
+        //TODO: Usar token recebido para is buscar access token
+        val rToken = token
+
+        val newToken = RefreshToken(user, rToken)
+        refreshTokenRepository.save(newToken)
+        return CreateRefreshTokenInfo.TokenCreated
+    }
+
+    @Transactional
     override fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo {
         val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return UpdateRefreshTokenInfo.UserNotFound
         token.rtoken = newToken

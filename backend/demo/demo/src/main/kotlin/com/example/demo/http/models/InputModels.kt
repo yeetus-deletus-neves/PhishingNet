@@ -5,3 +5,6 @@ data class UserCreateInputModel(
     val password: String
 )
 
+data class TokenInputModel(
+    val token: String
+)

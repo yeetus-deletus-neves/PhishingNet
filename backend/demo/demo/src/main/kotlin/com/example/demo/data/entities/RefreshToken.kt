@@ -5,17 +5,17 @@ import org.hibernate.annotations.ColumnDefault
 
 @Entity
 @Table(name = "refreshtoken")
-open class RefreshToken {
+open class RefreshToken (owner: User, token: String) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ColumnDefault("nextval('dbo.refreshtoken_id_seq'")
     @Column(name = "id", nullable = false)
     open var id: Int? = null
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userid", nullable = false)
-    open var userid: User? = null
+    open var userid: User? = owner
 
     @Column(name = "rtoken", length = 256)
-    open var rtoken: String? = null
+    open var rtoken: String? = token
 }

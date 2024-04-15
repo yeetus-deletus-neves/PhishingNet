@@ -9,7 +9,10 @@ object Uris {
         const val USER = "/user"
         const val BY_ID = "/user/{id}"
         const val TOKEN = "/user/signIn"
+        const val LINK = "/user/link"
+        const val UNLINK = "/user/unlink"
 
         fun byId(id: String) = UriTemplate(BY_ID).expand(id)
     }
+
 }

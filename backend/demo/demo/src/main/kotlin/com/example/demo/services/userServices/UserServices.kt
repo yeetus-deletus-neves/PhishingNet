@@ -11,6 +11,7 @@ interface UserServices {
 
     fun createUserToken(username: String, password: String): CreateUserTokenInfo
 
+    fun createRefreshToken(user: User, token: String): CreateRefreshTokenInfo
     fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo
     fun getRefreshToken(user: User): GetRefreshTokenInfo
 }

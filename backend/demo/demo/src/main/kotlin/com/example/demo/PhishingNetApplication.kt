@@ -1,5 +1,7 @@
 package com.example.demo
 
+import com.example.demo.http.pipeline.AuthenticationInterceptor
+import com.example.demo.http.pipeline.UserArgumentResolver
 import com.example.demo.utils.Clock
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -8,9 +10,12 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.format.FormatterRegistry
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.time.Instant
 import javax.sql.DataSource
@@ -30,7 +35,7 @@ class PhishingNetApplication{
 
 @Configuration
 @Component
-class setDataSource {
+class SetDataSource {
 	@ConfigurationProperties(prefix = "spring.datasource")
 	@Bean
 	@Primary
@@ -51,6 +56,21 @@ class WebConfig : WebMvcConfigurer {
 			.allowedOrigins("*") // Troque para a origem da sua extensão
 			.allowedMethods("GET", "POST", "PUT", "DELETE")
 			.allowedHeaders("*") // Permitir todos os headers necessários
+	}
+}
+
+@Configuration
+class PipelineConfigurer(
+	val authenticationInterceptor: AuthenticationInterceptor,
+	val userArgumentResolver: UserArgumentResolver,
+) : WebMvcConfigurer {
+
+	override fun addInterceptors(registry: InterceptorRegistry) {
+		registry.addInterceptor(authenticationInterceptor)
+	}
+
+	override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+		resolvers.add(userArgumentResolver)
 	}
 }
 

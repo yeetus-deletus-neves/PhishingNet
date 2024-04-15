@@ -1,14 +1,13 @@
 package com.example.demo.http.controllers
 
+import com.example.demo.data.entities.User
 import com.example.demo.http.ErrorTemplate
 import com.example.demo.http.Uris
+import com.example.demo.http.models.TokenInputModel
 import com.example.demo.http.models.TokenOutputModel
 import com.example.demo.http.models.UserCreateInputModel
 import com.example.demo.http.models.UserOutputModel
-import com.example.demo.services.userServices.CreateUserInfo
-import com.example.demo.services.userServices.CreateUserTokenInfo
-import com.example.demo.services.userServices.GetUserInfo
-import com.example.demo.services.userServices.UserServices
+import com.example.demo.services.userServices.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -54,6 +53,14 @@ class UserController(private val userServices: UserServices) {
             ))
             is GetUserInfo.UserNotFound -> ErrorTemplate.NotFound("User not found")
             is GetUserInfo.AuthenticationFailed -> ErrorTemplate.Unauthorized("Authentication failed")
+        }
+    }
+
+    @PostMapping(Uris.Users.LINK)
+    fun linkAccount(user: User, @RequestBody token: TokenInputModel): ResponseEntity<*>{
+        return when (userServices.createRefreshToken(user,token.token)){
+            is CreateRefreshTokenInfo.TokenCreated -> ResponseEntity.status(200).body(null)
+            is CreateRefreshTokenInfo.TokenAlreadyExists -> ErrorTemplate.Conflict("Account is already linked")
         }
     }
 }
