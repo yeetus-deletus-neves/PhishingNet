@@ -15,4 +15,8 @@ object Uris {
         fun byId(id: String) = UriTemplate(BY_ID).expand(id)
     }
 
+    object Analysis {
+        const val ANALYSE = "/analyse"
+    }
+
 }

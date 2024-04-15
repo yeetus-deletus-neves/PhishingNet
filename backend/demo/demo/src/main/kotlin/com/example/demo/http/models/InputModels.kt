@@ -8,3 +8,7 @@ data class UserCreateInputModel(
 data class TokenInputModel(
     val token: String
 )
+
+data class ContentInputModel(
+    val content: String
+)
