@@ -49,8 +49,7 @@ class UserServicesImpl(
         val user = usersRepository.findUserByUsername(username)
         if ( user == null || !passEncoder.matches(password, user.passwordinfo)) return CreateUserTokenInfo.AuthenticationFailed
 
-        val newToken = UserToken(createToken(), user, clock.now())
-        userTokenRepository.saveAndFlush(newToken)
+        val newToken = getToken(user)
         return CreateUserTokenInfo.TokenCreated(newToken)
     }
 
@@ -94,7 +93,24 @@ class UserServicesImpl(
         return hasLower && hasCapital && hasNumber && password.length >= 8
     }
 
-    fun createToken(): String =
+    private fun getToken(user: User): UserToken {
+        val tokenCount = userTokenRepository.countUserTokensByUserid(user)
+
+        // If theres already the max number of tokens, deletes the last used
+        if (tokenCount >= UserToken.MAX_TOKENS) {
+            val toDelete = tokenCount - UserToken.MAX_TOKENS + 1
+            for (n in 1..toDelete) {
+                val invalidToken = userTokenRepository.findTopByUseridOrderByLastUsedAtAsc(user) ?: continue
+                userTokenRepository.removeTopByTokenvalidationinfoOrderByLastUsedAtAsc(invalidToken.tokenvalidationinfo!!)
+            }
+        }
+
+        val newToken = UserToken(createToken(), user, clock.now())
+        userTokenRepository.save(newToken)
+        return newToken
+    }
+
+    private fun createToken(): String =
         ByteArray(TOKEN_BYTE_SIZE).let { byteArray ->
             SecureRandom.getInstanceStrong().nextBytes(byteArray)
             Base64.getUrlEncoder().encodeToString(byteArray)
@@ -125,6 +141,11 @@ sealed class CreateUserTokenInfo {
 sealed class ValidateUserTokenInfo {
     object AuthenticationFailed : ValidateUserTokenInfo()
     data class TokenValid(val user: User) : ValidateUserTokenInfo()
+}
+
+sealed class CreateRefreshTokenInfo {
+    object TokenAlreadyExists : CreateRefreshTokenInfo()
+    object TokenCreated : CreateRefreshTokenInfo()
 }
 
 sealed class UpdateRefreshTokenInfo {

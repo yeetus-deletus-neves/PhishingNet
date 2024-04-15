@@ -1,6 +1,7 @@
 package com.example.demo.data.entities
 
 import jakarta.persistence.*
+import java.time.Duration
 import java.time.Instant
 
 @Entity
@@ -19,4 +20,9 @@ open class UserToken(token: String, user: User, instant: Instant) {
 
     @Column(name = "last_used_at", nullable = false)
     open var lastUsedAt: Long? = instant.toEpochMilli()
+
+    companion object{
+        val MAX_TOKENS: Int = 3
+        val TOKENS_TTL: Duration = Duration.ofDays(1)
+    }
 }
