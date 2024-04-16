@@ -1,5 +1,8 @@
 
 export function HomePage(){
+
+    console.log(location.href)
+
     return (
     <div className="container">
         <div id="container" className="center">
