@@ -7,6 +7,7 @@ import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.utils.Clock
+import com.example.demo.utils.graph.GraphInterface
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -66,10 +67,8 @@ class UserServicesImpl(
     override fun createRefreshToken(user: User, token: String): CreateRefreshTokenInfo {
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
         if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
-
-        //TODO: Usar token recebido para is buscar access token
-        val rToken = token
-
+        
+        val rToken =  GraphInterface().getRefresh(token)
         val newToken = RefreshToken(user, rToken)
         refreshTokenRepository.save(newToken)
         return CreateRefreshTokenInfo.TokenCreated
@@ -87,6 +86,7 @@ class UserServicesImpl(
     override fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo {
         val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return UpdateRefreshTokenInfo.UserNotFound
         token.rtoken = newToken
+
         refreshTokenRepository.save(token)
 
         return UpdateRefreshTokenInfo.TokenUpdated
