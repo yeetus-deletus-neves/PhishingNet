@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+	implementation ("com.google.code.gson:gson:2.10.1")
 	implementation("org.jdbi:jdbi3-core:3.32.0")
 	implementation("org.jdbi:jdbi3-kotlin:3.28.0")
 	implementation("org.jdbi:jdbi3-postgres:3.32.0")
@@ -31,6 +32,8 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation("com.squareup.okhttp3:okhttp")
+	implementation("com.squareup.okhttp3:logging-interceptor")
 }
 
 tasks.withType<KotlinCompile> {
