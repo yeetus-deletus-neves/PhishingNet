@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.ColumnDefault
 
 @Entity
-@Table(name = "refreshtoken")
+@Table(name = "refreshtoken", schema = "dbo")
 open class RefreshToken (owner: User, token: String) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

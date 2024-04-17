@@ -1,37 +1,24 @@
-import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import {BrowserRouter, Link, Route, Routes} from 'react-router-dom'
 import {Layout} from '../components/Layout'
-import { ErrorPage } from '../components/ErrorHandling/ErrorPage';
 import { HomePage } from '../components/Home';
 import { SignUpPage } from '../components/SignUp';
 import { LoginPage } from '../components/Login';
+import React from 'react';
 
 
 
-const router = createBrowserRouter([
-    {
-        element: <Layout/>,
-        errorElement: <ErrorPage/>,
-        children: [
-            {
-                path: "/",
-                element: <HomePage/>
-            },
-            {
-                path: "/signUp",
-                element: <SignUpPage/>
-            },
-            {
-                paht: "/login",
-                element: <LoginPage/>
-            }
-        ]
-    }
-])
 
-
-export function App(){
+export default function App({msalAgent}){
     return (
-        <RouterProvider router={router}/>
+        <BrowserRouter basename='/app' >
+            <Layout/>
+            <Routes>
+                <Route path='/' element={<HomePage/>}/>
+                <Route path='/login' element={<LoginPage/>}/>
+                <Route path='/signUp' element={<SignUpPage msalAgent={msalAgent}/>}/>
+                <Route path='/link' element={<Link/>}/>
+            </Routes>
+        </BrowserRouter>
     );
 }
 

@@ -13,7 +13,7 @@ const App = () => {
                 console.log(`Username: ${username} / Password: ${password}`);
 
                 const tokenRsp = await defaultFetch(
-                    'http://localhost:8080/user',
+                    'http://localhost:8080/user/signIn',
                     "POST",
                     {
                         'Content-Type': 'application/json'
@@ -23,13 +23,11 @@ const App = () => {
                         password: password
                     }
                 )
+                console.log(tokenRsp)
             }}>Submit</button>
             <br></br>
             <div>Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
-
-                console.log('Tried to sign up');
-                //window.open('sign up SPA url','_blank')
-            
+                window.open('http://localhost:8080/user','_blank')
             }}>Sign up here</a></div>
         </main>
     )
