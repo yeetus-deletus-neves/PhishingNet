@@ -1,8 +1,9 @@
 import React from "react";
 import { defaultFetch } from "../../../extension/src/utils/fetch";
+import { MsalInterface } from "../scripts/msal";
 
-export function SignUpPage({msalAgent}){
-
+export function SignUpPage(){
+    const msalAgent = new MsalInterface()
 
     return (
         <div className="signUp-form">
