@@ -67,7 +67,7 @@ class UserServicesImpl(
     override fun createRefreshToken(user: User, token: String): CreateRefreshTokenInfo {
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
         if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
-        
+
         val rToken =  GraphInterface().getRefresh(token)
         val newToken = RefreshToken(user, rToken)
         refreshTokenRepository.save(newToken)
