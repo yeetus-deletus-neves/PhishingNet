@@ -5,6 +5,7 @@ import { SignUpPage } from '../components/SignUp';
 import { LoginPage } from '../components/Login';
 import React from 'react';
 import { ErrorPage } from '../components/ErrorHandling/ErrorPage';
+import { LinkPage } from '../components/Link';
 
 
 const router = createBrowserRouter([
@@ -26,7 +27,7 @@ const router = createBrowserRouter([
             },
             {
                 path:'/link',
-                element:<Link/>
+                element:<LinkPage/>
             }
         ]
     }

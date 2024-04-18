@@ -14,8 +14,6 @@ export function SignUpPage(){
                 <button type="button" onClick={ async ()=>{
                 let username = document.getElementById('username').value;
                 let password = document.getElementById('password').value;
-                console.log(`Username: ${username} / Password: ${password}`);
-                
                 
                 const tokenRsp = await defaultFetch(
                     'http://localhost:8080/user',
@@ -40,6 +38,10 @@ export function SignUpPage(){
                             "password": password
                         }
                     )
+                    console.log(loginRsp);
+
+                    
+
                     //keep login persistent
                     /* 
                     window.open('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?'+

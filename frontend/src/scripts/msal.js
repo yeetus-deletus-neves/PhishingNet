@@ -5,7 +5,7 @@ const msalConfig = {
     auth: {
         clientId: 'cb14d1d3-9a43-4b04-9c52-555211443e63', // Substitua pelo seu Client ID
         authority: 'https://login.microsoftonline.com/common', // Substitua pelo seu Azure AD tenant
-        redirectUri: 'http://localhost:3000/app', // URL de redirecionamento após o login
+        redirectUri: 'http://localhost:3000/link', // URL de redirecionamento após o login
     },
     cache: {
         cacheLocation: 'sessionStorage',
