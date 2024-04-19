@@ -19,7 +19,7 @@ create table dbo.UserToken(
 create table dbo.RefreshToken(
     id serial not null,
     userID uuid unique not null ,
-    rToken varchar(256),
+    rToken varchar(1024),
     primary key (id),
     FOREIGN KEY (userID) REFERENCES dbo.User(id)
 );

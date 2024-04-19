@@ -2,6 +2,8 @@ import { defaultFetch } from "../utils/fetch";
 
 const App = () => {
 
+    //search for token in cache
+
     return (
         <main>
             <h1>Phising Net</h1>
@@ -10,7 +12,6 @@ const App = () => {
                 <button type="button" onClick={ async ()=>{
                 let username = document.getElementById('username').value;
                 let password = document.getElementById('password').value;
-                console.log(`Username: ${username} / Password: ${password}`);
 
                 const tokenRsp = await defaultFetch(
                     'http://localhost:8080/user/signIn',
@@ -19,15 +20,15 @@ const App = () => {
                         'Content-Type': 'application/json'
                     },
                     {
-                        username: username,
-                        password: password
+                        "username": username,
+                        "password": password
                     }
                 )
-                console.log(tokenRsp)
+                // put tokenRsp in cache
             }}>Submit</button>
             <br></br>
             <div>Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
-                window.open('http://localhost:8080/user','_blank')
+                window.open('http://localhost:3000/signUp','_blank')
             }}>Sign up here</a></div>
         </main>
     )
