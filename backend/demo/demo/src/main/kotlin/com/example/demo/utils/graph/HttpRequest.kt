@@ -20,7 +20,7 @@ class HttpRequest(private var url: String, private var method: HttpMethod) {
         }
     }
 
-    fun sendRequest(): String{
+    fun sendRequest(): Response {
         val requestBuilder = Request.Builder().url(url)
 
         for ((key, value) in headers) {
@@ -37,17 +37,10 @@ class HttpRequest(private var url: String, private var method: HttpMethod) {
 
         val request = requestBuilder.build()
 
-        val response = client.newCall(request).execute()
-
-        if (!response.isSuccessful) throw Exception("Request for refresh token failed:\n ${response.body?.string()}")
-
-        return extractRefreshToken(response.body!!.string())
+        return client.newCall(request).execute()
     }
 
-    private fun extractRefreshToken(res: String): String {
-        val serializedResponse = Gson().fromJson(res, ApiRefreshResponse::class.java)
-        return serializedResponse.refresh_token
-    }
+
 
 }
 

@@ -34,9 +34,14 @@ class UserServicesImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getUserById(userID: UUID): GetUserInfo {
-        val user = usersRepository.findUserById(userID) ?: return  GetUserInfo.UserNotFound
-        return GetUserInfo.UserFound(user)
+    override fun getUserById(userID: String): GetUserInfo {
+        try{
+            val id = UUID.fromString(userID)
+            val user = usersRepository.findUserById(id) ?: return  GetUserInfo.UserNotFound
+            return GetUserInfo.UserFound(user)
+        }catch (e: IllegalArgumentException){
+            return GetUserInfo.InvalidID
+        }
     }
 
     @Transactional(readOnly = true)
@@ -68,9 +73,10 @@ class UserServicesImpl(
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
         if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
 
-        val rToken =  GraphInterface().getRefresh(token)
-        val newToken = RefreshToken(user, rToken)
-        refreshTokenRepository.save(newToken)
+        val rToken =  GraphInterface().getRefresh(token)  ?: return CreateRefreshTokenInfo.InvalidToken
+        refreshTokenRepository.save(
+            RefreshToken(user, rToken)
+        )
         return CreateRefreshTokenInfo.TokenCreated
     }
 
@@ -159,6 +165,7 @@ sealed class CreateUserInfo {
 
 sealed class GetUserInfo {
     object UserNotFound : GetUserInfo()
+    object InvalidID : GetUserInfo()
     object AuthenticationFailed : GetUserInfo()
     data class UserFound(val user: User) : GetUserInfo()
 }
@@ -175,6 +182,7 @@ sealed class ValidateUserTokenInfo {
 
 sealed class CreateRefreshTokenInfo {
     object TokenAlreadyExists : CreateRefreshTokenInfo()
+    object InvalidToken : CreateRefreshTokenInfo()
     object TokenCreated : CreateRefreshTokenInfo()
 }
 

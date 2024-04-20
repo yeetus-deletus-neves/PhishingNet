@@ -52,13 +52,14 @@ class UserController(private val userServices: UserServices) {
     fun getById(@PathVariable id: String): ResponseEntity<*>{
         logger.info { "GET: ${Uris.Users.BY_ID} received" }
 
-        return when (val res = userServices.getUserById(UUID.fromString(id))){
+        return when (val res = userServices.getUserById(id)){
             is GetUserInfo.UserFound -> ResponseTemplate.Ok(UserOutputModel(
                 res.user.id.toString(),
                 res.user.username!!
             ), "User ${res.user.username} found by ID")
             is GetUserInfo.UserNotFound -> ResponseTemplate.NotFound("User not found")
             is GetUserInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed")
+            is GetUserInfo.InvalidID -> ResponseTemplate.BadRequest("The provided ID is invalid")
         }
     }
 
@@ -69,6 +70,7 @@ class UserController(private val userServices: UserServices) {
         return when (userServices.createRefreshToken(user,token.token)){
             is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(null, "Account ${user.username} linked")
             is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("Account is already linked")
+            is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("Microsoft token is invalid")
         }
     }
 

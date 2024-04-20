@@ -1,0 +1,244 @@
+openapi: "3.1.0"
+info:
+  title: "ps_2324_g15 API"
+  description: "ps_2324_g15 API"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+paths:
+  /user:
+    post:
+      summary: "SignUp"
+      operationId: "create"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateInputModel"
+        required: true
+      responses:
+        "200":
+          description: "Ok: User created."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+        "400":
+          description: "Bad Request: Password is too weak."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "409":
+          description: "Conflict: User already exists."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /user/signIn:
+    post:
+      summary: "Obtain user token through login."
+      operationId: "token"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateInputModel"
+        required: true
+      responses:
+        "200":
+          description: "Ok: Login successful."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+        "401":
+          description: "Unauthorized: The used credentials are not valid."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /user/{id}:
+    get:
+      summary: "Get user info through his userID."
+      operationId: "getById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "Ok: User found."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+        "400":
+          description: "Bad Request: Id is invalid."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "404":
+          description: "Not Found: The id provided is not associated with any user."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /user/link:
+    post:
+      summary: Link account with a Microsoft account.
+      operationId: "linkAccount"
+      parameters:
+        - in: header
+          name: Authorization
+          description: "Bearer Token"
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenInputModel"
+        required: true
+      responses:
+        "200":
+          description: "Ok: Account linked."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+        "400":
+          description: "Bad Request: Token is invalid."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "401":
+          description: "Unauthorized: User authentication failed."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "409":
+          description: "Conflict: User is already linked to an account."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /user/unlink:
+    delete:
+      summary: "Removes linked between this account and the Microsft account thatw as previously configured."
+      operationId: "unlinkAccount"
+      parameters:
+        - in: header
+          name: Authorization
+          description: "Bearer Token"
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: "Ok: Account unlinked."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+        "401":
+          description: "Unauthorized: User authentication failed."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        "409":
+          description: "Conflict: User has no linked Microsft Account."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /analyse:
+    post:
+      summary: "Sends email content to analysis"
+      operationId: "analyseContent"
+      parameters:
+        - in: header
+          name: Authorization
+          description: "Bearer Token"
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContentInputModel"
+        required: true
+      responses:
+        "200":
+          description: "Ok: Account unlinked."
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UserOutputModel'
+components:
+  schemas:
+    UserCreateInputModel:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+      required:
+        - "username"
+        - "password"
+    TokenInputModel:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+      required:
+        - "token"
+    ContentInputModel:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+      required:
+        - "content"
+    UserOutputModel:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        username:
+          type: "string"
+      required:
+        - "id"
+        - "username"
+    TokenOutputModel:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+        createdAt:
+          type: "string"
+        lastUsed:
+          type: "string"
+      required:
+        - "token"
+        - "createdAt"
+        - "lastUsed"
+    ApiError:
+      type: "object"
+      properties:
+        status:
+          type: "integer"
+        message:
+          type: "string"
+      required:
+        - "status"
+        - "message"

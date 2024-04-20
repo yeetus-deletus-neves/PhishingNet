@@ -7,7 +7,7 @@ import java.util.*
 interface UserServices {
 
     fun createUser(username: String, password: String): CreateUserInfo
-    fun getUserById(userID: UUID): GetUserInfo
+    fun getUserById(userID: String): GetUserInfo
     fun getUserByToken(token: String): GetUserInfo
 
     fun createUserToken(username: String, password: String): CreateUserTokenInfo

@@ -1,5 +1,8 @@
 package com.example.demo.utils.graph
 
+import com.example.demo.utils.graph.models.ApiRefreshResponse
+import com.google.gson.Gson
+
 class GraphInterface {
 
     private val URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token/"
@@ -10,7 +13,7 @@ class GraphInterface {
     private val CLIENT_SECRET = "P~N8Q~_.z7Xp6gpIUo~u8N7u6~bS1VpsKEy~1ak1"
 
 
-    fun getRefresh(token: String): String{
+    fun getRefresh(token: String): String?{
         val request = HttpRequest(URL, HttpMethod.POST)
 
         request.addHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -26,8 +29,21 @@ class GraphInterface {
         request.addBody("client_secret", CLIENT_SECRET)
 
 
-        return request.sendRequest()
+        val response = request.sendRequest()
 
+        return response.use { httpResponse ->
+            when (httpResponse.code) {
+                400 -> null
+                200 -> extractRefreshToken(httpResponse.body?.string()!!)
+                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            }
+        }
+
+    }
+
+    private fun extractRefreshToken(res: String): String {
+        val serializedResponse = Gson().fromJson(res, ApiRefreshResponse::class.java)
+        return serializedResponse.refresh_token
     }
 
 }
