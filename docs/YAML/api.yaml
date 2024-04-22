@@ -1,6 +1,6 @@
 openapi: "3.1.0"
 info:
-  title: "ps_2324_g15 API"
+  title: "PhishingNet API"
   description: "ps_2324_g15 API"
   version: "1.0.0"
 servers:
@@ -161,7 +161,7 @@ paths:
                 $ref: '#/components/schemas/ApiError'
   /analyse:
     post:
-      summary: "Sends email content to analysis"
+      summary: "**[WIP]** Sends email content to analysis"
       operationId: "analyseContent"
       parameters:
         - in: header
