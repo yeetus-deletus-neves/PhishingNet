@@ -7,7 +7,7 @@ import java.util.*
 @Component
 class TokenEncoder {
 
-    fun createValidationInformation(token: String) = hash(token)
+    fun encode(token: String) = hash(token)
 
     fun validate(validationInfo: String, token: String): Boolean =
         validationInfo == hash(token)

@@ -7,6 +7,7 @@ import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.utils.Clock
+import com.example.demo.utils.TokenEncoder
 import com.example.demo.utils.graph.GraphInterface
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -20,6 +21,7 @@ class UserServicesImpl(
     private val userTokenRepository: UserTokenRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passEncoder: PasswordEncoder,
+    private val tokenEncoder: TokenEncoder,
     private val clock: Clock
 ): UserServices {
 
@@ -46,7 +48,9 @@ class UserServicesImpl(
 
     @Transactional(readOnly = true)
     override fun getUserByToken(token: String): GetUserInfo {
-        val myToken = userTokenRepository.findUserTokenByTokenvalidationinfo(token) ?: return  GetUserInfo.UserNotFound
+        val encodedToken = tokenEncoder.encode(token)
+
+        val myToken = userTokenRepository.findUserTokenByTokenvalidationinfo(encodedToken) ?: return  GetUserInfo.UserNotFound
         return GetUserInfo.UserFound(myToken.userid!!)
     }
 
@@ -140,10 +144,14 @@ class UserServicesImpl(
                 userTokenRepository.removeTopByTokenvalidationinfoOrderByLastUsedAtAsc(invalidToken.tokenvalidationinfo!!)
             }
         }
+        val tokenValue = createToken()
+        val creationInstant = clock.now()
 
-        val newToken = UserToken(createToken(), user, clock.now())
-        userTokenRepository.save(newToken)
-        return newToken
+        // The token present on the DB is encoded
+        val encodedToken = UserToken(tokenEncoder.encode(tokenValue), user, creationInstant)
+        userTokenRepository.save(encodedToken)
+
+        return UserToken(tokenValue, user, creationInstant)
     }
 
     private fun createToken(): String =
