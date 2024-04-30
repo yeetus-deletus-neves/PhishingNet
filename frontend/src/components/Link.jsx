@@ -14,6 +14,7 @@ export function LinkPage(){
             <button type="button" onClick={ async ()=>{
                 if(azureCode){
                     const t = await getFromCache("test","userToken")
+                    console.log(t)
                     const linkRsp = await defaultFetch(
                         'http://localhost:8080/user/link',
                         "POST",
@@ -25,6 +26,7 @@ export function LinkPage(){
                             "token": azureCode
                         }
                     )
+                    console.log(linkRsp)
                 }
             }}>Link</button>
         </div>

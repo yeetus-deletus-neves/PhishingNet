@@ -16,8 +16,9 @@ export async function getFromCache(cacheName, key) {
         const cachedResponse = await cache.match(key);
   
         if (cachedResponse) {
+
           const data = await cachedResponse.text();
-          return data;
+          return data.slice(1,data.length-1);
         } else {
           return null;
         }

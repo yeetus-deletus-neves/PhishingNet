@@ -3,10 +3,7 @@ package com.example.demo.http.controllers
 import com.example.demo.data.entities.User
 import com.example.demo.http.ResponseTemplate
 import com.example.demo.http.Uris
-import com.example.demo.http.models.TokenInputModel
-import com.example.demo.http.models.TokenOutputModel
-import com.example.demo.http.models.UserCreateInputModel
-import com.example.demo.http.models.UserOutputModel
+import com.example.demo.http.models.*
 import com.example.demo.services.userServices.*
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
@@ -68,7 +65,7 @@ class UserController(private val userServices: UserServices) {
         logger.info { "POST: ${Uris.Users.LINK} received" }
 
         return when (userServices.createRefreshToken(user,token.token)){
-            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(null, "Account ${user.username} linked")
+            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(MessageOutputModel("Linked"), "Account ${user.username} linked")
             is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("Account is already linked")
             is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("Microsoft token is invalid")
         }
@@ -79,7 +76,7 @@ class UserController(private val userServices: UserServices) {
         logger.info { "DELETE: ${Uris.Users.UNLINK} received" }
 
         return when (userServices.removeRefreshToken(user)){
-            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(null, "Account ${user.username} unlinked")
+            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(MessageOutputModel("Unlinked"), "Account ${user.username} unlinked")
             is RemoveRefreshTokenInfo.AccountNotLinked -> ResponseTemplate.Conflict("Unable to remove account link: Account not linked to any Microsoft account")
         }
     }
