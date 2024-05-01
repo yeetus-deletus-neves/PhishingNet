@@ -1,5 +1,5 @@
-import { defaultFetch } from "../../../extension/src/utils/fetch";
-import { getFromCache } from "../scripts/cache";
+import { defaultFetch } from "../utils/fetch";
+import { getFromCache } from "../utils/cache";
 
 export function LinkPage(){
 
