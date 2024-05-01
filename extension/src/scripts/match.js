@@ -2,7 +2,17 @@ import { defaultFetch } from "../utils/fetch";
 
 var currentURL = location.href;
 
+window.addEventListener("message",function(event){
+    if(event.source != window){
+        return;
+    }
+    if (event.data.type && (event.data.type == "FROM_PAGE")) {
+        console.log("Content script received message: " + event.data.text);
+    }
+});
+
 async function mailOpen() {
+    //const token = localStorage.getItem('userToken')
     const url = location.href;
     if(url.includes("id/")){
         // Find the index of "id/"
@@ -10,14 +20,13 @@ async function mailOpen() {
 
         // Extract the substring
         const conversationID = url.substring(startIndex+3);
-        console.log(conversationID);
 
         const analyseRsp = await defaultFetch(
             `http://localhost:8080/analyse?conversationId=${conversationID}`,
             "GET",
             {
                 'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem('userToken')}`,
+                'Authorization': `123`,
             }
         )
         console.log(analyseRsp)
