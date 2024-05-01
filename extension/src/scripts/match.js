@@ -1,24 +1,37 @@
+import { defaultFetch } from "../utils/fetch";
+
 var currentURL = location.href;
 
-function mailOpen() {
+async function mailOpen() {
     const url = location.href;
     if(url.includes("id/")){
+        // Find the index of "id/"
         const startIndex = url.indexOf("id/");
-        // Find the index of "?" after "id/"
-        const endIndex = url.indexOf("?", startIndex);
+
         // Extract the substring
-        const conversationID = url.substring(startIndex+3, endIndex);
+        const conversationID = url.substring(startIndex+3);
         console.log(conversationID);
+
+        const analyseRsp = await defaultFetch(
+            `http://localhost:8080/analyse?conversationId=${conversationID}`,
+            "GET",
+            {
+                'Content-Type': 'application/json',
+                'Authorization': `${localStorage.getItem('userToken')}`,
+            }
+        )
+        console.log(analyseRsp)
+
     }else{
         console.log('No conversation selected');
     }
 };
 
-var observer = new MutationObserver(()=>{
+var observer = new MutationObserver(async ()=>{
     var newURL = location.href;
     if ( currentURL != newURL){
         currentURL = newURL;
-        mailOpen()
+        await mailOpen()
     }
 });
 

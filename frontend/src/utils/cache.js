@@ -3,6 +3,7 @@ export async function saveToCache(cacheName, key, value) {
         const data = new Response(JSON.stringify(value));
         
         caches.open(cacheName).then((cache) => {
+            console.log(`Saved in ${cacheName}`)
             cache.put(key, data);
         });
     } catch (error) {
