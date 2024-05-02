@@ -1,7 +1,5 @@
-package com.example.demo.services.analysisServices
+package com.example.demo.services.analysisServices;
 
-
-interface AnalysisModule {
-
-    fun process(content: String): RiskAnalysis
+interface AnalysisServices {
+    fun process(content: String): AnalysisResult
 }

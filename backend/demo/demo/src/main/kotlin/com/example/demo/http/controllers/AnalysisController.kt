@@ -18,7 +18,7 @@ class AnalysisController(
 
     @PostMapping(Uris.Analysis.ANALYSE)
     fun analyseContent(user: User, @RequestBody content: ContentInputModel): ResponseEntity<*> {
-        return when(val res = analysisServices.proccess(user, content.content)) {
+        return when(val res = analysisServices.process(content.content)) {
             is AnalysisResult.AccountNotLinked ->  ResponseTemplate.BadRequest("Testing")
             is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res.result, "Completed analysis of ${content.content}")
         }

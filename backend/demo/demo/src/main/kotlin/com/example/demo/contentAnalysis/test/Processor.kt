@@ -1,4 +1,4 @@
-package com.example.demo.services.analysisServices
+package com.example.demo.contentAnalysis.test
 
 //nullable just for now
 class Processor(private val modules: List<AnalysisModule>?) {

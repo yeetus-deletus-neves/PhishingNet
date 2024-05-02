@@ -1,4 +1,4 @@
-package com.example.demo.services.analysisServices
+package com.example.demo.contentAnalysis.test
 
 class RiskEvaluator(private val criteria: List<RiskCriteria>) {
 

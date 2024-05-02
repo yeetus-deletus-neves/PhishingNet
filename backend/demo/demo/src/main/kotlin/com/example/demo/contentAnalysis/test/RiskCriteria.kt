@@ -1,4 +1,4 @@
-package com.example.demo.services.analysisServices
+package com.example.demo.contentAnalysis.test
 
 data class RiskCriteria(
     val warning: Warning,

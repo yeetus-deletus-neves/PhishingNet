@@ -1,4 +1,4 @@
-package com.example.demo.services.analysisServices
+package com.example.demo.contentAnalysis.test
 
 enum class Risk(val description: String) {
     FALSE_ENTITY("false entity"),
