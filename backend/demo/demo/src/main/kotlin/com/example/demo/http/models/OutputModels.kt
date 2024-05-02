@@ -11,3 +11,7 @@ data class TokenOutputModel(
     val createdAt: String,
     val lastUsed: String
 )
+
+data class MessageOutputModel(
+    val message: String
+)

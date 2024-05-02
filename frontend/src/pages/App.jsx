@@ -34,20 +34,9 @@ const router = createBrowserRouter([
 ])
 
 
-export default function App({msalAgent}){
+export default function App(){
     return (
         <RouterProvider router={router}/>
-        /*
-        <BrowserRouter basename='/app' >
-            <Layout/>
-            <Routes>
-                <Route path='/' element={<HomePage/>}/>
-                <Route path='/login' element={<LoginPage/>}/>
-                <Route path='/signUp' element={<SignUpPage msalAgent={msalAgent}/>}/>
-                <Route path='/link' element={<Link/>}/>
-            </Routes>
-        </BrowserRouter>
-        */
     );
 }
 

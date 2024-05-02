@@ -18,6 +18,5 @@ export async function defaultFetch(
             message: response.statusText
         }
     }
-    console.log(response)
     return await response.json()
 }

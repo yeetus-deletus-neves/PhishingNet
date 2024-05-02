@@ -1,6 +1,7 @@
 import React from "react";
-import { defaultFetch } from "../../../extension/src/utils/fetch";
+import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
+import { saveToCache } from "../utils/cache";
 
 export function SignUpPage(){
     const msalAgent = new MsalInterface()
@@ -38,20 +39,10 @@ export function SignUpPage(){
                             "password": password
                         }
                     )
+
                     console.log(loginRsp);
+                    saveToCache('test','userToken',loginRsp.token)
 
-                    
-
-                    //keep login persistent
-                    /* 
-                    window.open('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?'+
-                    'client_id=cb14d1d3-9a43-4b04-9c52-555211443e63'+
-                    '&response_type=code'+
-                    '&redirect_uri=http://localhost:3000/app'+
-                    '&response_mode=query'+
-                    '&scope=offline_access User.read Mail.read'+
-                    '&state=12345')
-                    */
                     msalAgent.login()
 
                 }else{

@@ -6,7 +6,6 @@ module.exports = {
     mode: 'production',
     entry: {
         react: './src/index.jsx',
-        match: './src/scripts/match.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),

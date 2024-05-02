@@ -11,12 +11,5 @@
     "action": {
       "default_popup": "index.html"
     },
-    "permissions": ["activeTab"],
-
-    "content_scripts": [
-      {
-        "matches": ["*://outlook.live.com/mail/*"],
-        "js": ["match.js"]
-      }
-    ]
+    "permissions": ["tabs","activeTab", "storage"]
 }
