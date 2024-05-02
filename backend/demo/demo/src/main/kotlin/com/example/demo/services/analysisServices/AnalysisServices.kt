@@ -1,8 +1,7 @@
 package com.example.demo.services.analysisServices
 
-import com.example.demo.data.entities.User
 
-interface AnalysisServices {
+interface AnalysisModule {
 
-    fun proccess(user: User, content: String): AnalysisResult
+    fun process(content: String): RiskAnalysis
 }
