@@ -13,30 +13,39 @@ const App = () => {
     }
     browser.tabs.query({currentWindow: true, active: true}).then(logTabs, console.error);
     const token  = window.localStorage.getItem("userToken")
-    if( token && url && url.includes("outlook.live.com/mail/") && url.includes("id/" )){
-        return (
-        <main>
-            <h1>Phishing Net</h1>
-            <button type="button" onClick={ async ()=>{
-                const startIndex = url.indexOf("id/");
+    if(token){
+        if(url && url.includes("outlook.live.com/mail/") && url.includes("id/" )){
+            return (
+            <main>
+                <h1>Phishing Net</h1>
+                <button type="button" onClick={ async ()=>{
+                    const startIndex = url.indexOf("id/");
 
-                // Extract the substring
-                const conversationID = url.substring(startIndex+3);
-        
-                const analyseRsp = await defaultFetch(
-                    'http://localhost:8080/analyse',
-                    "POST",
-                    {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    {
-                        "content":`${conversationID}`
-                    }
-                )
-                console.log(analyseRsp)
-            }}>Analyse Content</button>
-        </main>)
+                    // Extract the substring
+                    const conversationID = url.substring(startIndex+3);
+            
+                    const analyseRsp = await defaultFetch(
+                        'http://localhost:8080/analyse',
+                        "POST",
+                        {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        {
+                            "content":`${conversationID}`
+                        }
+                    )
+                    console.log(analyseRsp)
+                }}>Analyse Content</button>
+            </main>)
+        }else{
+            return(
+            <main>
+                <h1>Phishing Net</h1>
+                <h3>Select a message</h3>
+            </main>
+            )
+        }
     }
 
     return (
