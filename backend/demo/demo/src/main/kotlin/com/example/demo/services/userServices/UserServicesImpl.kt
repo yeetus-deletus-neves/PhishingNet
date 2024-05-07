@@ -25,6 +25,8 @@ class UserServicesImpl(
     private val clock: Clock
 ): UserServices {
 
+    final val graphInterface: GraphInterface = GraphInterface()
+
     @Transactional
     override fun createUser(username: String, password: String): CreateUserInfo {
         if (!isPasswordSecure(password)) return CreateUserInfo.UnsafePassword
@@ -60,7 +62,7 @@ class UserServicesImpl(
         if ( user == null || !passEncoder.matches(password, user.passwordinfo)) return CreateUserTokenInfo.AuthenticationFailed
 
         val newToken = getToken(user)
-        return CreateUserTokenInfo.TokenCreated(newToken)
+        return CreateUserTokenInfo.TokenCreated(user,newToken)
     }
 
     @Transactional
@@ -77,18 +79,24 @@ class UserServicesImpl(
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
         if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
 
-        val rToken =  GraphInterface().getRefresh(token)  ?: return CreateRefreshTokenInfo.InvalidToken
+        val rToken =  graphInterface.getRefresh(token)  ?: return CreateRefreshTokenInfo.InvalidToken
+        val email = graphInterface.getEmail(rToken.access_token) ?: return CreateRefreshTokenInfo.UnableToObtainUserInformation
+        user.linked_email = email
+
         refreshTokenRepository.save(
-            RefreshToken(user, rToken)
+            RefreshToken(user, rToken.refresh_token)
         )
+        usersRepository.save(user)
         return CreateRefreshTokenInfo.TokenCreated
     }
 
     @Transactional
     override fun removeRefreshToken(user: User): RemoveRefreshTokenInfo {
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return RemoveRefreshTokenInfo.AccountNotLinked
+        user.linked_email = null
 
         refreshTokenRepository.delete(myToken)
+        usersRepository.save(user)
         return RemoveRefreshTokenInfo.AccountUnlinked
     }
 
@@ -180,7 +188,7 @@ sealed class GetUserInfo {
 
 sealed class CreateUserTokenInfo {
     object AuthenticationFailed : CreateUserTokenInfo()
-    data class TokenCreated(val token: UserToken) : CreateUserTokenInfo()
+    data class TokenCreated(val user: User,val token: UserToken) : CreateUserTokenInfo()
 }
 
 sealed class ValidateUserTokenInfo {
@@ -192,6 +200,7 @@ sealed class CreateRefreshTokenInfo {
     object TokenAlreadyExists : CreateRefreshTokenInfo()
     object InvalidToken : CreateRefreshTokenInfo()
     object TokenCreated : CreateRefreshTokenInfo()
+    object UnableToObtainUserInformation : CreateRefreshTokenInfo()
 }
 
 sealed class RemoveRefreshTokenInfo {

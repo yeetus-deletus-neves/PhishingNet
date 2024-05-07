@@ -37,10 +37,13 @@ class UserController(private val userServices: UserServices) {
         return when(val res = userServices.createUserToken(input.username, input.password)){
             is CreateUserTokenInfo.TokenCreated -> ResponseTemplate.Ok(
                 TokenOutputModel(
-                    res.token.tokenvalidationinfo!!,
-                    res.token.createdAt.toString(),
-                    res.token.lastUsedAt.toString()
-                ), "Token generated")
+                    res.user.id.toString(),
+                    res.user.linked_email,
+                    TokenInfo(
+                        res.token.tokenvalidationinfo!!,
+                        res.token.createdAt.toString(),
+                        res.token.lastUsedAt.toString()
+                )), "Token generated")
             is CreateUserTokenInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed")
         }
     }
@@ -68,6 +71,7 @@ class UserController(private val userServices: UserServices) {
             is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(MessageOutputModel("Linked"), "Account ${user.username} linked")
             is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("Account is already linked")
             is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("Microsoft token is invalid")
+            is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError("We were unable to obtain user information")
         }
     }
 

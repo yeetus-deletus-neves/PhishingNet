@@ -17,6 +17,9 @@ open class User (username: String, encodedPassword: String) {
     @Column(name = "passwordinfo", nullable = false, length = 256)
     open var passwordinfo: String? = encodedPassword
 
+    @Column(name = "linked_email", nullable = true, length = 200)
+    open var linked_email: String? = null
+
     @OneToMany(mappedBy = "userid")
     open var tokens: MutableSet<UserToken> = mutableSetOf()
 

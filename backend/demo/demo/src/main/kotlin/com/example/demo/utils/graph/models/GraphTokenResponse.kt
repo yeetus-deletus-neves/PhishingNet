@@ -1,6 +1,6 @@
 package com.example.demo.utils.graph.models
 
-data class ApiRefreshResponse (
+data class ApiTokenResponse (
     val token_type: String,
     val scope: String,
     val expires_in: Int,

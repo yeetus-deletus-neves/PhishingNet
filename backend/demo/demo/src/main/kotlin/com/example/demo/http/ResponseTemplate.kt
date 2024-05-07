@@ -60,4 +60,12 @@ object ResponseTemplate {
         return ResponseEntity(body, HttpStatus.CREATED)
     }
 
+    fun InternalServerError(details: String): ResponseEntity<*> {
+        val code = HttpStatus.INTERNAL_SERVER_ERROR.value()
+        logger.warn { "Internal Server Error: $code: $details" }
+
+        val error = ApiError(code, "Internal Server Error", details)
+        return ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
 }

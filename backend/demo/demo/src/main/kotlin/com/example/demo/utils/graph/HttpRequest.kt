@@ -1,7 +1,5 @@
 package com.example.demo.utils.graph
 
-import com.example.demo.utils.graph.models.ApiRefreshResponse
-import com.google.gson.Gson
 import okhttp3.*
 
 class HttpRequest(private var url: String, private var method: HttpMethod) {

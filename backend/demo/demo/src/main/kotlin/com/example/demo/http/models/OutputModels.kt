@@ -7,6 +7,12 @@ data class UserOutputModel(
 )
 
 data class TokenOutputModel(
+    val userId: String,
+    val email: String?,
+    val token: TokenInfo
+)
+
+data class TokenInfo(
     val token: String,
     val createdAt: String,
     val lastUsed: String
