@@ -51,7 +51,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/UserOutputModel'
+                $ref: '#/components/schemas/TokenOutputModel'
         "401":
           description: "Unauthorized: The used credentials are not valid."
           content:
@@ -220,6 +220,15 @@ components:
         - "id"
         - "username"
     TokenOutputModel:
+      type: "object"
+      properties:
+        userId:
+          type: "string"
+        email:
+          type: "string"
+        token:
+          $ref: '#/components/schemas/TokenInfo'
+    TokenInfo:
       type: "object"
       properties:
         token:
