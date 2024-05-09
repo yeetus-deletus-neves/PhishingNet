@@ -7,6 +7,6 @@ interface AnalysisModule {
     val name: String
     var active: Boolean
 
-    //should it be RiskAnalysis here? or a map/set that corresponds a threat to each risk?
+    //TO ANALYSE CONTENT WE SHOULD USE THE CLEANED CONTENT NOT THE BODY
     fun process(email: Email): RiskAnalysis
 }

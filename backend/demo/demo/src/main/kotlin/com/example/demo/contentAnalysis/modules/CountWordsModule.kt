@@ -9,10 +9,12 @@ class CountWordsModule: AnalysisModule {
     override val name: String = "Count Words Module"
     override var active: Boolean = false
     override fun process(email: Email): RiskAnalysis {
+        val analysis = mutableMapOf<Risk, ThreatLevel>()
         val cnt = countWords(email.body)
-        return if(cnt <= 25) RiskAnalysis(listOf(Risk.MOCK_RISK), ThreatLevel.NoThreat)
-            else if (cnt <= 50) RiskAnalysis(listOf(Risk.MOCK_RISK), ThreatLevel.Suspicious)
-            else RiskAnalysis(listOf(Risk.MOCK_RISK), ThreatLevel.VerySuspicious)
+        analysis[Risk.MOCK_RISK] = if(cnt <= 5) ThreatLevel.NoThreat
+            else if (cnt <= 10) ThreatLevel.Suspicious
+            else ThreatLevel.VerySuspicious
+        return analysis
     }
 
     private fun countWords(str: String): Int {

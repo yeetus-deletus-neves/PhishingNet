@@ -2,22 +2,33 @@ package com.example.demo.contentAnalysis
 
 import com.example.demo.contentAnalysis.models.*
 
-//nullable just for now
-class Processor(private val modules: List<AnalysisModule>?) {
+class Processor(private val modules: List<AnalysisModule>) {
 
     //change content type
-    fun process(email: Email): List<RiskAnalysis> {
-        require (modules != null){"No existent modules to evaluate email"}
-        for (module in modules) {
-            module.process(email)
+    fun process(email: Email): RiskAnalysis {
+        val analysisList = mutableListOf<RiskAnalysis>()
+        modules.forEach { module -> analysisList.add(module.process(email)) }
+
+        val finalAnalysis = compileAnalysis(analysisList)
+
+        return finalAnalysis
+    }
+
+    private fun compileAnalysis(list: List<RiskAnalysis>): RiskAnalysis {
+        val final = mutableMapOf<Risk, ThreatLevel>()  // Mutable map for compilation
+
+        for (analise in list) {
+            analise.entries.forEach { analiseEntry ->
+                val risk = analiseEntry.key
+                val threat = analiseEntry.value
+
+                if (final.containsKey(risk)) {
+                    val currentThreat = final[risk]
+                    if (currentThreat == null || currentThreat < threat) final[risk] = threat
+                } else final[risk] = threat
+            }
         }
 
-        //take this riskCriteria outside and hard code it
-        val riskCriteria: RiskCriteria = RiskCriteria("ex1", 2, ThreatLevel.Alarming)
-        val criteria: List<RiskCriteria> = listOf(riskCriteria)
-
-        val evaluator = RiskEvaluator(criteria)
-
-        return listOf(evaluator.evaluate(Risk.allRisks))
+        return final.toMap()
     }
 }
