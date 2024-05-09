@@ -1,7 +1,6 @@
 import React from "react";
 import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
-import { saveToCache } from "../utils/cache";
 
 export function SignUpPage(){
     const msalAgent = new MsalInterface()
