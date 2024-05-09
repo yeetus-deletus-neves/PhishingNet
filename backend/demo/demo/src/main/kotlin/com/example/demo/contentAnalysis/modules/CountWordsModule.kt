@@ -9,13 +9,21 @@ class CountWordsModule: AnalysisModule {
     override val name: String = "Count Words Module"
     override var active: Boolean = false
     override fun process(email: Email): RiskAnalysis {
-        val analysis = mutableMapOf<Risk, ThreatLevel>()
         val cnt = countWords(email.cleanContent)
-        analysis[Risk.MOCK_RISK] = if(cnt <= 5) ThreatLevel.NoThreat
-            else if (cnt <= 10) ThreatLevel.Suspicious
-            else ThreatLevel.VerySuspicious
+        val analysis = evaluate(cnt)
+
         return analysis
     }
+
+    private fun evaluate(cnt: Int): RiskAnalysis {
+        val analysis = mutableMapOf<Risk, ThreatLevel>()
+
+        analysis[Risk.MOCK_RISK] = if(cnt <= 5) ThreatLevel.NoThreat
+        else if (cnt <= 10) ThreatLevel.Suspicious
+        else ThreatLevel.VerySuspicious
+        return analysis
+    }
+
 
     private fun countWords(str: String): Int {
         val punctuation = setOf('.', ',', '!', '?', ';', ':', '"', '\'')

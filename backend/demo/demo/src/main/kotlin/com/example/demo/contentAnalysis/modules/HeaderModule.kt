@@ -10,4 +10,8 @@ class HeaderModule() : AnalysisModule {
     override fun process(email: Email): RiskAnalysis {
         TODO("Not yet implemented")
     }
+
+    private fun evaluate(detectedInfraction: Boolean): RiskAnalysis {
+        TODO()
+    }
 }
