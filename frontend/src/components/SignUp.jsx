@@ -8,7 +8,7 @@ export function SignUpPage(){
 
     return (
         <div className="signUp-form">
-            <h1><b>SignUp</b></h1><hr/>
+            <h1><b>SignUp</b></h1>
             <h1>Phising Net</h1>
                 Username: <input type="text" name="username" id="username"/>
                 Password: <input type="text" name="password" id="password"/>
@@ -39,10 +39,7 @@ export function SignUpPage(){
                             "password": password
                         }
                     )
-
-                    console.log(loginRsp);
-                    saveToCache('test','userToken',loginRsp.token)
-
+                    window.localStorage.setItem("userToken",loginRsp)
                     msalAgent.login()
 
                 }else{
