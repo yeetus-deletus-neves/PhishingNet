@@ -3,13 +3,20 @@ import { Link, Outlet } from "react-router-dom";
 export function Layout(){
     return (
         <div>
-            <div className="navbar">
-                <div className="topnav">
-                    <Link to="/">Home</Link>
-                    <Link to="/login">Login</Link>
-                    <Link to="/signUp">SignUp</Link>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <a className="navbar-brand">Phishing Net</a>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div className="navbar-nav">
+                        <Link className="nav-item nav-link" to="/">Home</Link>
+                        <Link className="nav-item nav-link" to="/login">Login</Link>
+                        <Link className="nav-item nav-link" to="/signUp">Signup</Link>
+    
+                    </div>
                 </div>
-            </div>
+            </nav>
             <Outlet/>
         </div>
     );
