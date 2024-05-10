@@ -9,8 +9,8 @@ export function HomePage(){
             return (
                 <div className="container">
                     <div id="container" className="center">
-                        <h1 className="center">Phishing Net</h1>
-                        <h3 className="center">Logged in with {tokenStored.email}</h3>
+                        <h2 className="center">Hello {tokenStored.username}!</h2>
+                        <h3 className="center">Your account is currently linked with the email: {tokenStored.email}</h3>
                     </div>
                 </div>
             );
@@ -19,7 +19,7 @@ export function HomePage(){
             return (
                 <div className="container">
                     <div id="container" className="center">
-                        <h1 className="center">Phishing Net</h1>
+                        <h2 className="center">Hello {tokenStored.username}!</h2>
                         <h3 className="center">Account not linked</h3>
                         <h4 className="center"> To link the account click bellow</h4>
                         <button type="button" onClick={
@@ -34,6 +34,7 @@ export function HomePage(){
             <div className="container">
                 <div id="container" className="center">
                     <h1 className="center">Phishing Net</h1>
+                    <h3>You are currently not logged in</h3>
                 </div>
             </div>
         )
