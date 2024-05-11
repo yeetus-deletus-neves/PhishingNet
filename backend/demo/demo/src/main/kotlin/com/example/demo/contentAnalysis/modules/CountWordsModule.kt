@@ -5,7 +5,7 @@ import com.example.demo.contentAnalysis.AnalysisModule
 import com.example.demo.contentAnalysis.models.*
 
 
-class CountWordsModule: AnalysisModule {
+class CountWordsModule : AnalysisModule {
     override val name: String = "Count Words Module"
     override var active: Boolean = false
     override fun process(email: Email): RiskAnalysis {
@@ -16,14 +16,17 @@ class CountWordsModule: AnalysisModule {
     }
 
     private fun evaluate(cnt: Int): RiskAnalysis {
-        val analysis = mutableMapOf<Risk, ThreatLevel>()
+        val analysis = mutableMapOf<Risk, RiskAnalysisEntry>()
 
-        analysis[Risk.MOCK_RISK] = if(cnt <= 5) ThreatLevel.NoThreat
-        else if (cnt <= 10) ThreatLevel.Suspicious
-        else ThreatLevel.VerySuspicious
+        analysis[Risk.MOCK_RISK] = RiskAnalysisEntry(calcThreat(cnt), name)
         return analysis
     }
 
+    private fun calcThreat(cnt: Int): ThreatLevel {
+        return if (cnt <= 5) ThreatLevel.NoThreat
+            else if (cnt <= 10) ThreatLevel.Suspicious
+            else ThreatLevel.VerySuspicious
+    }
 
     private fun countWords(str: String): Int {
         val punctuation = setOf('.', ',', '!', '?', ';', ':', '"', '\'')

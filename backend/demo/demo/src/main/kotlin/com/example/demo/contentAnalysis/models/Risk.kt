@@ -1,6 +1,6 @@
 package com.example.demo.contentAnalysis.models
 
-typealias RiskAnalysis = Map<Risk, ThreatLevel>
+typealias RiskAnalysis = Map<Risk, RiskAnalysisEntry>
 
 enum class Risk(val description: String, severity: Severity) {
     MOCK_RISK("mock risk, for testing purposes only", Severity.NONE),
@@ -16,6 +16,12 @@ enum class Risk(val description: String, severity: Severity) {
         val allRisks: List<Risk> = entries.drop(MOCK_RISK.ordinal)
     }
 }
+
+data class RiskAnalysisEntry(
+    val threatLevel: ThreatLevel,
+    val moduleOfOrigin: Any,
+    val threatJustification: String? = null,
+)
 
 data class RiskCriteria (
     val name: String,
@@ -46,5 +52,4 @@ enum class Severity() {
     MAJOR,
     MINOR,
     NONE
-
 }
