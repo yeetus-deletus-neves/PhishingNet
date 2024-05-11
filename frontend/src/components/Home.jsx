@@ -10,7 +10,10 @@ export function HomePage(){
                 <div className="container">
                     <div id="container" className="center">
                         <h2 className="center">Hello {tokenStored.username}!</h2>
+                        <br></br>
                         <h3 className="center">Your account is currently linked with the email: {tokenStored.email}</h3>
+                        <br></br>
+                        <h3 className="center">Make sure to enter in this account inbox for the extension to work</h3>
                     </div>
                 </div>
             );

@@ -37,12 +37,20 @@ const App = () => {
                     )
                     console.log(analyseRsp)
                 }}>Analyse Content</button>
+                <button type="button" onClick={()=>{
+                    window.localStorage.removeItem("userToken")
+                    setUrl(null)
+                }}>Logout</button>
             </main>)
         }else{
             return(
             <main>
                 <h1>Phishing Net</h1>
                 <h3>Select a message</h3>
+                <button type="button" onClick={()=>{
+                    window.localStorage.removeItem("userToken")
+                    setUrl(null)
+                }}>Logout</button>
             </main>
             )
         }
