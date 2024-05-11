@@ -15,17 +15,20 @@ class Processor(private val modules: List<AnalysisModule>) {
     }
 
     private fun compileAnalysis(list: List<RiskAnalysis>): RiskAnalysis {
-        val final = mutableMapOf<Risk, ThreatLevel>()  // Mutable map for compilation
+        val final = mutableMapOf<Risk, RiskAnalysisEntry>()  // Mutable map for compilation
 
         for (analise in list) {
             analise.entries.forEach { analiseEntry ->
                 val risk = analiseEntry.key
-                val threat = analiseEntry.value
+                val riskEntry = analiseEntry.value
+                val threat = riskEntry.threatLevel
+                val justification = riskEntry.threatJustification
+                val moduleOfOrigin = riskEntry.moduleOfOrigin
 
-                if (final.containsKey(risk)) {
-                    val currentThreat = final[risk]
-                    if (currentThreat == null || currentThreat < threat) final[risk] = threat
-                } else final[risk] = threat
+                if (final.containsKey(risk) && final[risk] != null) {
+                    val currentThreat = RiskAnalysisEntry(threat, moduleOfOrigin, justification)
+                    if (currentThreat.threatLevel < threat) final[risk] = RiskAnalysisEntry(threat, moduleOfOrigin, justification)
+                } else final[risk] = RiskAnalysisEntry(threat, moduleOfOrigin, justification)
             }
         }
 
