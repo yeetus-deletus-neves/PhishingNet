@@ -6,10 +6,10 @@ import com.example.demo.data.entities.UserToken
 import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
+import com.example.demo.security.SaltPepperEncoder
 import com.example.demo.utils.Clock
-import com.example.demo.utils.TokenEncoder
+import com.example.demo.security.TokenEncoder
 import com.example.demo.utils.graph.GraphInterface
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.security.SecureRandom
@@ -20,8 +20,8 @@ class UserServicesImpl(
     private val usersRepository: UsersRepository,
     private val userTokenRepository: UserTokenRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val passEncoder: PasswordEncoder,
-    private val tokenEncoder: TokenEncoder,
+    private val saltPepperEncoder: SaltPepperEncoder,
+    private val tokenEncoder : TokenEncoder,
     private val clock: Clock
 ): UserServices {
 
@@ -32,7 +32,8 @@ class UserServicesImpl(
         if (!isPasswordSecure(password)) return CreateUserInfo.UnsafePassword
         if (usersRepository.findUserByUsername(username) != null) return CreateUserInfo.UserAlreadyExists
 
-        val newUser = User(username, passEncoder.encode(password))
+        val hashToken = saltPepperEncoder.encode(password)
+        val newUser = User(username, hashToken.encodedValue, hashToken.salt)
         usersRepository.save(newUser)
         return CreateUserInfo.UserCreated(newUser)
     }
@@ -53,13 +54,13 @@ class UserServicesImpl(
         val encodedToken = tokenEncoder.encode(token)
 
         val myToken = userTokenRepository.findUserTokenByTokenvalidationinfo(encodedToken) ?: return  GetUserInfo.UserNotFound
-        return GetUserInfo.UserFound(myToken.userid!!)
+        return GetUserInfo.UserFound(myToken.userid)
     }
 
     @Transactional
     override fun createUserToken(username: String, password: String): CreateUserTokenInfo {
         val user = usersRepository.findUserByUsername(username)
-        if ( user == null || !passEncoder.matches(password, user.passwordinfo)) return CreateUserTokenInfo.AuthenticationFailed
+        if ( user == null || !saltPepperEncoder.validate(password, user.passwordSalt, user.passwordinfo)) return CreateUserTokenInfo.AuthenticationFailed
 
         val newToken = getToken(user)
         return CreateUserTokenInfo.TokenCreated(user,newToken)
@@ -149,7 +150,7 @@ class UserServicesImpl(
             val toDelete = tokenCount - UserToken.MAX_TOKENS + 1
             for (n in 1..toDelete) {
                 val invalidToken = userTokenRepository.findTopByUseridOrderByLastUsedAtAsc(user) ?: continue
-                userTokenRepository.removeTopByTokenvalidationinfoOrderByLastUsedAtAsc(invalidToken.tokenvalidationinfo!!)
+                userTokenRepository.removeTopByTokenvalidationinfoOrderByLastUsedAtAsc(invalidToken.tokenvalidationinfo)
             }
         }
         val tokenValue = createToken()

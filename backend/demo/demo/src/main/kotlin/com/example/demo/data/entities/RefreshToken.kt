@@ -14,8 +14,8 @@ open class RefreshToken (owner: User, token: String) {
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userid", nullable = false)
-    open var userid: User? = owner
+    open var userid: User = owner
 
-    @Column(name = "rtoken", length = 256)
-    open var rtoken: String? = token
+    @Column(name = "rtoken", length = 256, nullable = false)
+    open var rtoken: String = token
 }

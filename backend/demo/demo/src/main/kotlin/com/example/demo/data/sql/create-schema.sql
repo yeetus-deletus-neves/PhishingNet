@@ -4,6 +4,7 @@ create table dbo.User(
     id uuid not null,
     username varchar(64) unique not null,
     passwordInfo varchar(256) not null,
+    passwordSalt varchar(128) not null,
     linked_email varchar(200),
     primary key (id)
 );

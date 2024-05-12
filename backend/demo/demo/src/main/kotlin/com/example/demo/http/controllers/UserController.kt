@@ -23,7 +23,7 @@ class UserController(private val userServices: UserServices) {
         return when(val res = userServices.createUser(input.username, input.password)) {
             is CreateUserInfo.UserCreated -> ResponseTemplate.Created(UserOutputModel(
                 res.user.id.toString(),
-                res.user.username!!
+                res.user.username
             ), "User ${input.username} created")
             is CreateUserInfo.UserAlreadyExists -> ResponseTemplate.Conflict("This user already exists")
             is CreateUserInfo.UnsafePassword -> ResponseTemplate.BadRequest("Password is unsafe, it must contain capital letters, numbers, and have a length of at least 8 characters")
@@ -40,7 +40,7 @@ class UserController(private val userServices: UserServices) {
                     res.user.id.toString(),
                     res.user.linked_email,
                     TokenInfo(
-                        res.token.tokenvalidationinfo!!,
+                        res.token.tokenvalidationinfo,
                         res.token.createdAt.toString(),
                         res.token.lastUsedAt.toString()
                 )), "Token generated")

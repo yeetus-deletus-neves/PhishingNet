@@ -1,4 +1,4 @@
-package com.example.demo.utils
+package com.example.demo.security
 
 import org.springframework.stereotype.Component
 import java.security.MessageDigest

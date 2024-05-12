@@ -1,5 +1,6 @@
 package com.example.demo.http.exception
 
+import com.example.demo.http.ResponseTemplate
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,11 +17,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    fun handleException(e: Exception): ResponseEntity<String> {
+    fun handleException(e: Exception): ResponseEntity<*> {
         logger.error(e) { "An error occurred while handling request. \n Error: ${e.localizedMessage}" }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Internal Server Error: Something went wrong! Please try again later or contact the server administrators.")
+        return ResponseTemplate.InternalServerError("Internal Server Error: Something went wrong! Please try again later or contact the server administrators.")
     }
 
 }
