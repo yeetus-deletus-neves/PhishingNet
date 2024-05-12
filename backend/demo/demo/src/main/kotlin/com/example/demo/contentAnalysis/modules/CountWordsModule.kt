@@ -5,16 +5,27 @@ import com.example.demo.contentAnalysis.AnalysisModule
 import com.example.demo.contentAnalysis.models.*
 
 
-class CountWordsModule: AnalysisModule {
+class CountWordsModule : AnalysisModule {
     override val name: String = "Count Words Module"
     override var active: Boolean = false
     override fun process(email: Email): RiskAnalysis {
-        val analysis = mutableMapOf<Risk, ThreatLevel>()
         val cnt = countWords(email.cleanContent)
-        analysis[Risk.MOCK_RISK] = if(cnt <= 5) ThreatLevel.NoThreat
+        val analysis = evaluate(cnt)
+
+        return analysis
+    }
+
+    private fun evaluate(cnt: Int): RiskAnalysis {
+        val analysis = mutableMapOf<Risk, RiskAnalysisEntry>()
+
+        analysis[Risk.MOCK_RISK] = RiskAnalysisEntry(calcThreat(cnt), name)
+        return analysis
+    }
+
+    private fun calcThreat(cnt: Int): ThreatLevel {
+        return if (cnt <= 5) ThreatLevel.NoThreat
             else if (cnt <= 10) ThreatLevel.Suspicious
             else ThreatLevel.VerySuspicious
-        return analysis
     }
 
     private fun countWords(str: String): Int {

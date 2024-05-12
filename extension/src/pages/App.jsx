@@ -5,6 +5,7 @@ import { defaultFetch } from "../utils/fetch";
   
 const App = () => {
     const [url,setUrl] = useState(null)
+    const [hasCode,setCode] = useState(null)
 
     function logTabs(tabs) {
         let tab = tabs[0]; // Safe to assume there will only be one result
@@ -37,12 +38,20 @@ const App = () => {
                     )
                     console.log(analyseRsp)
                 }}>Analyse Content</button>
+                <button type="button" onClick={()=>{
+                    window.localStorage.removeItem("userToken")
+                    setCode(false)
+                }}>Logout</button>
             </main>)
         }else{
             return(
             <main>
                 <h1>Phishing Net</h1>
                 <h3>Select a message</h3>
+                <button type="button" onClick={()=>{
+                    window.localStorage.removeItem("userToken")
+                    setCode(false)
+                }}>Logout</button>
             </main>
             )
         }
@@ -68,8 +77,8 @@ const App = () => {
                         "password": password
                     }
                 )
-                console.log(tokenRsp.token)
                 window.localStorage.setItem("userToken",tokenRsp.token)
+                setCode(true)
             }}>Submit</button>
             <br></br>
             <div>Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{

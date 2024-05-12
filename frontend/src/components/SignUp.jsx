@@ -1,14 +1,13 @@
 import React from "react";
 import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
-import { saveToCache } from "../utils/cache";
 
 export function SignUpPage(){
     const msalAgent = new MsalInterface()
 
     return (
         <div className="signUp-form">
-            <h1><b>SignUp</b></h1><hr/>
+            <h1><b>SignUp</b></h1>
             <h1>Phising Net</h1>
                 Username: <input type="text" name="username" id="username"/>
                 Password: <input type="text" name="password" id="password"/>
@@ -39,10 +38,7 @@ export function SignUpPage(){
                             "password": password
                         }
                     )
-
-                    console.log(loginRsp);
-                    saveToCache('test','userToken',loginRsp.token)
-
+                    window.localStorage.setItem("userToken",loginRsp)
                     msalAgent.login()
 
                 }else{
