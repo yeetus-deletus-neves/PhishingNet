@@ -11,11 +11,12 @@ import javax.crypto.SecretKey
 
 
 const val KEY_ALIAS = "key.jks"
-const val KEYSTORE_PATH = "backend/demo/demo/src/main/kotlin/com/example/demo/security/keys/$KEY_ALIAS"
+const val KEYSTORE_PATH = "backend/demo/demo/src/main/kotlin/com/example/demo/security/symmetricKeys/$KEY_ALIAS"
 const val KEYSTORE_PASSWORD = "admin"
 
 class SymmetricEncoder {
 
+    //
     private val secret: SecretKey?
 
     init {
@@ -24,6 +25,7 @@ class SymmetricEncoder {
         if (secret == null) throw RuntimeException("Secret Key is null")
     }
 
+    // Codifica data utilizando uma criptografia AES simetrica
     fun encode(data: String): String? {
         try {
             // Criar uma instância do Cipher para criptografia AES
@@ -99,16 +101,17 @@ class SymmetricEncoder {
         }
     }
 
+    // Vai buscar a chave simétrica ao ficheiro KeyStore key.jks
     private fun getSecretKey(): SecretKey? {
         try {
-            // Carregar o KeyStore a partir do arquivo
+            // Carrega o KeyStore a partir do ficheiro
             val keyStore = KeyStore.getInstance("JKS")
             val password: CharArray = KEYSTORE_PASSWORD.toCharArray()
             FileInputStream(KEYSTORE_PATH).use { fis ->
                 keyStore.load(fis, password)
             }
 
-            // Recuperar a chave simétrica (AES) do KeyStore
+            // Recuperar a chave simétrica do KeyStore
             val keyEntry = keyStore.getEntry(KEY_ALIAS, KeyStore.PasswordProtection(password)) as? KeyStore.SecretKeyEntry
             return keyEntry?.secretKey
         } catch (e: Exception) {
@@ -116,16 +119,4 @@ class SymmetricEncoder {
         }
         return null
     }
-}
-
-fun main() {
-    val data = "Ola o meu nome é Manuel!"
-
-    val symmetricEncoder = SymmetricEncoder()
-
-    val encoded = symmetricEncoder.encode(data)
-    println("Encoded:$encoded")
-
-    val decoded = symmetricEncoder.decode(encoded!!)
-    println("Decoded:$decoded")
 }

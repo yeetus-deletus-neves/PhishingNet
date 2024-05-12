@@ -7,6 +7,7 @@ import com.example.demo.data.repositories.RefreshTokenRepository
 import com.example.demo.data.repositories.UsersRepository
 import com.example.demo.data.repositories.UserTokenRepository
 import com.example.demo.security.SaltPepperEncoder
+import com.example.demo.security.SymmetricEncoder
 import com.example.demo.utils.Clock
 import com.example.demo.security.TokenEncoder
 import com.example.demo.utils.graph.GraphInterface
@@ -22,6 +23,7 @@ class UserServicesImpl(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val saltPepperEncoder: SaltPepperEncoder,
     private val tokenEncoder : TokenEncoder,
+    private val symmetricEncoder: SymmetricEncoder,
     private val clock: Clock
 ): UserServices {
 
@@ -85,7 +87,7 @@ class UserServicesImpl(
         user.linked_email = email
 
         refreshTokenRepository.save(
-            RefreshToken(user, rToken.refresh_token)
+            RefreshToken(user, symmetricEncoder.encode(rToken.refresh_token)!!)
         )
         usersRepository.save(user)
         return CreateRefreshTokenInfo.TokenCreated
@@ -104,7 +106,7 @@ class UserServicesImpl(
     @Transactional
     override fun updateRefreshToken(user: User, newToken: String): UpdateRefreshTokenInfo {
         val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return UpdateRefreshTokenInfo.UserNotFound
-        token.rtoken = newToken
+        token.rtoken = symmetricEncoder.encode(newToken)!!
 
         refreshTokenRepository.save(token)
 
@@ -114,7 +116,7 @@ class UserServicesImpl(
     @Transactional(readOnly = true)
     override fun getRefreshToken(user: User): GetRefreshTokenInfo {
         val token = refreshTokenRepository.findRefreshTokensByUserid(user) ?: return GetRefreshTokenInfo.TokenNotFound
-
+        token.rtoken = symmetricEncoder.decode(token.rtoken)!!
         return GetRefreshTokenInfo.TokenFound(token)
     }
 

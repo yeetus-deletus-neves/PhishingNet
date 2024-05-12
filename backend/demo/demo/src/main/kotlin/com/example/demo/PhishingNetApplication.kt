@@ -3,6 +3,7 @@ package com.example.demo
 import com.example.demo.http.pipeline.AuthenticationInterceptor
 import com.example.demo.http.pipeline.UserArgumentResolver
 import com.example.demo.security.SaltPepperEncoder
+import com.example.demo.security.SymmetricEncoder
 import com.example.demo.utils.Clock
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -28,6 +29,8 @@ class PhishingNetApplication{
 	@Bean
 	fun saltPepperEncoder() = SaltPepperEncoder()
 
+	@Bean
+	fun symmetricEncoder() = SymmetricEncoder()
 
 	@Bean
 	fun clock() = object : Clock {
