@@ -6,6 +6,8 @@ import { LoginPage } from '../components/Login';
 import React from 'react';
 import { ErrorPage } from '../components/ErrorHandling/ErrorPage';
 import { LinkPage } from '../components/Link';
+import { AuthProvider } from '../components/auth/AuthProvider';
+import { RequiresAuth } from '../components/auth/RequiresAuth';
 
 
 const router = createBrowserRouter([
@@ -27,7 +29,10 @@ const router = createBrowserRouter([
             },
             {
                 path:'/link',
-                element:<LinkPage/>
+                element:
+                <RequiresAuth>
+                    <LinkPage/>
+                </RequiresAuth>
             }
         ]
     }
@@ -36,7 +41,9 @@ const router = createBrowserRouter([
 
 export default function App(){
     return (
-        <RouterProvider router={router}/>
+        <AuthProvider>
+            <RouterProvider router={router}/>
+        </AuthProvider>
     );
 }
 
