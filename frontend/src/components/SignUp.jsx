@@ -38,7 +38,8 @@ export function SignUpPage(){
                             "password": password
                         }
                     )
-                    window.localStorage.setItem("userToken",loginRsp)
+                    loginRsp.username = username
+                    window.localStorage.setItem("userToken",JSON.stringify(loginRsp))
                     msalAgent.login()
 
                 }else{

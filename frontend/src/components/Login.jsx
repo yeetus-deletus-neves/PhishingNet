@@ -42,7 +42,6 @@ export function LoginPage(){
                             "password": password
                         }
                     )
-                    tokenRsp.username = username
                     window.localStorage.setItem("userToken",JSON.stringify(tokenRsp))
                     setUserInfo(tokenRsp)
                     navigate("/")

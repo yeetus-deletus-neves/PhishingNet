@@ -24,7 +24,6 @@ export function HomePage(){
                     <div id="container" className="center">
                         <h2 className="center">Hello {userInfo.username}!</h2>
                         <h3 className="center">Account not linked</h3>
-                        <h4 className="center"> To link the account click bellow</h4>
                         <button type="button" onClick={()=>{
                             const msalAgent = new MsalInterface()
                             msalAgent.login()

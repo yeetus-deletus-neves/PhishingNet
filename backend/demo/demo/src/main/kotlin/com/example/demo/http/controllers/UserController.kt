@@ -68,7 +68,7 @@ class UserController(private val userServices: UserServices) {
         logger.info { "POST: ${Uris.Users.LINK} received" }
 
         return when (userServices.createRefreshToken(user,token.token)){
-            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(MessageOutputModel("Linked"), "Account ${user.username} linked")
+            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(LinkingOutputModel(user.linked_email), "Account ${user.username} linked")
             is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("Account is already linked")
             is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("Microsoft token is invalid")
             is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError("We were unable to obtain user information")

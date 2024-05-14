@@ -21,3 +21,7 @@ data class TokenInfo(
 data class MessageOutputModel(
     val message: String
 )
+
+data class LinkingOutputModel(
+    val email: String?
+)
