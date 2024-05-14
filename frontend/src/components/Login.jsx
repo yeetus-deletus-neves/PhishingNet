@@ -24,10 +24,9 @@ export function LoginPage(){
     else{
         return (
         <div className="login-from">
-            <h1><b>Login</b></h1>
-            <h1>Phising Net</h1>
-                Username: <input type="text" name="username" id="username"/>
-                Password: <input type="text" name="password" id="password"/>
+            <h1>Login</h1>
+                <input placeholder="Username" type="text" name="username" id="username"/>
+                <input placeholder="Password" type="password" name="password" id="password"/>
                 <button type="button" onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;

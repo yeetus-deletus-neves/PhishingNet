@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { defaultFetch } from "../utils/fetch";
+import { deleteStoredInfo, getStoredInfo, setStoredInfo } from "../utils/localstorage";
+import { About } from "../components/About";
 
 
   
 const App = () => {
     const [url,setUrl] = useState(null)
-    const [hasCode,setCode] = useState(null)
+    const [userInfo,setUserInfo] = useState(getStoredInfo())
 
     function logTabs(tabs) {
         let tab = tabs[0]; // Safe to assume there will only be one result
@@ -13,13 +15,12 @@ const App = () => {
         setUrl(tab.url);
     }
     browser.tabs.query({currentWindow: true, active: true}).then(logTabs, console.error);
-    const storedInfo  = window.localStorage.getItem("userToken")
-    if(!storedInfo){
+    if(!userInfo){
         return (
             <main>
-                <h1>Phising Net</h1>
-                    Username: <input type="text" name="username" id="username"/>
-                    Password: <input type="text" name="password" id="password"/>
+                <About/>
+                    <input placeholder="Username" type="text" name="username" id="username"/>
+                    <input placeholder="Password" type="password" name="password" id="password"/>
                     <button type="button" onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
@@ -35,8 +36,9 @@ const App = () => {
                             "password": password
                         }
                     )
-                    window.localStorage.setItem("userToken",tokenRsp.token)
-                    setCode(true)
+                    tokenRsp.username = username
+                    setStoredInfo(tokenRsp)
+                    setUserInfo(tokenRsp)
                 }}>Submit</button>
                 <br></br>
                 <div>Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
@@ -45,11 +47,11 @@ const App = () => {
             </main>
         )
     }else{
-        if(!storedInfo.email){
+        if(!userInfo.email){
             return (
                 <main>
-                    <h1>Phishing Net</h1>
-                    <h3>Hi {storedInfo.username} your account is not linked</h3>
+                    <About/>
+                    <h3>Hi {userInfo.username} your account is not linked</h3>
                     <button type="button" onClick={()=>{
                         window.open('http://localhost:3000/','_blank')
                     }}>Link account</button>
@@ -59,7 +61,7 @@ const App = () => {
             if(url && url.includes("outlook.live.com/mail/") && url.includes("id/" )){
                 return (
                 <main>
-                    <h1>Phishing Net</h1>
+                    <About/>
                     <button type="button" onClick={ async ()=>{
                         const startIndex = url.indexOf("id/");
     
@@ -71,7 +73,7 @@ const App = () => {
                             "POST",
                             {
                                 'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${storedInfo.token.token}`,
+                                'Authorization': `Bearer ${userInfo.token.token}`,
                             },
                             {
                                 "content":`${conversationID}`
@@ -80,18 +82,18 @@ const App = () => {
                         console.log(analyseRsp)
                     }}>Analyse Content</button>
                     <button type="button" onClick={()=>{
-                        window.localStorage.removeItem("userToken")
-                        setCode(false)
+                        deleteStoredInfo()
+                        setUserInfo(null)
                     }}>Logout</button>
                 </main>)
             }else{
                 return(
                 <main>
-                    <h1>Phishing Net</h1>
+                    <About/>
                     <h3>Select a message</h3>
                     <button type="button" onClick={()=>{
-                        window.localStorage.removeItem("userToken")
-                        setCode(false)
+                        deleteStoredInfo()
+                        setUserInfo(null)
                     }}>Logout</button>
                 </main>
                 )

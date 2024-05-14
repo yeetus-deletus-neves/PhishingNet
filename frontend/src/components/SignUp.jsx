@@ -7,10 +7,9 @@ export function SignUpPage(){
     
     return (
         <div className="signUp-form">
-            <h1><b>SignUp</b></h1>
-            <h1>Phising Net</h1>
-                Username: <input type="text" name="username" id="username"/>
-                Password: <input type="text" name="password" id="password"/>
+            <h1>SignUp</h1>
+                <input placeholder="Username" type="text" name="username" id="username"/>
+                <input placeholder="Password" type="password" name="password" id="password"/>
                 <button type="button" onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
