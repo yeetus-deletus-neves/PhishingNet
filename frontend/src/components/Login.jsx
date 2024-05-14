@@ -1,19 +1,18 @@
-import { useState } from "react";
 import { defaultFetch } from "../utils/fetch";
 import {useNavigate} from "react-router-dom"
+import { useAuthentication } from "./auth/AuthProvider";
 
 export function LoginPage(){
     const navigate = useNavigate()
-    const [storedInfo,setInfo] = useState(window.localStorage.getItem("userToken"))
-    if(storedInfo){
-        const tokenStored = JSON.parse(storedInfo)
+    const [userInfo,setUserInfo] = useAuthentication()
+    if(userInfo){
         return(
             <div className="center">
-                <h2 className="center">You're currently logged in {tokenStored.username}!</h2>
+                <h2 className="center">You're currently logged in {userInfo.username}!</h2>
                 <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
                 <button type="button" onClick={ ()=>{
                     window.localStorage.removeItem("userToken")
-                    setInfo(null)
+                    setUserInfo(null)
                 }
                 }>
                 Logout from current account
@@ -45,6 +44,7 @@ export function LoginPage(){
                     )
                     tokenRsp.username = username
                     window.localStorage.setItem("userToken",JSON.stringify(tokenRsp))
+                    setUserInfo(tokenRsp)
                     navigate("/")
                 }}>Login</button>
         </div>

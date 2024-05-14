@@ -1,6 +1,9 @@
 import { Link, Outlet } from "react-router-dom";
+import { useAuthentication } from "./auth/AuthProvider";
 
 export function Layout(){
+    const [userInfo,setUserInfo] = useAuthentication()
+   
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -11,13 +14,13 @@ export function Layout(){
                 <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div className="navbar-nav">
                         <Link className="nav-item nav-link" to="/">Home</Link>
-                        <Link className="nav-item nav-link" to="/login">Login</Link>
-                        <Link className="nav-item nav-link" to="/signUp">Signup</Link>
-    
+                        <Link className="nav-item nav-link" to="/login">{userInfo ? "Logout" : "Login"}</Link>
+                        {userInfo ? <></> : <Link className="nav-item nav-link" to="/signUp">Signup</Link>}
                     </div>
                 </div>
             </nav>
             <Outlet/>
         </div>
-    );
+    );        
+   
 }
