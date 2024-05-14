@@ -1,6 +1,7 @@
 import React from "react";
 import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
+import { setStoredInfo } from "../scripts/localstorage";
 
 export function SignUpPage(){
     
@@ -38,7 +39,7 @@ export function SignUpPage(){
                             }
                         )
                         loginRsp.username = username
-                        window.localStorage.setItem("userToken",JSON.stringify(loginRsp))
+                        setStoredInfo(loginRsp)
                         const msalAgent = new MsalInterface()
                         msalAgent.login()
 

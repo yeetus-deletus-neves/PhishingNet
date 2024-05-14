@@ -1,6 +1,7 @@
 import { useAuthentication } from "./auth/AuthProvider";
 import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
+import { setStoredInfo } from "../scripts/localstorage";
 
 export function UnlinkPage(){
 
@@ -21,7 +22,7 @@ export function UnlinkPage(){
                     )
                     userInfo.email = null
                     setUserInfo(userInfo)
-                    window.localStorage.setItem("userToken", JSON.stringify(userInfo))
+                    setStoredInfo(userInfo)
                 }
                 }>
                 Confirm unlink

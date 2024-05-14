@@ -1,3 +1,4 @@
+import { setStoredInfo } from "../scripts/localstorage";
 import { defaultFetch } from "../utils/fetch";
 import { useAuthentication } from "./auth/AuthProvider";
 import { useState } from "react";
@@ -28,7 +29,7 @@ export function LinkPage(){
                     userInfo.email = rsp.email
                     setLinked(true)
                     setUserInfo(userInfo)
-                    window.localStorage.setItem("userToken",JSON.stringify(userInfo))
+                    setStoredInfo(userInfo)
                 }else{
                     setError(true)
                 }

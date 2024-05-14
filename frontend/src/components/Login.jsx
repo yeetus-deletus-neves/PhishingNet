@@ -1,6 +1,7 @@
 import { defaultFetch } from "../utils/fetch";
 import {useNavigate} from "react-router-dom"
 import { useAuthentication } from "./auth/AuthProvider";
+import { setStoredInfo, deleteStoredInfo } from "../scripts/localstorage";
 
 export function LoginPage(){
     const navigate = useNavigate()
@@ -11,7 +12,7 @@ export function LoginPage(){
                 <h2 className="center">You're currently logged in {userInfo.username}!</h2>
                 <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
                 <button type="button" onClick={ ()=>{
-                    window.localStorage.removeItem("userToken")
+                    deleteStoredInfo()
                     setUserInfo(null)
                 }
                 }>
@@ -43,7 +44,7 @@ export function LoginPage(){
                         }
                     )
                     tokenRsp.username = username
-                    window.localStorage.setItem("userToken",JSON.stringify(tokenRsp))
+                    setStoredInfo(tokenRsp)
                     setUserInfo(tokenRsp)
                     navigate("/")
                 }}>Login</button>

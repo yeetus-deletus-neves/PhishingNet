@@ -1,13 +1,10 @@
 import { createContext, useContext, useState } from "react";
+import { getStoredInfo } from "../../scripts/localstorage";
 
 const AuthContext = createContext([undefined,()=>{}])
 
 export function AuthProvider({children}){
-    const storedInfo = window.localStorage.getItem("userToken")
-    let info = undefined
-    if(storedInfo){
-        info = JSON.parse(storedInfo)
-    }
+    const info = getStoredInfo()
     const [userInfo,setUserInfo] = useState(info)
 
     return(
