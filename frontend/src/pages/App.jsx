@@ -8,6 +8,7 @@ import { ErrorPage } from '../components/ErrorHandling/ErrorPage';
 import { LinkPage } from '../components/Link';
 import { AuthProvider } from '../components/auth/AuthProvider';
 import { RequiresAuth } from '../components/auth/RequiresAuth';
+import { UnlinkPage } from '../components/Unlink';
 
 
 const router = createBrowserRouter([
@@ -33,7 +34,13 @@ const router = createBrowserRouter([
                 <RequiresAuth>
                     <LinkPage/>
                 </RequiresAuth>
-            }
+            },            {
+                path:'/unlink',
+                element:
+                <RequiresAuth>
+                    <UnlinkPage/>
+                </RequiresAuth>
+            },
         ]
     }
 ])

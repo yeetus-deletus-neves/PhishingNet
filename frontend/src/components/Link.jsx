@@ -1,5 +1,4 @@
 import { defaultFetch } from "../utils/fetch";
-import { getFromCache } from "../utils/cache";
 import { useAuthentication } from "./auth/AuthProvider";
 import { useState } from "react";
 

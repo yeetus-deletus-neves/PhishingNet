@@ -16,6 +16,7 @@ export function Layout(){
                         <Link className="nav-item nav-link" to="/">Home</Link>
                         <Link className="nav-item nav-link" to="/login">{userInfo ? "Logout" : "Login"}</Link>
                         {userInfo ? <></> : <Link className="nav-item nav-link" to="/signUp">Signup</Link>}
+                        {userInfo?.email ? <Link className="nav-item nav-link" to="/unlink">Unlink</Link> : <></>}
                     </div>
                 </div>
             </nav>
