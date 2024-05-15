@@ -4,7 +4,6 @@ typealias RiskAnalysis = Map<Risk, RiskAnalysisEntry>
 
 enum class Risk(val description: String, severity: Severity) {
     MOCK_RISK("mock risk, for testing purposes only", Severity.NONE),
-
     FALSE_ENTITY("false entity", Severity.MAJOR),
     MALICIOUS_SOFTWARE("malicious software", Severity.CRITICAL),
     ILLEGITIMATE_IBAN("illegitimate IBAN", Severity.CRITICAL),
