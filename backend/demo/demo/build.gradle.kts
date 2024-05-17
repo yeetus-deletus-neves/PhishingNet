@@ -35,6 +35,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.squareup.okhttp3:okhttp")
 	implementation("com.squareup.okhttp3:logging-interceptor")
+	implementation("org.jsoup:jsoup:1.17.2")
+
 }
 
 tasks.withType<KotlinCompile> {

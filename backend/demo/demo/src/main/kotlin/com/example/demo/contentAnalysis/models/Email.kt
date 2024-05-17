@@ -1,4 +1,6 @@
 package com.example.demo.contentAnalysis.models
+import org.jsoup.Jsoup
+
 
 //TODO set MessageHeadersInfo as simple parameters of email
 data class Email(
@@ -23,9 +25,9 @@ data class MessageHeadersInfo(
     val authDetails by lazy { processAuth(authenticationResults, "Microsoft") }
 }
 
+//this implementation removes \n from the body
 private fun cleanContent(content: String): String {
-    //TODO()
-    return content //returns content now so that it doesn't break the rest of the program
+    return Jsoup.parse(content).text()
 }
 
 enum class SecurityVerification {
