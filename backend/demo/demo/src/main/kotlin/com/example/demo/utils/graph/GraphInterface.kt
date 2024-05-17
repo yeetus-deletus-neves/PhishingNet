@@ -62,7 +62,21 @@ class GraphInterface {
     }
 
     fun getInternetMessageHeaders(conversationId: String, token: String): MessageHeadersInfo? {
-        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages/${conversationId}?\$select=internetMessageHeaders"),HttpMethod.GET)
+        val requestId = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=conversationId eq '${conversationId}'"),HttpMethod.GET)
+        requestId.addHeader("Authorization", "Bearer $token")
+
+        val responseId = requestId.sendRequest().use { httpResponse ->
+            when (httpResponse.code){
+                400 -> null
+                200 -> extractId(httpResponse.body?.string()!!)
+                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            }
+        }
+
+        if (responseId.isNullOrEmpty())
+            return null
+
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages/${responseId}?\$select=internetMessageHeaders"),HttpMethod.GET)
         request.addHeader("Authorization", "Bearer $token")
         val response = request.sendRequest()
 
@@ -73,6 +87,11 @@ class GraphInterface {
                 else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
             }
         }
+    }
+
+    private fun extractId(responseBody: String): String? {
+        val id = responseBody.substringAfter("\"id\":\"").substringBefore("\",")
+        return if (id == responseBody) null else id
     }
 
     private fun extractInternetMessageHeaders(responseBody: String): MessageHeadersInfo {
