@@ -37,13 +37,13 @@ class EmailProcessorsTests {
     fun `Clean email body test`() {
         val email = Email(rawBody1, headersExample)
 
-        Assertions.assertEquals(expectedCleanedContent1, email.cleanContent)
+        Assertions.assertEquals(expectedCleanedContent1, email.body)
     }
     @Test
     fun `Clean email body test real phishingEmail`() {
         val email = Email(realPhishingBody1, headersExample)
 
-        Assertions.assertEquals(cleanRealEmailContent(realPhishingCleanContent1), email.cleanContent)
+        Assertions.assertEquals(cleanRealEmailContent(realPhishingCleanContent1), email.body)
     }
 
     //cleans body to remove indentation, new lines

@@ -1,11 +1,13 @@
 package com.example.demo.contentAnalysis
 
 import com.example.demo.contentAnalysis.models.Email
+import com.example.demo.contentAnalysis.models.MessageHeadersInfo
 import com.example.demo.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import com.example.demo.contentAnalysis.models.risks.Risk
 import com.example.demo.contentAnalysis.models.risks.RiskLevel
 import com.example.demo.contentAnalysis.models.warnings.Warnings
 import com.example.demo.contentAnalysis.modules.mock_modules.CountWordsModule
+import com.example.demo.contentAnalysis.modules.mock_modules.HardCodedWordCounter
 import com.example.demo.contentAnalysis.modules.mock_modules.MyNameWasMentionedModule
 
 fun main() {
@@ -14,7 +16,8 @@ fun main() {
     //Setting modules do be used
     val moduleList = listOf(
         CountWordsModule(),
-        MyNameWasMentionedModule()
+        MyNameWasMentionedModule(),
+        HardCodedWordCounter()
     )
 
     //Setting up a registered risk
@@ -29,7 +32,7 @@ fun main() {
     //-------------------------------------------------------------------------------
     //-------------------------------------------------------------------------------
     val text = "Olá Manuel, vimos por este meio informar-lo que possui uma encomenda presa nos correios que precisa de ser resgatada. Por favor utilize o seguinte link:"
-    val email = Email(text, null)
+    val email = Email(text, MessageHeadersInfo("<abc>","abc", "abc"))
 
     val processor = Processor(moduleList, listOf(testRisk))
     processor.process(email)

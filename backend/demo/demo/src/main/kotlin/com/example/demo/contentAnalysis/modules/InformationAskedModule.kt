@@ -1,15 +1,24 @@
 package com.example.demo.contentAnalysis.modules
 
-import com.example.demo.contentAnalysis.AnalysisModule
 import com.example.demo.contentAnalysis.models.*
+import com.example.demo.contentAnalysis.models.riskAnalysis.RiskAnalysis
+import com.example.demo.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
+import com.example.demo.contentAnalysis.models.risks.Risk
+import com.example.demo.contentAnalysis.models.warnings.WarningLog
 
 class InformationAskedModule: AnalysisModule  {
     override val name: String = "Information Asked Module"
     override var active: Boolean = false
 
+    override fun process(email: Email): WarningLog {
+        TODO("Not yet implemented")
+    }
+
+    /*
     //problem with different languages
     //implementation should be based on count of infractions or map key value?
-    override fun process(email: Email): RiskAnalysis {
+    override fun process(email: Email): WarningLog? {
+
         val suspiciousInfo = detectSuspiciousInquiries(email.cleanContent)
         val analysis = evaluate(suspiciousInfo)
 
@@ -35,6 +44,7 @@ class InformationAskedModule: AnalysisModule  {
         if(str.contains("iban"))
         if(str.contains("cc"))
         */
-    }
+    }*/
+
 
 }

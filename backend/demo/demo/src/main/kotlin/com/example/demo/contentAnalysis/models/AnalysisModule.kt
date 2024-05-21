@@ -7,5 +7,5 @@ interface AnalysisModule {
     var active: Boolean
 
     //TO ANALYSE CONTENT WE SHOULD USE THE CLEANED CONTENT NOT THE BODY
-    fun process(email: Email): WarningLog?
+    fun process(email: Email): WarningLog
 }

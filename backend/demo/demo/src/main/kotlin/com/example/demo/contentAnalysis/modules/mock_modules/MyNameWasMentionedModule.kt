@@ -9,14 +9,14 @@ class MyNameWasMentionedModule: AnalysisModule {
     override val name = "My name was mentioned somewhere"
     override var active = true
 
-    override fun process(email: Email): WarningLog? {
-        val warning = WarningLog(Warnings.NAME_MENTIONED)
+    override fun process(email: Email): WarningLog {
+        val warningLog = WarningLog(Warnings.NAME_MENTIONED)
         val myName = "Manuel"
 
-        val palavras = email.cleanContent.split("\\W+".toRegex())
-        val counter = palavras.count { it.equals(myName, ignoreCase = true) }
+        val words = email.body.split("\\W+".toRegex())
+        val counter = words.count { it.equals(myName, ignoreCase = true) }
 
-        warning.setOccurrences(counter)
-        return if (warning.occurrences() != 0) warning else null
+        warningLog.setOccurrences(counter)
+        return warningLog
     }
 }

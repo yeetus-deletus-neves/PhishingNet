@@ -4,10 +4,18 @@ import org.jsoup.Jsoup
 
 //TODO set MessageHeadersInfo as simple parameters of email
 data class Email(
-    val body: String,
+    private val rawBody: String,
     val msgHeadersInfo: MessageHeadersInfo
 ) {
-    val cleanContent by lazy { cleanContent(body) }
+    val body: String
+
+    init {
+        body = cleanContent(rawBody)
+    }
+
+    private fun cleanContent(content: String): String {
+        return Jsoup.parse(content).text()
+    }
 }
 
 //TODO add provider parameter
@@ -27,9 +35,6 @@ data class MessageHeadersInfo(
 }
 
 //implementation removes \n from the body, and indentation
-private fun cleanContent(content: String): String {
-    return Jsoup.parse(content).text()
-}
 
 enum class SecurityVerification {
     PASSED, FAILED

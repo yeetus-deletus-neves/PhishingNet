@@ -14,12 +14,25 @@ class Processor(
 
     private val evaluator= EvaluationUnit(registeredRisks)
 
-    //change content type
     fun process(email: Email): RiskAnalysis {
         val analysisList = mutableListOf<WarningLog>()
         modules.forEach { module ->
             val result = module.process(email)
-            if (result != null) analysisList.add(result)
+            if (result.occurrences() == 0) return@forEach
+
+            // Checks if there's already a log with the same type of warning
+            val existentWarning = analysisList.find { it.warning == result.warning }
+
+            // If there's no such warning, the module result is added to the analysis. If there's already a log with the same
+            // warning, the one with the most amount of occurrences is chosen.
+            if (existentWarning == null) {
+                analysisList.add(result)
+            }else{
+                if (existentWarning.occurrences() < result.occurrences()){
+                    analysisList.remove(existentWarning)
+                    analysisList.add(result)
+                }
+            }
         }
 
         val evaluationResult = evaluator.evaluate(analysisList)

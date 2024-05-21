@@ -2,7 +2,6 @@ package com.example.demo.contentAnalysis
 
 import com.example.demo.contentAnalysis.models.Email
 import com.example.demo.contentAnalysis.models.risks.Risk
-import com.example.demo.contentAnalysis.models.ThreatLevel
 import com.example.demo.contentAnalysis.modules.mock_modules.CountWordsModule
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
