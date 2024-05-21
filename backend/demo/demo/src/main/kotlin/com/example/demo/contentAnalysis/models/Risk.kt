@@ -21,7 +21,9 @@ data class RiskAnalysisEntry(
     val threatLevel: ThreatLevel,
     val moduleOfOrigin: Any,
     val threatJustification: String? = null,
-)
+){
+    fun explanation() = "$threatLevel due to "
+}
 
 data class RiskCriteria (
     val name: String,
@@ -34,7 +36,19 @@ enum class ThreatLevel(val level: Int) {
     ShouldLookIntoIt(1),
     Suspicious(2),
     VerySuspicious(3),
-    Alarming(4)
+    Alarming(4);
+
+    override fun toString(): String {
+        val parts = StringBuilder()
+        var startIdx = 0
+        for (i in 1 until name.length) {
+            if (name[i].isUpperCase()) {
+                parts.append(name.substring(startIdx, i)).append(" ")
+                startIdx = i
+            }
+        }
+        return parts.append(name.substring(startIdx)).toString()
+    }
 }
 
 enum class Warning(val description: String) {

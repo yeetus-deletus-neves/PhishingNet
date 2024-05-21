@@ -12,7 +12,7 @@ class HeaderModuleTest {
 
     @Test
     fun `HeaderModule test for no Threat`(){
-        val email = Email("", MessageHeadersInfo("email1", "email1", "sec"))
+        val email = Email("", MessageHeadersInfo("\"1\" <email1>", "email1", "sec"))
         val headerModule = HeaderModule()
         val process = Processor(listOf(headerModule))
         val eval = process.process(email)
@@ -24,7 +24,7 @@ class HeaderModuleTest {
 
     @Test
     fun `HeaderModule test for different return path and from`(){
-        val email = Email("", MessageHeadersInfo("email1", "email2", "sec"))
+        val email = Email("", MessageHeadersInfo("\"1\" <email1>", "email2", "sec"))
         val headerModule = HeaderModule()
         val process = Processor(listOf(headerModule))
         val eval = process.process(email)

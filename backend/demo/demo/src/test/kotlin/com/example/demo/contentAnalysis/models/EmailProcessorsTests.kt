@@ -1,27 +1,20 @@
 package com.example.demo.contentAnalysis.models
 
+import com.example.demo.contentAnalysis.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class EmailProcessorsTests {
 
-    val testAuthStr = """
-        Authentication-Results: spf=pass (sender IP is 209.85.222.48)
-
-        smtp.mailfrom=valimail.com; dkim=pass (signature was verified)
-
-        header.d=valimail.com;dmarc=pass action=none
-
-        header.from=valimail.com;compauth=pass reason=100
-    """.trimIndent()
-
-    val rawBody1 =
-        """<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><div dir=\"ltr\">Boa tarde<div><br><div>Este email serve como teste</div></div><div><br></div><div>Cumprimentos</div><div>sender</div></div></body></html>"""
-    val expectedCleanedContent1 = "Boa tarde Este email serve como teste Cumprimentos sender"
-
+    private val headersExample = MessageHeadersInfo("\"1\" <email1>", "email1", testAuthStr)
+    private val realPhishingMessageHeaders1 = MessageHeadersInfo(
+        "\"Stansted Airport College Enquiry\" <admissions@harlow-college.ac.uk>",
+        "admissions@harlow-college.ac.uk",
+        realPhishingHeaders1
+    )
     @Test
     fun `Auth details test`() {
-        val email = Email("", MessageHeadersInfo("email1", "email2", testAuthStr))
+        val email = Email("", headersExample)
         val authDetails = email.msgHeadersInfo.authDetails
 
         Assertions.assertEquals(SecVer.PASSED, authDetails.spf)
@@ -31,11 +24,31 @@ class EmailProcessorsTests {
     }
 
     @Test
+    fun `Phishing email Auth details test`() {
+        val email = Email("", realPhishingMessageHeaders1)
+        val authDetails = email.msgHeadersInfo.authDetails
+
+        Assertions.assertEquals(SecVer.FAILED, authDetails.spf)
+        Assertions.assertEquals(SecVer.FAILED, authDetails.dkim)
+        Assertions.assertEquals(SecVer.FAILED, authDetails.dmarc)
+    }
+
+    @Test
     fun `Clean email body test`() {
-        val email = Email(rawBody1, MessageHeadersInfo("email1", "email2", testAuthStr))
+        val email = Email(rawBody1, headersExample)
 
         Assertions.assertEquals(expectedCleanedContent1, email.cleanContent)
     }
+    @Test
+    fun `Clean email body test real phishingEmail`() {
+        val email = Email(realPhishingBody1, headersExample)
+
+        Assertions.assertEquals(cleanRealEmailContent(realPhishingCleanContent1), email.cleanContent)
+    }
+
+    //cleans body to remove indentation, new lines
+    private fun cleanRealEmailContent(str: String): String = str.trimIndent().replace(Regex("[\\r\\n]+"), " ")
+
 
     //TODO(auth details failed test)
 }

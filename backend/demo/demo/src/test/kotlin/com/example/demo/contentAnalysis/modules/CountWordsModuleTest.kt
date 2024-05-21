@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class CountWordsModuleTest {
-    private val exampleHeader = MessageHeadersInfo("email1", "email2", "secStuff")
+    private val exampleHeader = MessageHeadersInfo("\"1\" <email1>", "email2", "secStuff")
+
     @Test
     fun `CountWordsModule test for no Threat`(){
         val email = Email("1word", exampleHeader)

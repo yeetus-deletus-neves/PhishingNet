@@ -20,12 +20,13 @@ data class MessageHeadersInfo(
         require(from.isNotEmpty()) { "from cannot be empty" }
         require(returnPath.isNotEmpty()) { "returnPath cannot be empty" }
         require(authenticationResults.isNotEmpty()) { "authenticationResults cannot be empty" }
+        require(from.contains('<')&&from.contains('>')) { "invalid from format" }
     }
 
     val authDetails by lazy { processAuth(authenticationResults, "Microsoft") }
 }
 
-//this implementation removes \n from the body
+//implementation removes \n from the body, and indentation
 private fun cleanContent(content: String): String {
     return Jsoup.parse(content).text()
 }

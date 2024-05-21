@@ -11,17 +11,14 @@ class HeaderModule() : AnalysisModule {
     // we can't assume that just because these two: mailHeaderInfo.from, emailHeaderInfo.returnPath differ
     // that it is illegitimate
 
-
     override fun process(email: Email): RiskAnalysis {
         val emailHeaderInfo = email.msgHeadersInfo
-        return evaluate(emailHeaderInfo.from != emailHeaderInfo.returnPath)
+        val emailFrom = emailHeaderInfo.from.split('<','>')[1]
+        return evaluate(emailFrom != emailHeaderInfo.returnPath)
     }
 
     private fun evaluate(detectedInfraction: Boolean): RiskAnalysis {
-        return if (detectedInfraction) {
-            mapOf(Risk.FALSE_ENTITY to RiskAnalysisEntry(ThreatLevel.Suspicious, name))
-        } else {
-            mapOf(Risk.FALSE_ENTITY to RiskAnalysisEntry(ThreatLevel.NoThreat, name))
-        }
+        return if (detectedInfraction) mapOf(Risk.FALSE_ENTITY to RiskAnalysisEntry(ThreatLevel.Suspicious, name))
+        else mapOf(Risk.FALSE_ENTITY to RiskAnalysisEntry(ThreatLevel.NoThreat, name))
     }
 }
