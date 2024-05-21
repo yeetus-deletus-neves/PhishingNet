@@ -60,42 +60,43 @@ const App = () => {
         }else{
             if(url && url.includes("outlook.live.com/mail/") && url.includes("id/" )){
                 return (
-                <main>
-                    <About/>
-                    <button type="button" onClick={ async ()=>{
-                        const startIndex = url.indexOf("id/");
-    
-                        // Extract the substring
-                        const conversationID = url.substring(startIndex+3);
-                
-                        const analyseRsp = await defaultFetch(
-                            'http://localhost:8080/analyse',
-                            "POST",
-                            {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${userInfo.token.token}`,
-                            },
-                            {
-                                "content":`${conversationID}`
-                            }
-                        )
-                        console.log(analyseRsp)
-                    }}>Analyse Content</button>
-                    <button type="button" onClick={()=>{
-                        deleteStoredInfo()
-                        setUserInfo(null)
-                    }}>Logout</button>
-                </main>)
+                    <main>
+                        <About/>
+                        <button type="button" onClick={ async ()=>{
+                            const startIndex = url.indexOf("id/");
+        
+                            // Extract the substring
+                            const conversationID = url.substring(startIndex+3);
+                    
+                            const analyseRsp = await defaultFetch(
+                                'http://localhost:8080/analyse',
+                                "POST",
+                                {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${userInfo.token.token}`,
+                                },
+                                {
+                                    "content":`${conversationID}`
+                                }
+                            )
+                            console.log(analyseRsp)
+                        }}>Analyse Content</button>
+                        <button type="button" onClick={()=>{
+                            deleteStoredInfo()
+                            setUserInfo(null)
+                        }}>Logout</button>
+                    </main>
+                )
             }else{
                 return(
-                <main>
-                    <About/>
-                    <h3>Select a message</h3>
-                    <button type="button" onClick={()=>{
-                        deleteStoredInfo()
-                        setUserInfo(null)
-                    }}>Logout</button>
-                </main>
+                    <main>
+                        <About/>
+                        <h3>Select a message</h3>
+                        <button type="button" onClick={()=>{
+                            deleteStoredInfo()
+                            setUserInfo(null)
+                        }}>Logout</button>
+                    </main>
                 )
             }
         }

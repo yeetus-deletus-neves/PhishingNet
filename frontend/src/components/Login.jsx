@@ -2,10 +2,14 @@ import { defaultFetch } from "../utils/fetch";
 import {useNavigate} from "react-router-dom"
 import { useAuthentication } from "./auth/AuthProvider";
 import { setStoredInfo, deleteStoredInfo } from "../scripts/localstorage";
+import { useAlertContext } from "./Layout";
 
 export function LoginPage(){
     const navigate = useNavigate()
     const [userInfo,setUserInfo] = useAuthentication()
+    const [alert, setAlert] = useAlertContext()
+
+
     if(userInfo){
         return(
             <div className="center">
@@ -30,22 +34,25 @@ export function LoginPage(){
                 <button type="button" onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
-                    
-                    const tokenRsp = await defaultFetch(
-                        'http://localhost:8080/user/signIn',
-                        "POST",
-                        {
-                            'Content-Type': 'application/json'
-                        },
-                        {
-                            "username": username,
-                            "password": password
-                        }
-                    )
-                    tokenRsp.username = username
-                    setStoredInfo(tokenRsp)
-                    setUserInfo(tokenRsp)
-                    navigate("/")
+                    try{
+                        const tokenRsp = await defaultFetch(
+                            'http://localhost:8080/user/signIn',
+                            "POST",
+                            {
+                                'Content-Type': 'application/json'
+                            },
+                            {
+                                "username": username,
+                                "password": password
+                            }
+                        )
+                        tokenRsp.username = username
+                        setStoredInfo(tokenRsp)
+                        setUserInfo(tokenRsp)
+                        navigate("/")
+                    }catch(error){
+                        setAlert({alert: "error", message: `${error.details}`})
+                    }
                 }}>Login</button>
         </div>
         );

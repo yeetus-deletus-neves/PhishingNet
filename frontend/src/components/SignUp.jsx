@@ -2,9 +2,11 @@ import React from "react";
 import { defaultFetch } from "../utils/fetch";
 import { MsalInterface } from "../scripts/msal";
 import { setStoredInfo } from "../scripts/localstorage";
+import { useAlertContext } from "./Layout";
 
 export function SignUpPage(){
-    
+    const [alert, setAlert] = useAlertContext()
+
     return (
         <div className="signUp-form">
             <h1>SignUp</h1>
@@ -13,21 +15,9 @@ export function SignUpPage(){
                 <button type="button" onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
-                    
-                    const tokenRsp = await defaultFetch(
-                        'http://localhost:8080/user',
-                        "POST",
-                        {
-                            'Content-Type': 'application/json'
-                        },
-                        {
-                            "username": username,
-                            "password": password
-                        }
-                    )
-                    if(tokenRsp.username){
-                        const loginRsp = await defaultFetch(
-                            'http://localhost:8080/user/signIn',
+                    try{
+                        const tokenRsp = await defaultFetch(
+                            'http://localhost:8080/user',
                             "POST",
                             {
                                 'Content-Type': 'application/json'
@@ -37,14 +27,30 @@ export function SignUpPage(){
                                 "password": password
                             }
                         )
-                        loginRsp.username = username
-                        setStoredInfo(loginRsp)
-                        const msalAgent = new MsalInterface()
-                        msalAgent.login()
-
-                }else{
-                    console.log('Throw error here')
-                }
+                        if(tokenRsp.username){
+                            const loginRsp = await defaultFetch(
+                                'http://localhost:8080/user/signIn',
+                                "POST",
+                                {
+                                    'Content-Type': 'application/json'
+                                },
+                                {
+                                    "username": username,
+                                    "password": password
+                                }
+                            )
+                            loginRsp.username = username
+                            setStoredInfo(loginRsp)
+                            const msalAgent = new MsalInterface()
+                            msalAgent.login()    
+                        }else{
+                            throw {
+                                details: "Account not linked correctly"
+                            }
+                        }
+                    }catch(error){
+                        setAlert({alert: "error", message: `${error.details}`})
+                    }
             }}>Create User</button>
         </div>
     );
