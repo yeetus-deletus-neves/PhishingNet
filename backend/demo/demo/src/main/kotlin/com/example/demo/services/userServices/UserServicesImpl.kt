@@ -27,7 +27,7 @@ class UserServicesImpl(
     private val clock: Clock
 ): UserServices {
 
-    final val graphInterface: GraphInterface = GraphInterface()
+    private final val graphInterface: GraphInterface = GraphInterface()
 
     @Transactional
     override fun createUser(username: String, password: String): CreateUserInfo {

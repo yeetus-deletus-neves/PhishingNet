@@ -10,5 +10,5 @@ data class TokenInputModel(
 )
 
 data class ContentInputModel(
-    val content: String
+    val messageID: String
 )

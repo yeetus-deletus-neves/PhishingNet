@@ -112,7 +112,7 @@ class GraphInterface {
     private fun extractBody(httpResponse: Response): String? {
         return when (httpResponse.code){
             200 -> httpResponse.body?.string()
-            400 -> throw IllegalStateException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            400 -> throw IllegalArgumentException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
             401 -> throw SecurityException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
             404 -> throw NoSuchElementException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
             else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
