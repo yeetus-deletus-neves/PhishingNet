@@ -6,6 +6,7 @@ module.exports = {
     mode: 'production',
     entry: {
         react: './src/index.jsx',
+        contentScript: './src/background/contentScript.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
