@@ -24,7 +24,7 @@ fun main() {
     val testRisk = Risk(
         "Test Risk",
         "My name was mentioned in a text of considerable length.",
-        RiskLevel.Suspicious
+        RiskLevel.SUSPICIOUS
     )
     testRisk.setRequirement(Warnings.WORD_COUNTED, 5)
     testRisk.setRequirement(Warnings.NAME_MENTIONED)

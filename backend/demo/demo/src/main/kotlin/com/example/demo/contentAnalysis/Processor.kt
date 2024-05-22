@@ -40,7 +40,7 @@ class Processor(
     }
 
     private fun compileAnalysis(risks: Set<Risk>): RiskAnalysis {
-        if (risks.isEmpty()) return RiskAnalysis(RiskLevel.NoThreat, listOf())
+        if (risks.isEmpty()) return RiskAnalysis(RiskLevel.NO_THREAT, listOf())
 
         val sortedRisks = risks.sortedByDescending { it.level.level }
 
