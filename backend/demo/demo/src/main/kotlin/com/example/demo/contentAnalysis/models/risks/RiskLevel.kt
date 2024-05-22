@@ -1,21 +1,16 @@
 package com.example.demo.contentAnalysis.models.risks
 
 enum class RiskLevel(val level: Int) {
-    NoThreat(0),
-    ShouldLookIntoIt(1),
-    Suspicious(2),
-    VerySuspicious(3),
-    Alarming(4);
+    NO_THREAT(0),
+    SHOULD_LOOK_INTO_IT(1),
+    SUSPICIOUS(2),
+    VERY_SUSPICIOUS(3),
+    ALARMING(4);
 
     override fun toString(): String {
-        val parts = StringBuilder()
-        var startIdx = 0
-        for (i in 1 until name.length) {
-            if (name[i].isUpperCase()) {
-                parts.append(name.substring(startIdx, i)).append(" ")
-                startIdx = i
-            }
+        val words = name.split('_')
+        return words.joinToString(" ") { word ->
+            word.lowercase().replaceFirstChar { it.uppercase() }
         }
-        return parts.append(name.substring(startIdx)).toString()
     }
 }
