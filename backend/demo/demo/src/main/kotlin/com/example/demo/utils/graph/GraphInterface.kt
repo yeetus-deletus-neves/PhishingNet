@@ -1,11 +1,12 @@
 package com.example.demo.utils.graph
 
 import com.example.demo.contentAnalysis.models.MessageHeadersInfo
-import com.example.demo.utils.graph.models.ApiMessageHeadersResponse
-import com.example.demo.utils.graph.models.ApiTokenResponse
-import com.example.demo.utils.graph.models.GraphAPITokens
+import com.example.demo.utils.HttpMethod
+import com.example.demo.utils.HttpRequest
+import com.example.demo.utils.graph.models.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import okhttp3.Response
 
 class GraphInterface {
 
@@ -19,7 +20,7 @@ class GraphInterface {
     private val CLIENT_SECRET = "P~N8Q~_.z7Xp6gpIUo~u8N7u6~bS1VpsKEy~1ak1"
 
 
-    fun getRefresh(token: String): GraphAPITokens?{
+    fun getRefreshFromAccess(token: String): GraphAPITokens?{
         val request = HttpRequest(TOKEN_URL, HttpMethod.POST)
 
         request.addHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -34,88 +35,91 @@ class GraphInterface {
         request.addBody("redirect_uri", REDIRECT_URI)
         request.addBody("client_secret", CLIENT_SECRET)
 
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
 
-        val response = request.sendRequest()
-
-        return response.use { httpResponse ->
-            when (httpResponse.code) {
-                400 -> null
-                200 -> extractRefreshToken(httpResponse.body?.string()!!)
-                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
-            }
-        }
+        return extractTokens(responseBody)
     }
 
-    fun getEmail(accessToken: String): String?{
+    fun getTokensFromRefresh(refreshToken: String): GraphAPITokens?{
+        val request = HttpRequest(TOKEN_URL, HttpMethod.POST)
+
+        request.addHeader("Content-Type", "application/x-www-form-urlencoded")
+        request.addHeader("Accept", "*/*")
+        request.addHeader("Connection", "keep-alive")
+        request.addHeader("Accept-Encoding", "gzip, deflate, br")
+
+        request.addBody("refresh_token", refreshToken)
+        request.addBody("client_id", CLIENT_ID)
+        request.addBody("grant_type", GRANT_TYPE)
+        request.addBody("scope", "$SCOPE, offline_access")
+        request.addBody("redirect_uri", REDIRECT_URI)
+        request.addBody("client_secret", CLIENT_SECRET)
+
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        return extractTokens(responseBody)
+    }
+
+    fun getEmailAddress(accessToken: String): String?{
         val request = HttpRequest(GRAPH_BASE_URL, HttpMethod.GET)
 
         request.addHeader("Authorization", "Bearer $accessToken")
-        val response = request.sendRequest()
 
-        return response.use { httpResponse ->
-            when (httpResponse.code) {
-                400 -> null
-                200 -> extractEmail(httpResponse.body?.string()!!)
-                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
-            }
-        }
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        return extractEmail(responseBody)
     }
 
-    fun getInternetMessageHeaders(conversationId: String, token: String): MessageHeadersInfo? {
-        val requestId = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=conversationId eq '${conversationId}'"),HttpMethod.GET)
-        requestId.addHeader("Authorization", "Bearer $token")
+    fun getEmailDetails(conversationId: String, token: String): GraphEmailDetails? {
+        val email = getMessageInfo(conversationId, token) ?: return null
+        val internetHeaders = getMessageInternetHeaders(email.id, token) ?: return null
 
-        val responseId = requestId.sendRequest().use { httpResponse ->
-            when (httpResponse.code){
-                400 -> null
-                200 -> extractId(httpResponse.body?.string()!!)
-                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
-            }
-        }
+        return (GraphEmailDetails(email, internetHeaders))
+    }
 
-        if (responseId.isNullOrEmpty())
-            return null
-
-        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages/${responseId}?\$select=internetMessageHeaders"),HttpMethod.GET)
+    private fun getMessageInfo(conversationId: String, token: String): GraphMessage? {
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=conversationId eq '${conversationId}'"),
+            HttpMethod.GET)
         request.addHeader("Authorization", "Bearer $token")
-        val response = request.sendRequest()
 
-        return response.use { httpResponse ->
-            when (httpResponse.code){
-                400 -> null
-                200 -> extractInternetMessageHeaders(httpResponse.body?.string()!!)
-                else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
-            }
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        val extractedFlags = Gson().fromJson(responseBody, GraphMessageResponse::class.java)
+        //TODO(Ver como dar handle a conversas com varios emails)
+        return extractedFlags.value[0]
+    }
+
+    private fun getMessageInternetHeaders(id: String, token: String): GraphInternetHeaders? {
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages/${id}?\$select=internetMessageHeaders"), HttpMethod.GET)
+        request.addHeader("Authorization", "Bearer $token")
+
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        //TODO(Ver que headers queremos utilizar)
+        return Gson().fromJson(responseBody, GraphInternetHeaders::class.java)
+    }
+
+    private fun extractBody(httpResponse: Response): String? {
+        return when (httpResponse.code){
+            200 -> httpResponse.body?.string()
+            400 -> throw IllegalStateException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            401 -> throw SecurityException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            404 -> throw NoSuchElementException("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
+            else -> throw Exception("HTTP Error: ${httpResponse.code} - ${httpResponse.message}")
         }
     }
 
-    private fun extractId(responseBody: String): String? {
-        val id = responseBody.substringAfter("\"id\":\"").substringBefore("\",")
-        return if (id == responseBody) null else id
-    }
-
-    private fun extractInternetMessageHeaders(responseBody: String): MessageHeadersInfo {
-        val serializedResponse = Gson().fromJson(responseBody, ApiMessageHeadersResponse::class.java)
-        var authRes:String?= null
-        var from:String?= null
-        var returnPath:String?= null
-
-        serializedResponse.internetMessageHeaders.forEach { h ->
-            if (h.name == "Authentication-Results")
-                authRes = h.value
-            if (h.name == "From")
-                from = h.value
-            if (h.name == "Return-Path")
-                returnPath = h.value
-        }
-        if (authRes.isNullOrEmpty() || returnPath.isNullOrEmpty() || from.isNullOrEmpty()) {
-            throw IllegalStateException()
-        }
-        return MessageHeadersInfo(authRes!!, from!!, returnPath!!)
-
-    }
-
-    private fun extractRefreshToken(res: String): GraphAPITokens {
+    private fun extractTokens(res: String): GraphAPITokens {
         val serializedResponse = Gson().fromJson(res, ApiTokenResponse::class.java)
         return GraphAPITokens(serializedResponse.access_token, serializedResponse.refresh_token)
     }

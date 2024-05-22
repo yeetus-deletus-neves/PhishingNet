@@ -82,12 +82,12 @@ class UserServicesImpl(
         val myToken = refreshTokenRepository.findRefreshTokensByUserid(user)
         if (myToken != null) return CreateRefreshTokenInfo.TokenAlreadyExists
 
-        val rToken =  graphInterface.getRefresh(token)  ?: return CreateRefreshTokenInfo.InvalidToken
-        val email = graphInterface.getEmail(rToken.access_token) ?: return CreateRefreshTokenInfo.UnableToObtainUserInformation
+        val rToken =  graphInterface.getRefreshFromAccess(token)  ?: return CreateRefreshTokenInfo.InvalidToken
+        val email = graphInterface.getEmailAddress(rToken.accessToken) ?: return CreateRefreshTokenInfo.UnableToObtainUserInformation
         user.linked_email = email
 
         refreshTokenRepository.save(
-            RefreshToken(user, symmetricEncoder.encode(rToken.refresh_token)!!)
+            RefreshToken(user, symmetricEncoder.encode(rToken.refreshToken)!!)
         )
         usersRepository.save(user)
         return CreateRefreshTokenInfo.TokenCreated

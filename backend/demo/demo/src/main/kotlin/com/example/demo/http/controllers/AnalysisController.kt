@@ -18,9 +18,10 @@ class AnalysisController(
 
     @PostMapping(Uris.Analysis.ANALYSE)
     fun analyseContent(user: User, @RequestBody content: ContentInputModel): ResponseEntity<*> {
-        return when(val res = analysisServices.process(content.content)) {
+        return when(val res = analysisServices.analyseMessage(user, content.content)) {
             is AnalysisResult.AccountNotLinked ->  ResponseTemplate.BadRequest("Testing")
             is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res, "Completed analysis of ${content.content}")
+            is AnalysisResult.UnableToRetrieveRefresh -> ResponseTemplate.NotFound("An unexpected error occurred")
         }
     }
 }
