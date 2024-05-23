@@ -6,27 +6,18 @@ import phishingnet.contentAnalysis.*
 
 class EmailProcessorsTests {
 
-    private val headersExample = MessageHeadersInfo("\"1\" <email1>", "email1", testAuthStr)
-    private val realPhishingMessageHeaders1 = MessageHeadersInfo(
-        "\"Stansted Airport College Enquiry\" <admissions@harlow-college.ac.uk>",
-        "admissions@harlow-college.ac.uk",
-        realPhishingHeaders1
-    )
     @Test
     fun `Auth details test`() {
-        val email = Email("", headersExample)
-        val authDetails = email.internetHeaders.authDetails
+        val authDetails = testEmailEmpty.authDetails
 
         Assertions.assertEquals(SecurityVerification.PASSED, authDetails.spf)
-
         Assertions.assertEquals(SecurityVerification.PASSED, authDetails.dkim)
         Assertions.assertEquals(SecurityVerification.PASSED, authDetails.dmarc)
     }
 
     @Test
     fun `Phishing email Auth details test`() {
-        val email = Email("", realPhishingMessageHeaders1)
-        val authDetails = email.internetHeaders.authDetails
+        val authDetails = realPhishingEmail1.authDetails
 
         Assertions.assertEquals(SecurityVerification.FAILED, authDetails.spf)
         Assertions.assertEquals(SecurityVerification.FAILED, authDetails.dkim)
@@ -35,13 +26,13 @@ class EmailProcessorsTests {
 
     @Test
     fun `Clean email body test`() {
-        val email = Email(rawBody1, headersExample)
+        val email = testEmail
 
         Assertions.assertEquals(expectedCleanedContent1, email.body)
     }
     @Test
     fun `Clean email body test real phishingEmail`() {
-        val email = Email(realPhishingBody1, headersExample)
+        val email = realPhishingEmail1
 
         Assertions.assertEquals(cleanRealEmailContent(realPhishingCleanContent1), email.body)
     }
