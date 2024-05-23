@@ -13,9 +13,11 @@ export async function defaultFetch(
         body: JSON.stringify(body)
     } )
     if (!response.ok) {
+        const rsp = await response.json()
         throw {
-            status: response.status,
-            message: response.statusText
+            status: rsp.status,
+            message: rsp.message,
+            details: rsp.details
         }
     }
     return await response.json()
