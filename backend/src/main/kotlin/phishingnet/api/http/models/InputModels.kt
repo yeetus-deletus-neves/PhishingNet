@@ -9,6 +9,6 @@ data class TokenInputModel(
     val token: String
 )
 
-data class ContentInputModel(
+data class MessageRequest(
     val messageID: String
 )

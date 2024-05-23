@@ -51,7 +51,7 @@ class GraphInterface {
 
         request.addBody("refresh_token", refreshToken)
         request.addBody("client_id", CLIENT_ID)
-        request.addBody("grant_type", GRANT_TYPE)
+        request.addBody("grant_type", "refresh_token")
         request.addBody("scope", "$SCOPE, offline_access")
         request.addBody("redirect_uri", REDIRECT_URI)
         request.addBody("client_secret", CLIENT_SECRET)

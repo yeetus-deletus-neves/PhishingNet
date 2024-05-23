@@ -51,7 +51,7 @@ class AnalysisServicesImpl(
     }
 
     private fun updateRefreshToken(refreshToken: RefreshToken, newValue: String) {
-        refreshToken.rtoken = newValue
+        refreshToken.rtoken = symmetricEncoder.encode(newValue)!!
         refreshTokenRepository.save(refreshToken)
     }
 

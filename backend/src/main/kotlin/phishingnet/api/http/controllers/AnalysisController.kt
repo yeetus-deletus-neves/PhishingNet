@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import phishingnet.api.http.models.MessageRequest
 
 @RestController
 class AnalysisController(
@@ -16,14 +17,15 @@ class AnalysisController(
 ) {
 
     @PostMapping(Uris.Analysis.ANALYSE)
-    fun analyseContent(user: User, @RequestBody messageID: String): ResponseEntity<*> {
-        return when(val res = analysisServices.analyseMessage(user, messageID)) {
-            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res, "Completed analysis of $messageID")
+    fun analyseContent(user: User, @RequestBody messageID: MessageRequest): ResponseEntity<*> {
+        val id = messageID.messageID
+        return when(val res = analysisServices.analyseMessage(user, id)) {
+            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res, "Completed analysis of $id")
             is AnalysisResult.AccountNotLinked ->  ResponseTemplate.NotFound("The account is not linked to a Microsoft account.")
             is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Invalid while communicating with the Microsoft Servers. \n" + res.log)
             is AnalysisResult.InvalidToken -> ResponseTemplate.Unauthorized("Unauthorized access to the Microsoft Servers \n" + res.log)
             is AnalysisResult.MessageNotFound -> ResponseTemplate.NotFound("Message was not found. Please make sure the messageID is correct.")
-            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Unexpected error occurred while analysing $messageID \n" + res.log)
+            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Unexpected error occurred while analysing $id \n" + res.log)
         }
     }
 }
