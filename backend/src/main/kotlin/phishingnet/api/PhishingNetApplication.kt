@@ -17,8 +17,17 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import phishingnet.contentAnalysis.Processor
+import phishingnet.contentAnalysis.models.AnalysisModule
+import phishingnet.contentAnalysis.models.risks.Risk
+import phishingnet.contentAnalysis.models.risks.RiskLevel
+import phishingnet.contentAnalysis.models.warnings.Warnings
+import phishingnet.contentAnalysis.modules.mock_modules.CountWordsModule
+import phishingnet.contentAnalysis.modules.mock_modules.HardCodedWordCounter
+import phishingnet.contentAnalysis.modules.mock_modules.MyNameWasMentionedModule
 import java.time.Instant
 import javax.sql.DataSource
+
 
 
 @SpringBootApplication
@@ -29,6 +38,30 @@ class PhishingNetApplication{
 
 	@Bean
 	fun symmetricEncoder() = SymmetricEncoder()
+
+	@Bean
+	fun moduleList(): List<AnalysisModule> = listOf(
+		CountWordsModule(),
+		MyNameWasMentionedModule(),
+		HardCodedWordCounter()
+	)
+
+	@Bean
+	fun testRisk(): Risk {
+		val risk = Risk(
+			"Test Risk",
+			"My name was mentioned in a text of considerable length.",
+			RiskLevel.SUSPICIOUS
+		)
+		risk.setRequirement(Warnings.WORD_COUNTED, 5)
+		risk.setRequirement(Warnings.NAME_MENTIONED)
+		return risk
+	}
+
+	@Bean
+	fun processor(moduleList: List<AnalysisModule>, testRisk: Risk): Processor {
+		return Processor(moduleList, listOf(testRisk))
+	}
 
 	@Bean
 	fun clock() = object : Clock {

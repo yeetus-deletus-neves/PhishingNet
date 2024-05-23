@@ -3,9 +3,16 @@ import org.jsoup.Jsoup
 
 
 //TODO set MessageHeadersInfo as simple parameters of email
+//TODO Limpar classe e meter atributos da classe Mail mais organizados
 data class Email(
-    private val rawBody: String,
-    val msgHeadersInfo: MessageHeadersInfo
+    val from: Sender,
+    val sender: Sender,
+    val subject: String,
+    val importance: String,
+    val hasAttachments: Boolean,
+    val isRead: Boolean,
+    val internetHeaders: MessageHeadersInfo,
+    private val rawBody: String
 ) {
     val body: String
 
@@ -18,6 +25,11 @@ data class Email(
     }
 }
 
+data class Sender(
+    val name: String,
+    val address: String
+)
+
 //TODO add provider parameter
 data class MessageHeadersInfo(
     val from: String,
@@ -28,7 +40,7 @@ data class MessageHeadersInfo(
         require(from.isNotEmpty()) { "from cannot be empty" }
         require(returnPath.isNotEmpty()) { "returnPath cannot be empty" }
         require(authenticationResults.isNotEmpty()) { "authenticationResults cannot be empty" }
-        require(from.contains('<')&&from.contains('>')) { "invalid from format" }
+        //require(from.contains('<')&&from.contains('>')) { "invalid from format" }
     }
 
     val authDetails by lazy { processAuth(authenticationResults, "Microsoft") }

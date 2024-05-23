@@ -15,7 +15,7 @@ class EmailProcessorsTests {
     @Test
     fun `Auth details test`() {
         val email = Email("", headersExample)
-        val authDetails = email.msgHeadersInfo.authDetails
+        val authDetails = email.internetHeaders.authDetails
 
         Assertions.assertEquals(SecurityVerification.PASSED, authDetails.spf)
 
@@ -26,7 +26,7 @@ class EmailProcessorsTests {
     @Test
     fun `Phishing email Auth details test`() {
         val email = Email("", realPhishingMessageHeaders1)
-        val authDetails = email.msgHeadersInfo.authDetails
+        val authDetails = email.internetHeaders.authDetails
 
         Assertions.assertEquals(SecurityVerification.FAILED, authDetails.spf)
         Assertions.assertEquals(SecurityVerification.FAILED, authDetails.dkim)
