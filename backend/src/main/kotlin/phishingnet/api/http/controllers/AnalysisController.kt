@@ -20,12 +20,12 @@ class AnalysisController(
     fun analyseContent(user: User, @RequestBody messageID: MessageRequest): ResponseEntity<*> {
         val id = messageID.messageID
         return when(val res = analysisServices.analyseMessage(user, id)) {
-            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res, "Completed analysis of $id")
+            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res, "Completed analysis of $id.")
             is AnalysisResult.AccountNotLinked ->  ResponseTemplate.NotFound("The account is not linked to a Microsoft account.")
-            is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Invalid while communicating with the Microsoft Servers. \n" + res.log)
-            is AnalysisResult.InvalidToken -> ResponseTemplate.Unauthorized("Unauthorized access to the Microsoft Servers \n" + res.log)
+            is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Invalid while communicating with the Microsoft Servers. \n")
+            is AnalysisResult.InvalidToken -> ResponseTemplate.Unauthorized("Unauthorized access to the Microsoft Servers. \n")
             is AnalysisResult.MessageNotFound -> ResponseTemplate.NotFound("Message was not found. Please make sure the messageID is correct.")
-            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Unexpected error occurred while analysing $id \n" + res.log)
+            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Unexpected error occurred while analysing $id. \n")
         }
     }
 }
