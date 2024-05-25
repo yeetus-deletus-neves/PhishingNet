@@ -16,9 +16,9 @@ class HeaderModule() : AnalysisModule {
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warnings.FROM_DISTINCT_FROM_RETURN_PATH)
 
-        val emailHeaderInfo = email.internetHeaders
-        val emailFrom = emailHeaderInfo.from.split('<','>')[1]
-        if (emailFrom != emailHeaderInfo.returnPath) warningLog.incrementOccurrences()
+        //TODO(FIX)
+        val emailFrom = email.from.address.split('<','>')[1]
+        if (emailFrom != email.returnPath) warningLog.incrementOccurrences()
 
         return warningLog
     }

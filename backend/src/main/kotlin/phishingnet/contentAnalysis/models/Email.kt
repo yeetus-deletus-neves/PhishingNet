@@ -2,8 +2,6 @@ package phishingnet.contentAnalysis.models
 import org.jsoup.Jsoup
 
 
-//TODO set MessageHeadersInfo as simple parameters of email
-//TODO Limpar classe e meter atributos da classe Mail mais organizados
 data class Email(
     val from: Sender,
     val sender: Sender,
@@ -11,12 +9,17 @@ data class Email(
     val importance: String,
     val hasAttachments: Boolean,
     val isRead: Boolean,
-    val internetHeaders: MessageHeadersInfo,
+    val returnPath: String,
+
+    private val rawAuthResults: String,
     private val rawBody: String
 ) {
     val body: String
+    val authDetails: AuthDetails by lazy { processAuth(rawAuthResults, "Microsoft") }
 
     init {
+        require(returnPath.isNotEmpty()) { "returnPath cannot be empty" }
+        require(rawAuthResults.isNotEmpty()) { "authenticationResults cannot be empty" }
         body = cleanContent(rawBody)
     }
 
@@ -47,16 +50,12 @@ data class MessageHeadersInfo(
 }
 
 //implementation removes \n from the body, and indentation
-
 enum class SecurityVerification {
     PASSED, FAILED
 }
-typealias SecVer = SecurityVerification
 
-data class AuthDetails(val spf: SecurityVerification, val dkim: SecurityVerification, val dmarc: SecurityVerification) {
-}
+data class AuthDetails(val spf: SecurityVerification, val dkim: SecurityVerification, val dmarc: SecurityVerification)
 
-//TODO replace mock implementation
 fun processAuth(authResults: String, provider: String): AuthDetails {
     require(provider == "Microsoft") { "Current Implementation only supports Microsoft" }
     when(provider) {
@@ -68,7 +67,7 @@ fun processAuth(authResults: String, provider: String): AuthDetails {
 }
 
 fun processAuthMicrosoft(authResults: String): AuthDetails {
-    val authMap: MutableMap<String, SecVer> = mutableMapOf("spf" to SecurityVerification.FAILED, "dkim" to SecurityVerification.FAILED, "dmarc" to SecurityVerification.FAILED)
+    val authMap: MutableMap<String, SecurityVerification> = mutableMapOf("spf" to SecurityVerification.FAILED, "dkim" to SecurityVerification.FAILED, "dmarc" to SecurityVerification.FAILED)
     val map = cleanAuthResults(authResults)
 
     map.forEach { (key, value) ->

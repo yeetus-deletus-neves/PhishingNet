@@ -73,22 +73,17 @@ class AnalysisServicesImpl(
     }
 
     private fun compileMessageInfo(message: GraphEmailDetails): Email{
-
-        val internetHeader = MessageHeadersInfo(
-            message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
-            message.headers.internetMessageHeaders.find { it.name == "From" }!!.value,
-            message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value
-        )
-
         return Email(
-            Sender(message.messageInfo.from.emailAddress.name, message.messageInfo.from.emailAddress.address),
-            Sender(message.messageInfo.sender.emailAddress.name, message.messageInfo.sender.emailAddress.address),
-            message.messageInfo.subject,
-            message.messageInfo.importance,
-            message.messageInfo.hasAttachments,
-            message.messageInfo.isRead,
-            internetHeader,
-            message.messageInfo.body.content
+            from = Sender(message.messageInfo.from.emailAddress.name, message.messageInfo.from.emailAddress.address),
+            sender = Sender(message.messageInfo.sender.emailAddress.name, message.messageInfo.sender.emailAddress.address),
+            subject = message.messageInfo.subject,
+            importance = message.messageInfo.importance,
+            hasAttachments = message.messageInfo.hasAttachments,
+            isRead = message.messageInfo.isRead,
+            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
+            rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
+            rawBody = message.messageInfo.body.content
+
         )
     }
 

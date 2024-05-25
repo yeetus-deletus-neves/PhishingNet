@@ -1,10 +1,10 @@
 import { useState} from "react";
-import { HomePage } from "../components/HomePage";
-import { useAuthentication } from "../utils/auth";
+import { useAuthentication } from "../auth/authenticationProvider";
 import { NotLinked } from "../components/NotLinked";
 import { Analyse } from "../components/Analyse";
 import { SelectMessage } from "../components/SelectMessage";
 import { WrongInbox } from "../components/WrongInbox";
+import { Login } from "../components/Login";
 
   
 const App = () => {
@@ -29,7 +29,7 @@ const App = () => {
     
     if(!userInfo){
         return (
-            <HomePage/>
+            <Login/>
         )
     }else{
         if(!userInfo.email){
