@@ -33,11 +33,6 @@ export function Login(){
                     setAlert({alert: "error", message: `${error.details}`})
                 }
             }}>Submit</button>
-            <br></br>
-            <div>Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
-                    window.open('http://localhost:3000/signUp','_blank')
-                }}>Sign up here</a>
-            </div>
         </div>
     )
 }

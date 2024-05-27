@@ -8,7 +8,13 @@ browser.tabs.onUpdated.addListener(
 
     if(changeInfo.url && changeInfo.url.includes("outlook.live.com/mail/") && changeInfo.url.includes("id/")) {
       const userInfo = getStoredInfo()
-      if(userInfo.email){
+
+      if(!userInfo || !userInfo.email){
+        browser.tabs.sendMessage(tabId,{
+          type: "clean",
+          user: userInfo 
+        })
+      }else{
         browser.tabs.sendMessage(tabId, {
           type: "background",
           email: userInfo.email,
