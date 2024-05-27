@@ -10,6 +10,7 @@ export function Analyse({url}){
     return (
         <div>
             <button type="button" onClick={ async ()=>{
+                console.log(url)
                 const startIndex = url.indexOf("id/");
 
                 // Extract the substring
@@ -23,7 +24,7 @@ export function Analyse({url}){
                             'Authorization': `Bearer ${userInfo.token.token}`,
                         },
                         {
-                            "content":`${conversationID}`
+                            "messageID":`${conversationID}`
                         }
                     )
                     console.log(analyseRsp)
