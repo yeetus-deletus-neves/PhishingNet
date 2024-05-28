@@ -93,6 +93,15 @@ browser.runtime.onMessage.addListener(
                 if(message.user){
                     // not linked
                     warningBar = createWarningBar("No account linked to your phishing net account")
+                    const first = document.createElement("button");
+                    var text = document.createTextNode("Link account");
+                    first.appendChild(text);
+                    first.setAttribute("id","link_account")
+                    first.addEventListener("click",function(){
+                        window.open('http://localhost:3000/','_blank')
+                    })
+                    warningBar.appendChild(first)
+
                }
                 else{
                     // not logged on
