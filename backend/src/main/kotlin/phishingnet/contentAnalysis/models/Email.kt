@@ -9,7 +9,7 @@ data class Email(
     val importance: String,
     val hasAttachments: Boolean,
     val isRead: Boolean,
-    val returnPath: String,
+    val returnPath: Sender,
 
     private val rawAuthResults: String,
     private val rawBody: String
@@ -18,7 +18,6 @@ data class Email(
     val authDetails: AuthDetails by lazy { processAuth(rawAuthResults, "Microsoft") }
 
     init {
-        require(returnPath.isNotEmpty()) { "returnPath cannot be empty" }
         require(rawAuthResults.isNotEmpty()) { "authenticationResults cannot be empty" }
         body = cleanContent(rawBody)
     }
@@ -33,21 +32,6 @@ data class Sender(
     val address: String
 )
 
-//TODO add provider parameter
-data class MessageHeadersInfo(
-    val from: String,
-    val returnPath: String,
-    val authenticationResults: String
-){
-    init {
-        require(from.isNotEmpty()) { "from cannot be empty" }
-        require(returnPath.isNotEmpty()) { "returnPath cannot be empty" }
-        require(authenticationResults.isNotEmpty()) { "authenticationResults cannot be empty" }
-        //require(from.contains('<')&&from.contains('>')) { "invalid from format" }
-    }
-
-    val authDetails by lazy { processAuth(authenticationResults, "Microsoft") }
-}
 
 //implementation removes \n from the body, and indentation
 enum class SecurityVerification {

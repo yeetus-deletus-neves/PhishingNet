@@ -1,6 +1,7 @@
 package phishingnet.contentAnalysis.models.risks
 
 enum class RiskLevel(val level: Int) {
+    MOCK_RISK(0),
     NO_THREAT(0),
     SHOULD_LOOK_INTO_IT(1),
     SUSPICIOUS(2),

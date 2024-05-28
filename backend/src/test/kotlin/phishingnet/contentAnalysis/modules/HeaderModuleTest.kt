@@ -1,30 +1,47 @@
 package phishingnet.contentAnalysis.modules
 
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import phishingnet.contentAnalysis.Processor
+import phishingnet.contentAnalysis.models.Sender
+import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
+import phishingnet.contentAnalysis.models.risks.Risk
+import phishingnet.contentAnalysis.models.risks.RiskLevel
+import phishingnet.contentAnalysis.models.warnings.Warning
+import phishingnet.contentAnalysis.testEmail
+
 class HeaderModuleTest {
 
-    /*
+
     @Test
     fun `HeaderModule test for no Threat`(){
-        val email = Email("", MessageHeadersInfo("\"1\" <email1>", "email1", "sec"))
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = Sender("1", "email1@test.com"))
         val headerModule = HeaderModule()
-        val process = Processor(listOf(headerModule))
+        val mockRisk = Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS)
+        mockRisk.setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
+
+        val process = Processor(listOf(headerModule), listOf(mockRisk))
         val eval = process.process(email)
-        Assertions.assertEquals(1, eval.size)
-        Assertions.assertTrue(eval.containsKey(Risk.FALSE_ENTITY))
-        Assertions.assertEquals(ThreatLevel.NoThreat, eval[Risk.FALSE_ENTITY]!!.threatLevel)
-        Assertions.assertEquals(headerModule.name, eval[Risk.FALSE_ENTITY]!!.moduleOfOrigin)
+
+        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
+        Assertions.assertEquals(0, eval.threatJustification.size)
     }
 
     @Test
     fun `HeaderModule test for different return path and from`(){
-        val email = Email("", MessageHeadersInfo("\"1\" <email1>", "email2", "sec"))
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = Sender("1", "email2@test.com"))
         val headerModule = HeaderModule()
-        val process = Processor(listOf(headerModule))
+        val mockRisk = Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS)
+        mockRisk.setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
+
+        val process = Processor(listOf(headerModule), listOf(mockRisk))
         val eval = process.process(email)
-        Assertions.assertEquals(1, eval.size)
-        Assertions.assertTrue(eval.containsKey(Risk.FALSE_ENTITY))
-        Assertions.assertEquals(ThreatLevel.Suspicious, eval[Risk.FALSE_ENTITY]!!.threatLevel)
-        Assertions.assertEquals(headerModule.name, eval[Risk.FALSE_ENTITY]!!.moduleOfOrigin)
+
+        val mockAnalysisEntry = RiskAnalysisEntry("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS, headerModule.name)
+
+        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(1, eval.threatJustification.size)
+        Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }
-     */
+
 }

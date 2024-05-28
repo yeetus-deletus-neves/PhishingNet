@@ -1,7 +1,6 @@
 package phishingnet.contentAnalysis
 
 import phishingnet.contentAnalysis.models.Email
-import phishingnet.contentAnalysis.models.MessageHeadersInfo
 import phishingnet.contentAnalysis.models.Sender
 
 
@@ -39,7 +38,7 @@ val testEmailEmpty = Email(
     "Medium",
     hasAttachments = false,
     isRead = false,
-    "email1@test.com",
+    Sender("1", "email1@test.com"),
     testAuthStr,
     ""
 )
@@ -51,7 +50,7 @@ val testEmail = Email(
     "Medium",
     hasAttachments = false,
     isRead = false,
-    "email1@test.com",
+    Sender("1", "email1@test.com"),
     testAuthStr,
     rawBody1
 )
@@ -63,7 +62,7 @@ val realPhishingEmail1 = Email(
     "",
     hasAttachments = false,
     isRead = false,
-    "admissions@harlow-college.ac.uk",
+    Sender("Stansted Airport College Enquiry", "admissions@harlow-college.ac.uk"),
     realPhishingHeaders1,
     realPhishingBody1
 )

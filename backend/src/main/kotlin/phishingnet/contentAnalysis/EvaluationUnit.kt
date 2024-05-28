@@ -5,18 +5,22 @@ import phishingnet.contentAnalysis.models.risks.Risk
 
 class EvaluationUnit(private val possibleRisks: List<Risk>) {
 
-    fun evaluate(warningsFound: List<WarningLog>): Set<Risk> {
+    /***
+     * Checks if all requirements are met to consider a risk exists
+     * by requirements we consider the that every warning is present
+     * and its occurrences equal or excel the set value for minimum occurrences
+     */
+    fun evaluate(warningsFound: WarningLog): Set<Risk> {
         val threatsFound = mutableSetOf<Risk>()
 
         for (risk in possibleRisks) {
             val allRequirementsMet = risk.warningRequirements.all { (warning, requiredOccurrences) ->
-                val entry = warningsFound.find { it.warning == warning }
-                entry != null && entry.occurrences() >= requiredOccurrences
+                val warningIsPresent = warningsFound.warnings.containsKey(warning)
+                val occurrences = warningsFound.warnings[warning]?.get() ?: 0
+                warningIsPresent && occurrences >= requiredOccurrences
             }
 
-            if (allRequirementsMet) {
-                threatsFound.add(risk)
-            }
+            if (allRequirementsMet)  threatsFound.add(risk)
         }
 
         return threatsFound

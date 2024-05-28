@@ -6,6 +6,7 @@ import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
+import phishingnet.contentAnalysis.models.warnings.Occurrences
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class Processor(
@@ -13,30 +14,47 @@ class Processor(
     private val registeredRisks: List<Risk>
 ) {
 
-    private val evaluator= EvaluationUnit(registeredRisks)
+    private val evaluator = EvaluationUnit(registeredRisks)
 
+    /***
+     * Goes through all modules evaluating each for the current email
+     * receiving a WarningLog and compiling all the received WarningLogs into a final RiskAnalysis for this email
+     */
     fun process(email: Email): RiskAnalysis {
-        val analysisList = mutableListOf<WarningLog>()
+        val compiledWarnings = WarningLog(listOf())
         modules.forEach { module ->
-            val result = module.process(email)
-            if (result.occurrences() == 0) return@forEach
+            //evaluate module
+            val warningLog = module.process(email)
+            val from = module.name
 
-            // Checks if there's already a log with the same type of warning
-            val existentWarning = analysisList.find { it.warning == result.warning }
+            for (warning in warningLog.warnings) {
+                val key = warning.key
+                val occurrences = warning.value
 
-            // If there's no such warning, the module result is added to the analysis. If there's already a log with the same
-            // warning, the one with the most amount of occurrences is chosen.
-            if (existentWarning == null) {
-                analysisList.add(result)
-            }else{
-                if (existentWarning.occurrences() < result.occurrences()){
-                    analysisList.remove(existentWarning)
-                    analysisList.add(result)
+                if (occurrences.get() == 0) continue
+
+                // Checks if there's already a log with the same type of warning
+                val warningAlreadyPresent = compiledWarnings.warnings.keys.contains(key)
+
+                // If there's no such warning, the module result is added to the analysis. If there's already a log with the same
+                // warning, the one with the most amount of occurrences is chosen.
+                if (!warningAlreadyPresent) {
+                    compiledWarnings[key] = occurrences
+                }else{
+                    val existentWarning = compiledWarnings[key]
+
+                    /***
+                     * if the newly found warning as a bigger number of occurrences,
+                     * than the previously registered one for the same warning
+                     * we update it
+                     */
+                    if (existentWarning.get() < occurrences.get()) compiledWarnings[key] = occurrences
+
                 }
             }
         }
 
-        val evaluationResult = evaluator.evaluate(analysisList)
+        val evaluationResult = evaluator.evaluate(compiledWarnings)
         return compileAnalysis(evaluationResult)
     }
 
@@ -52,7 +70,8 @@ class Processor(
             val compiled = RiskAnalysisEntry(
                 toCompile.name,
                 toCompile.description,
-                toCompile.level
+                toCompile.level,
+                "" //TODO fix add from
             )
             compiledRisks.add(compiled)
         }

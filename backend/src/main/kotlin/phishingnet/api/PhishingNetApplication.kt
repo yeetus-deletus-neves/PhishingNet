@@ -21,7 +21,7 @@ import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
-import phishingnet.contentAnalysis.models.warnings.Warnings
+import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.modules.mock_modules.CountWordsModule
 import phishingnet.contentAnalysis.modules.mock_modules.HardCodedWordCounter
 import phishingnet.contentAnalysis.modules.mock_modules.MyNameWasMentionedModule
@@ -53,8 +53,8 @@ class PhishingNetApplication{
 			"My name was mentioned in a text of considerable length.",
 			RiskLevel.SUSPICIOUS
 		)
-		risk.setRequirement(Warnings.WORD_COUNTED, 5)
-		risk.setRequirement(Warnings.NAME_MENTIONED)
+		risk.setRequirement(Warning.WORD_COUNTED, 5)
+		risk.setRequirement(Warning.NAME_MENTIONED)
 		return risk
 	}
 

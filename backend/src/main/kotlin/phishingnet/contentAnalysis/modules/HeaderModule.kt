@@ -2,8 +2,10 @@ package phishingnet.contentAnalysis.modules
 
 import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.Email
+import phishingnet.contentAnalysis.models.SecurityVerification
+import phishingnet.contentAnalysis.models.warnings.Occurrences
 import phishingnet.contentAnalysis.models.warnings.WarningLog
-import phishingnet.contentAnalysis.models.warnings.Warnings
+import phishingnet.contentAnalysis.models.warnings.Warning
 
 class HeaderModule() : AnalysisModule {
     override val name: String = "Header Module"
@@ -14,11 +16,26 @@ class HeaderModule() : AnalysisModule {
     // that it is illegitimate
 
     override fun process(email: Email): WarningLog {
-        val warningLog = WarningLog(Warnings.FROM_DISTINCT_FROM_RETURN_PATH)
+        val warningLog: WarningLog = WarningLog(
+            listOf(
+                Warning.FROM_DISTINCT_FROM_RETURN_PATH,
+                Warning.DMARC_AUTH_FAILED,
+                Warning.DKIM_AUTH_FAILED,
+                Warning.SPF_AUTH_FAILED,
+            )
+        )
 
-        //TODO(FIX)
-        val emailFrom = email.from.address.split('<','>')[1]
-        if (emailFrom != email.returnPath) warningLog.incrementOccurrences()
+
+        if (email.authDetails.dmarc == SecurityVerification.FAILED)
+            warningLog[Warning.DMARC_AUTH_FAILED].incrementOccurrences()
+        if (email.authDetails.dkim == SecurityVerification.FAILED)
+            warningLog[Warning.DKIM_AUTH_FAILED].incrementOccurrences()
+        if (email.authDetails.spf == SecurityVerification.FAILED)
+            warningLog[Warning.SPF_AUTH_FAILED].incrementOccurrences()
+
+        val emailFrom = email.from.address//.split('<','>')[1]
+        val returnPath = email.returnPath.address
+        if (emailFrom != returnPath) warningLog[Warning.FROM_DISTINCT_FROM_RETURN_PATH].incrementOccurrences()
 
         return warningLog
     }

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 import phishingnet.api.utils.graph.models.GraphEmailDetails
 import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.Email
-import phishingnet.contentAnalysis.models.MessageHeadersInfo
 import phishingnet.contentAnalysis.models.Sender
 
 @Service
@@ -80,7 +79,7 @@ class AnalysisServicesImpl(
             importance = message.messageInfo.importance,
             hasAttachments = message.messageInfo.hasAttachments,
             isRead = message.messageInfo.isRead,
-            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
+            /*TODO FIX*/returnPath = Sender(message.messageInfo.sender.emailAddress.name, message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value),
             rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
             rawBody = message.messageInfo.body.content
 

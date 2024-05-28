@@ -5,5 +5,6 @@ import phishingnet.contentAnalysis.models.risks.RiskLevel
 data class RiskAnalysisEntry (
     val name: String,
     val description: String,
-    val threat: RiskLevel
+    val threat: RiskLevel,
+    val from: String    //module of origin
 )
