@@ -68,12 +68,22 @@ browser.runtime.onMessage.addListener(
             case "analysed":{
                 let button = document.getElementById("analyse")
                 button.remove()
-                const first = document.createElement("h4");
-                var text = document.createTextNode(message.content);
-                first.appendChild(text);
-                first.setAttribute("id",message.conversationID);
-                first.setAttribute("class","analyse_content");
-                document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(first);
+                const div = document.createElement("div");
+                const header = document.createElement("h4");
+                var text = document.createTextNode(message.content.threat);
+                header.appendChild(text);
+                div.setAttribute("id",message.conversationID);
+                div.setAttribute("class","analyse_content");
+                const threats = message.content.threatJustification
+                if(threats){
+                    let title = ""
+                    threats.forEach(t => {
+                        title += `${t.name}: ${t.description}\n`
+                    });
+                    div.setAttribute("title",title)
+                }
+                div.appendChild(header)
+                document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(div);
                 break;
             }
             case "clean":{
