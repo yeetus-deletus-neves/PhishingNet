@@ -3,7 +3,7 @@
     "name": "Pishing Net",
     "version": "1.0",
     "icons": {
-      "48": "icons/border-48.png"
+      "48": "icons/phishing-net-48.png"
     },
   
     "description": "Warns the user of probable phishing attempts",
