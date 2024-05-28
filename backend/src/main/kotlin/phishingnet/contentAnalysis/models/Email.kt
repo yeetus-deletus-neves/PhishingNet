@@ -9,7 +9,7 @@ data class Email(
     val importance: String,
     val hasAttachments: Boolean,
     val isRead: Boolean,
-    val returnPath: Sender,
+    val returnPath: String,
 
     private val rawAuthResults: String,
     private val rawBody: String

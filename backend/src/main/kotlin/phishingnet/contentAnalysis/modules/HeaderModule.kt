@@ -34,7 +34,7 @@ class HeaderModule() : AnalysisModule {
             warningLog[Warning.SPF_AUTH_FAILED].incrementOccurrences()
 
         val emailFrom = email.from.address//.split('<','>')[1]
-        val returnPath = email.returnPath.address
+        val returnPath = email.returnPath
         if (emailFrom != returnPath) warningLog[Warning.FROM_DISTINCT_FROM_RETURN_PATH].incrementOccurrences()
 
         return warningLog
