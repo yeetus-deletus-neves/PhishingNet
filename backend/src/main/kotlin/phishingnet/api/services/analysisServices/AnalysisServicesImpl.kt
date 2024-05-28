@@ -11,6 +11,7 @@ import phishingnet.api.utils.graph.models.GraphEmailDetails
 import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.Sender
+import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 
 @Service
 class AnalysisServicesImpl(
@@ -40,7 +41,7 @@ class AnalysisServicesImpl(
 
             val compiledEmail = compileMessageInfo(emailDetails)
             return AnalysisResult.CompletedAnalysis(
-                analysisUnit.process(compiledEmail).toString()
+                analysisUnit.process(compiledEmail)
             )
         }
         catch (e: IllegalArgumentException) {
@@ -87,7 +88,7 @@ class AnalysisServicesImpl(
 
 }
 sealed class AnalysisResult{
-    data class CompletedAnalysis(val result: String): AnalysisResult()
+    data class CompletedAnalysis(val result: RiskAnalysis): AnalysisResult()
     object AccountNotLinked: AnalysisResult()
     data class BadRequest(val log: String): AnalysisResult()
     data class InvalidToken(val log: String): AnalysisResult()
