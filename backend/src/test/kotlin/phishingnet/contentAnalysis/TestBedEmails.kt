@@ -38,7 +38,7 @@ val testEmailEmpty = Email(
     "Medium",
     hasAttachments = false,
     isRead = false,
-    Sender("1", "email1@test.com"),
+    "email1@test.com",
     testAuthStr,
     ""
 )
@@ -50,7 +50,7 @@ val testEmail = Email(
     "Medium",
     hasAttachments = false,
     isRead = false,
-    Sender("1", "email1@test.com"),
+    "email1@test.com",
     testAuthStr,
     rawBody1
 )
@@ -62,7 +62,7 @@ val realPhishingEmail1 = Email(
     "",
     hasAttachments = false,
     isRead = false,
-    Sender("Stansted Airport College Enquiry", "admissions@harlow-college.ac.uk"),
+    "admissions@harlow-college.ac.uk",
     realPhishingHeaders1,
     realPhishingBody1
 )

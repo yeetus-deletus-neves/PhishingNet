@@ -15,7 +15,7 @@ class HeaderModuleTest {
 
     @Test
     fun `HeaderModule test for no Threat`(){
-        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = Sender("1", "email1@test.com"))
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email1@test.com")
         val headerModule = HeaderModule()
         val mockRisk = Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS)
         mockRisk.setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
@@ -29,7 +29,7 @@ class HeaderModuleTest {
 
     @Test
     fun `HeaderModule test for different return path and from`(){
-        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = Sender("1", "email2@test.com"))
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email2@test.com")
         val headerModule = HeaderModule()
         val mockRisk = Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS)
         mockRisk.setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)

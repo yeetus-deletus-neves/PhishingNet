@@ -79,10 +79,9 @@ class AnalysisServicesImpl(
             importance = message.messageInfo.importance,
             hasAttachments = message.messageInfo.hasAttachments,
             isRead = message.messageInfo.isRead,
-            /*TODO FIX*/returnPath = Sender(message.messageInfo.sender.emailAddress.name, message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value),
+            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
             rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
             rawBody = message.messageInfo.body.content
-
         )
     }
 
