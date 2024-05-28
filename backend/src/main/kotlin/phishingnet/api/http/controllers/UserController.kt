@@ -24,8 +24,8 @@ class UserController(private val userServices: UserServices) {
                 res.user.id.toString(),
                 res.user.username
             ), "User ${input.username} created")
-            is CreateUserInfo.UserAlreadyExists -> ResponseTemplate.Conflict("This user already exists")
-            is CreateUserInfo.UnsafePassword -> ResponseTemplate.BadRequest("Password is unsafe, it must contain capital letters, numbers, and have a length of at least 8 characters")
+            is CreateUserInfo.UserAlreadyExists -> ResponseTemplate.Conflict("The provided username is already being used by another user.")
+            is CreateUserInfo.UnsafePassword -> ResponseTemplate.BadRequest("Password is unsafe, it must contain capital letters, numbers, and have a length of at least 8 characters.")
         }
     }
 
@@ -44,7 +44,7 @@ class UserController(private val userServices: UserServices) {
                         res.token.lastUsedAt.toString()
                 )
                 ), "Token generated")
-            is CreateUserTokenInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed")
+            is CreateUserTokenInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed: Invalid password.")
         }
     }
 
@@ -56,11 +56,11 @@ class UserController(private val userServices: UserServices) {
             is GetUserInfo.UserFound -> ResponseTemplate.Ok(
                 UserOutputModel(
                 res.user.id.toString(),
-                res.user.username!!
+                    res.user.username
             ), "User ${res.user.username} found by ID")
-            is GetUserInfo.UserNotFound -> ResponseTemplate.NotFound("User not found")
-            is GetUserInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed")
-            is GetUserInfo.InvalidID -> ResponseTemplate.BadRequest("The provided ID is invalid")
+            is GetUserInfo.UserNotFound -> ResponseTemplate.NotFound("There is no used with ID $id.")
+            is GetUserInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed.")
+            is GetUserInfo.InvalidID -> ResponseTemplate.BadRequest("The provided ID is invalid. Plase make sure the format is correct.")
         }
     }
 
@@ -69,10 +69,10 @@ class UserController(private val userServices: UserServices) {
         logger.info { "POST: ${Uris.Users.LINK} received" }
 
         return when (userServices.createRefreshToken(user,token.token)){
-            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(LinkingOutputModel(user.linked_email), "Account ${user.username} linked")
-            is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("Account is already linked")
-            is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("Microsoft token is invalid")
-            is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError("We were unable to obtain user information")
+            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(LinkingOutputModel(user.linked_email), "Account ${user.username} linked.")
+            is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("User already has a linked account.")
+            is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("The provided Microsoft token is invalid.")
+            is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError("Something went wrong: Unable to obtain user information.")
         }
     }
 
@@ -81,8 +81,8 @@ class UserController(private val userServices: UserServices) {
         logger.info { "DELETE: ${Uris.Users.UNLINK} received" }
 
         return when (userServices.removeRefreshToken(user)){
-            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(MessageOutputModel("Unlinked"), "Account ${user.username} unlinked")
-            is RemoveRefreshTokenInfo.AccountNotLinked -> ResponseTemplate.Conflict("Unable to remove account link: Account not linked to any Microsoft account")
+            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(MessageOutputModel("Unlinked"), "Account ${user.username} unlinked.")
+            is RemoveRefreshTokenInfo.AccountNotLinked -> ResponseTemplate.Conflict("Unable to remove account link: User is not linked to any Microsoft account.")
         }
     }
 }

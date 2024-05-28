@@ -12,11 +12,6 @@ export function NotLinked(){
             <button type="button" onClick={()=>{
                 window.open('http://localhost:3000/','_blank')
             }}>Link account</button>
-            <button type="button" onClick={()=>{
-                deleteStoredInfo()
-                setUserInfo(null)
-                setAlert({alert: "warning", message: "user logged out"})
-            }}>Logout</button>
         </div>
     )
 }
