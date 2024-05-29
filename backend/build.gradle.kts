@@ -36,7 +36,9 @@ dependencies {
 	implementation("com.squareup.okhttp3:okhttp")
 	implementation("com.squareup.okhttp3:logging-interceptor")
 	implementation("org.jsoup:jsoup:1.17.2")
-
+	implementation("org.languagetool:language-en:5.9")
+	implementation("org.languagetool:language-pt:5.9")
+	implementation("com.google.guava:guava:24.0-jre")
 }
 
 tasks.withType<KotlinCompile> {

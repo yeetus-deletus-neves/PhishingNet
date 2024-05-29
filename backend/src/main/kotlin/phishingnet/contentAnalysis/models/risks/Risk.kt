@@ -6,7 +6,8 @@ data class Risk (
     val name: String,
     val description: String,
     // Warning and minimum number of occurrences
-    val level: RiskLevel
+    val level: RiskLevel,
+    //val condition: Condition = Condition.INCLUSIVE
 ){
     val warningRequirements = mutableMapOf<Warning,Int>()
 
@@ -15,6 +16,7 @@ data class Risk (
     }
 }
 
-
-
-
+enum class Condition{
+    EXCLUSIVE,
+    INCLUSIVE
+}

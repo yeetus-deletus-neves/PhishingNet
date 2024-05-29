@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 class RiskAnalysisTests {
     private val riskAnalysis1 = RiskAnalysis(
         RiskLevel.SHOULD_LOOK_INTO_IT,
-        listOf(RiskAnalysisEntry("Test risk", "Nothing to see here", RiskLevel.SHOULD_LOOK_INTO_IT, ""))
+        listOf(RiskAnalysisEntry("Test risk", "Nothing to see here", RiskLevel.SHOULD_LOOK_INTO_IT))
     )
 
     @Test

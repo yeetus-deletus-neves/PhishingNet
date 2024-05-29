@@ -38,7 +38,7 @@ class CountWordsModuleTest {
         val process = Processor(listOf(cntModule), listOf(mockRisk))
         val eval = process.process(email)
 
-        val mockAnalysisEntry = RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK, cntModule.name)
+        val mockAnalysisEntry = RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK)
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -57,7 +57,7 @@ class CountWordsModuleTest {
         val eval = process.process(email)
 
         val mockAnalysisEntry =
-            RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK, cntModule.name)
+            RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK)
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
