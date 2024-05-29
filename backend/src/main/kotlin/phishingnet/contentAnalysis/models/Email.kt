@@ -4,6 +4,7 @@ import org.jsoup.Jsoup
 
 data class Email(
     val from: Sender,
+    val fromEmailCount: Int,
     val sender: Sender,
     val subject: String,
     val importance: String,

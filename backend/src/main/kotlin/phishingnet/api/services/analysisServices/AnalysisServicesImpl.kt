@@ -39,7 +39,10 @@ class AnalysisServicesImpl(
             val emailDetails = graphInterface.getEmailDetails(messageID, graphTokens.accessToken)
                 ?: throw Exception("Unable to get email details")
 
-            val compiledEmail = emailDetails.map { compileMessageInfo(it) }.filter { it.from.address != user.linked_email }
+            val senderHistory = graphInterface.countSenderHistory(emailDetails[0].messageInfo.from.emailAddress.address, graphTokens.accessToken)
+                ?: throw Exception("Unable to get email details")
+
+            val compiledEmail = emailDetails.map { compileMessageInfo(it, senderHistory) }.filter { it.from.address != user.linked_email }
             if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
 
             return AnalysisResult.CompletedAnalysis(
@@ -74,9 +77,10 @@ class AnalysisServicesImpl(
         refreshTokenRepository.delete(refreshToken)
     }
 
-    private fun compileMessageInfo(message: GraphEmailDetails): Email{
+    private fun compileMessageInfo(message: GraphEmailDetails, fromEmailCount: Int): Email{
         return Email(
             from = Sender(message.messageInfo.from.emailAddress.name, message.messageInfo.from.emailAddress.address),
+            fromEmailCount = fromEmailCount,
             sender = Sender(message.messageInfo.sender.emailAddress.name, message.messageInfo.sender.emailAddress.address),
             subject = message.messageInfo.subject,
             importance = message.messageInfo.importance,

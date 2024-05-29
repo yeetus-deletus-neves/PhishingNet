@@ -31,7 +31,7 @@ class HeaderModule : AnalysisModule {
             warningLog[Warning.DKIM_AUTH_FAILED].incrementOccurrences()
         if (email.authDetails.spf == SecurityVerification.FAILED)
             warningLog[Warning.SPF_AUTH_FAILED].incrementOccurrences()
-        */
+
 
         if (email.authDetails.dmarc == SecurityVerification.FAILED ||
             email.authDetails.dkim == SecurityVerification.FAILED ||

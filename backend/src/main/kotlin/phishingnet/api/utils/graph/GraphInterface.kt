@@ -75,6 +75,17 @@ class GraphInterface {
         return extractEmail(responseBody)
     }
 
+    fun countSenderHistory(fromAddress: String, token: String): Int? {
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=(from/emailAddress/address) eq '${fromAddress}'"), HttpMethod.GET)
+        request.addHeader("Authorization", "Bearer $token")
+
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        return Gson().fromJson(responseBody, GraphMessageResponse::class.java).value.size
+    }
+
     fun getEmailDetails(conversationId: String, token: String): List<GraphEmailDetails>? {
         val result = mutableListOf<GraphEmailDetails>()
 
