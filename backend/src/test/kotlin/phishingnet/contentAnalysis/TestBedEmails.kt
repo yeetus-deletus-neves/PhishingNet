@@ -11,6 +11,13 @@ const val testAuthStr = """
         header.from=valimail.com;compauth=pass reason=100
     """
 
+const val testFailingAuthStr = """
+        Authentication-Results: spf=fail (sender IP is 209.85.222.48)
+        smtp.mailfrom=valimail.com; dkim=none (signature was verified)
+        header.d=valimail.com;dmarc=fail action=none
+        header.from=valimail.com;compauth=pass reason=100
+    """
+
 
 const val realPhishingBody1 =
     "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><p><img src=\"images/stansted-airport-college/Stansted-Airport-College-Logo-400px.png\" alt=\"\"></p><h3>Thank you for contacting Stansted Airport College. We'll get back to you as soon as possible to answer your question.</h3><p><strong>Course you are interested in:</strong> Movies, videos</p><p><strong>Your question was:</strong> Hi, this is Irina. I am sending you my intimate photos as I promised. https://tinyurl.com/226pfc9j#VvxRlR</p><p>If you have any other questions please call one of our friendly Admissions Advisers on <strong>01279 868100</strong></p><p>&nbsp;</p></body></html>"
@@ -52,6 +59,18 @@ val testEmail = Email(
     isRead = false,
     "email1@test.com",
     testAuthStr,
+    rawBody1
+)
+
+val testEmailWithBadHeaders = Email(
+    Sender("1", "email1@test.com"),
+    Sender("1", "email1@test.com"),
+    "test",
+    "Medium",
+    hasAttachments = false,
+    isRead = false,
+    "email1@test.com",
+    rawAuthResults = testFailingAuthStr,
     rawBody1
 )
 

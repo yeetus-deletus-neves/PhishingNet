@@ -49,7 +49,7 @@ browser.runtime.onMessage.addListener(
         console.log(analyseRsp)
         browser.tabs.sendMessage(message.tabId,{
           type: "analysed",
-          content: analyseRsp.result,
+          content: analyseRsp,
           conversationID: conversationID
         })
         break;

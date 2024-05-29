@@ -12,33 +12,29 @@ import phishingnet.contentAnalysis.testEmailEmpty
 
 class CountWordsModuleTest {
 
+    private val mockRisk = Risk("To many words", "to many words in email", RiskLevel.MOCK_RISK)
+        .apply { setRequirement(Warning.WORD_COUNTED, 5) }
+
+    private val mockAnalysisEntry =
+        RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK)
+
+    private val processor = Processor(listOf(CountWordsModule()), listOf(mockRisk))
+
     @Test
-    fun `CountWordsModule test for no Threat`(){
+    fun `CountWordsModule test for no Threat`() {
         val email = testEmailEmpty.copy(rawBody = "1word")
-        val cntModule = CountWordsModule()
 
-        val mockRisk = Risk("To many words", "to many words in email", RiskLevel.MOCK_RISK)
-        mockRisk.setRequirement(Warning.WORD_COUNTED, 5)
-
-        val process = Processor(listOf(cntModule), listOf(mockRisk))
-        val eval = process.process(email)
+        val eval = processor.process(email)
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
     }
 
     @Test
-    fun `CountWordsModule test for less than 5 words`(){
+    fun `CountWordsModule test for less than 5 words`() {
         val email = testEmailEmpty.copy(rawBody = "1word 2word 3word 4word 5word")
-        val cntModule = CountWordsModule()
 
-        val mockRisk = Risk("To many words", "to many words in email", RiskLevel.MOCK_RISK)
-        mockRisk.setRequirement(Warning.WORD_COUNTED, 5)
-
-        val process = Processor(listOf(cntModule), listOf(mockRisk))
-        val eval = process.process(email)
-
-        val mockAnalysisEntry = RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK, cntModule.name)
+        val eval = processor.process(email)
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -46,18 +42,10 @@ class CountWordsModuleTest {
     }
 
     @Test
-    fun `CountWordsModule test for more than 10 words`(){
+    fun `CountWordsModule test for more than 10 words`() {
         val email = testEmailEmpty.copy(rawBody = "1w 2w 3w 4w 5w 6w 7w 8w 9w 10w 11w")
-        val cntModule = CountWordsModule()
 
-        val mockRisk = Risk("To many words", "to many words in email", RiskLevel.MOCK_RISK)
-        mockRisk.setRequirement(Warning.WORD_COUNTED, 5)
-
-        val process = Processor(listOf(cntModule), listOf(mockRisk))
-        val eval = process.process(email)
-
-        val mockAnalysisEntry =
-            RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK, cntModule.name)
+        val eval = processor.process(email)
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)

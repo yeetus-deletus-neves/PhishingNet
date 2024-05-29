@@ -81,8 +81,7 @@ class Processor(
             val compiled = RiskAnalysisEntry(
                 toCompile.name,
                 toCompile.description,
-                toCompile.level,
-                "" //TODO fix add from
+                toCompile.level
             )
             compiledRisks.add(compiled)
         }
