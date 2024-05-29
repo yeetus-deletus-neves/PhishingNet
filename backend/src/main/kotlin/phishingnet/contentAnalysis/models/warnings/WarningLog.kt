@@ -3,42 +3,25 @@ package phishingnet.contentAnalysis.models.warnings
 import kotlin.collections.getOrPut
 
 
-data class WarningLog(
-    val warnings: MutableMap<Warning, Occurrences>
-) {
-    constructor(warningList: List<Warning>) : this(
-        mutableMapOf<Warning, Occurrences>().apply {
-            warningList.forEach { warning ->
-                getOrPut(warning) { Occurrences() }
-            }
-        }
-    )
+class WarningLog{
+    val warnings: MutableMap<Warning, Int> = mutableMapOf()
 
-    constructor(warning: Warning) : this(
-        mutableMapOf<Warning, Occurrences>().apply {
-            getOrPut(warning) { Occurrences() }
+    constructor(warningList: List<Warning>){
+        for (warning in warningList){
+            this.warnings[warning] = 0
         }
-    )
+    }
 
-    operator fun get(warning: Warning): Occurrences = warnings[warning] ?: throw IllegalArgumentException()
-    operator fun set(warning: Warning, value: Occurrences) {
+    constructor(warning: Warning){
+        this.warnings[warning] = 0
+    }
+
+    operator fun get(warning: Warning): Int = warnings[warning] ?: throw IllegalArgumentException()
+    operator fun set(warning: Warning, value: Int) {
         warnings[warning] = value
     }
+    fun incrementOccurrences(warning: Warning) {
+        warnings[warning] = get(warning)+1
+    }
 }
 
-
-data class Occurrences(private var occurrences: Int = 0) {
-
-    fun get() = occurrences
-
-    fun incrementOccurrences() {
-        this.occurrences += 1
-    }
-
-    fun setOccurrences(occurrences: Int) {
-        this.occurrences = occurrences
-    }
-
-}
-
-fun Int.toOccurrences(): Occurrences = Occurrences(this)

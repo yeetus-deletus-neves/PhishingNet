@@ -19,7 +19,7 @@ class InformationGivenModule: AnalysisModule {
         val ibanCount = ibanPattern.findAll(email.body).count()
 
 
-        warningLog[Warning.ASKS_FOR_SENSITIVE_INFO].setOccurrences(phoneNumbersCount + ibanCount)
+        warningLog[Warning.ASKS_FOR_SENSITIVE_INFO] = phoneNumbersCount + ibanCount
 
         return warningLog
     }

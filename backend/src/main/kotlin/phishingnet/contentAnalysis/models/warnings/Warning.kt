@@ -13,6 +13,7 @@ enum class Warning(description: String){
     MALICIOUS_ATTACHMENT("malicious attachment"),
     BAD_GRAMMAR("bad grammar"),
     ASKS_FOR_SENSITIVE_INFO("bad grammar"),
+    PAST_EMAILS_SENT("The number of emails previously exchanged with this address"),
 
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),

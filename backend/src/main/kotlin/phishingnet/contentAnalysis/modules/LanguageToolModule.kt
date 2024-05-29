@@ -36,7 +36,7 @@ class LanguageToolModule: AnalysisModule {
         println("Detected this errors: $detectedErrors")
         println("Number of errors: ${detectedErrors.size}")
 
-        warningLog[Warning.BAD_GRAMMAR].setOccurrences(cnt)
+        warningLog[Warning.BAD_GRAMMAR] = cnt
 
         return warningLog
     }

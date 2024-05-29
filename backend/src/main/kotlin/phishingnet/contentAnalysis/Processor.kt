@@ -6,7 +6,6 @@ import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
-import phishingnet.contentAnalysis.models.warnings.Occurrences
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class Processor(
@@ -43,7 +42,7 @@ class Processor(
                 val key = warning.key
                 val occurrences = warning.value
 
-                if (occurrences.get() == 0) continue
+                if (occurrences == 0) continue
 
                 // Checks if there's already a log with the same type of warning
                 val warningAlreadyPresent = compiledWarnings.warnings.keys.contains(key)
@@ -60,7 +59,7 @@ class Processor(
                      * than the previously registered one for the same warning
                      * we update it
                      */
-                    if (existentWarning.get() < occurrences.get()) compiledWarnings[key] = occurrences
+                    if (existentWarning < occurrences) compiledWarnings[key] = occurrences
 
                 }
             }
