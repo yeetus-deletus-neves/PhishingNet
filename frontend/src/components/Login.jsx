@@ -16,7 +16,7 @@ export function LoginPage(){
                 <div id="container" className="center" >
                     <h2 className="center">You're currently logged in {userInfo.username}!</h2>
                     <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
-                    <button type="button" onClick={ ()=>{
+                    <button class="btn btn-dark" onClick={ ()=>{
                         deleteStoredInfo()
                         setUserInfo(null)
                     }
@@ -34,7 +34,7 @@ export function LoginPage(){
                     <h1>Login</h1>
                         <input placeholder="Username" type="text" name="username" id="username"/>
                         <input placeholder="Password" type="password" name="password" id="password"/>
-                        <button type="button" onClick={ async ()=>{
+                        <button type="submit" class="btn btn-dark" onClick={ async ()=>{
                             let username = document.getElementById('username').value;
                             let password = document.getElementById('password').value;
                             try{

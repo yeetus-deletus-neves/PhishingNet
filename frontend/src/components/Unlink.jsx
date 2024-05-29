@@ -14,7 +14,7 @@ export function UnlinkPage(){
             <div className="container">
                 <div id="container" className="center">
                     <h2 className="center">Do you want to unlink the email {userInfo.email} form your account?</h2>
-                    <button type="button" onClick={async ()=>{
+                    <button class="btn btn-dark" onClick={async ()=>{
                         try{
                             const tokenRsp = await defaultFetch(
                                 'http://localhost:8080/user/unlink',
@@ -45,7 +45,7 @@ export function UnlinkPage(){
                 <div id="container" className="center">
                     <h2 className="center">Unlinking was successfull</h2>
                     <h3 className="center">Want to link a new account? Click bellow</h3>
-                    <button type="button" onClick={()=>{
+                    <button class="btn btn-dark" onClick={()=>{
                         const msalAgent = new MsalInterface()
                         msalAgent.login()
                     }}>Link account</button>

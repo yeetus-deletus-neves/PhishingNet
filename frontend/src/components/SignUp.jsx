@@ -13,7 +13,7 @@ export function SignUpPage(){
                 <h1>SignUp</h1>
                     <input placeholder="Username" type="text" name="username" id="username"/>
                     <input placeholder="Password" type="password" name="password" id="password"/>
-                    <button type="button" onClick={ async ()=>{
+                    <button type="submit" class="btn btn-dark" onClick={ async ()=>{
                         let username = document.getElementById('username').value;
                         let password = document.getElementById('password').value;
                         try{
