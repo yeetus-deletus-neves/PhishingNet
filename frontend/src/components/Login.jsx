@@ -12,49 +12,53 @@ export function LoginPage(){
 
     if(userInfo){
         return(
-            <div className="center">
-                <h2 className="center">You're currently logged in {userInfo.username}!</h2>
-                <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
-                <button type="button" onClick={ ()=>{
-                    deleteStoredInfo()
-                    setUserInfo(null)
-                }
+            <div className="container">
+                <div id="container" className="center" >
+                    <h2 className="center">You're currently logged in {userInfo.username}!</h2>
+                    <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
+                    <button type="button" onClick={ ()=>{
+                        deleteStoredInfo()
+                        setUserInfo(null)
+                    }
                 }>
-                Logout from current account
-                </button>
+                    Logout from current account
+                    </button>
+                </div>
             </div>
         )
     }
     else{
         return (
-        <div className="login-from">
-            <h1>Login</h1>
-                <input placeholder="Username" type="text" name="username" id="username"/>
-                <input placeholder="Password" type="password" name="password" id="password"/>
-                <button type="button" onClick={ async ()=>{
-                    let username = document.getElementById('username').value;
-                    let password = document.getElementById('password').value;
-                    try{
-                        const tokenRsp = await defaultFetch(
-                            'http://localhost:8080/user/signIn',
-                            "POST",
-                            {
-                                'Content-Type': 'application/json'
-                            },
-                            {
-                                "username": username,
-                                "password": password
+            <div className="container">
+                <div id="container" className="login-from center">
+                    <h1>Login</h1>
+                        <input placeholder="Username" type="text" name="username" id="username"/>
+                        <input placeholder="Password" type="password" name="password" id="password"/>
+                        <button type="button" onClick={ async ()=>{
+                            let username = document.getElementById('username').value;
+                            let password = document.getElementById('password').value;
+                            try{
+                                const tokenRsp = await defaultFetch(
+                                    'http://localhost:8080/user/signIn',
+                                    "POST",
+                                    {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    {
+                                        "username": username,
+                                        "password": password
+                                    }
+                                )
+                                tokenRsp.username = username
+                                setStoredInfo(tokenRsp)
+                                setUserInfo(tokenRsp)
+                                navigate("/")
+                            }catch(error){
+                                setAlert({alert: "error", message: `${error.details}`})
                             }
-                        )
-                        tokenRsp.username = username
-                        setStoredInfo(tokenRsp)
-                        setUserInfo(tokenRsp)
-                        navigate("/")
-                    }catch(error){
-                        setAlert({alert: "error", message: `${error.details}`})
-                    }
-                }}>Login</button>
-        </div>
+                        }}>Login</button>
+                </div>
+            </div>
         );
     }
 }
