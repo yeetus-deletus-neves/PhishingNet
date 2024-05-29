@@ -16,11 +16,23 @@ class Processor(
 
     private val evaluator = EvaluationUnit(registeredRisks)
 
+    fun process(emails: List<Email>): RiskAnalysis {
+        val risksIdentified = mutableSetOf<Risk>()
+
+        for (email in emails) {
+            processSingleEmail(email).forEach{
+                risksIdentified.add(it)
+            }
+        }
+
+        return compileAnalysis(risksIdentified)
+    }
+
     /***
      * Goes through all modules evaluating each for the current email
      * receiving a WarningLog and compiling all the received WarningLogs into a final RiskAnalysis for this email
      */
-    fun process(email: Email): RiskAnalysis {
+    private fun processSingleEmail(email: Email): Set<Risk> {
         val compiledWarnings = WarningLog(listOf())
         modules.forEach { module ->
             //evaluate module
@@ -54,8 +66,7 @@ class Processor(
             }
         }
 
-        val evaluationResult = evaluator.evaluate(compiledWarnings)
-        return compileAnalysis(evaluationResult)
+        return evaluator.evaluate(compiledWarnings)
     }
 
     private fun compileAnalysis(risks: Set<Risk>): RiskAnalysis {

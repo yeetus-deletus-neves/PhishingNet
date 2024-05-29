@@ -25,7 +25,6 @@ class HeaderModule() : AnalysisModule {
             )
         )
 
-
         if (email.authDetails.dmarc == SecurityVerification.FAILED)
             warningLog[Warning.DMARC_AUTH_FAILED].incrementOccurrences()
         if (email.authDetails.dkim == SecurityVerification.FAILED)
