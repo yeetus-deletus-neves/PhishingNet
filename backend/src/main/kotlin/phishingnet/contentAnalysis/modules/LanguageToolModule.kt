@@ -26,7 +26,7 @@ class LanguageToolModule: AnalysisModule {
         val langTool = JLanguageTool(Portuguese())
         //val langTool = JLanguageTool(AmericanEnglish())
 
-        val warningLog: WarningLog = WarningLog(Warning.BAD_GRAMMAR)
+        val warningLog = WarningLog(Warning.BAD_GRAMMAR)
 
         val detectedErrors = langTool.check(email.body)
         val cnt = detectedErrors.size

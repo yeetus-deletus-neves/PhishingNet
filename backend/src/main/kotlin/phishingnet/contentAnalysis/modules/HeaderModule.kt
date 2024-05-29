@@ -15,7 +15,7 @@ class HeaderModule : AnalysisModule {
     // that it is illegitimate
 
     override fun process(email: Email): WarningLog {
-        val warningLog: WarningLog = WarningLog(
+        val warningLog = WarningLog(
             listOf(
                 Warning.FROM_DISTINCT_FROM_RETURN_PATH,
                 /*Warning.DMARC_AUTH_FAILED,

@@ -12,6 +12,7 @@ enum class Warning(description: String){
     MALICIOUS_URL("malicious url"),
     MALICIOUS_ATTACHMENT("malicious attachment"),
     BAD_GRAMMAR("bad grammar"),
+    ASKS_FOR_SENSITIVE_INFO("bad grammar"),
 
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),
