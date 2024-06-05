@@ -49,6 +49,7 @@ browser.runtime.onMessage.addListener(
                             var text = document.createTextNode("Analyse message");
                             first.appendChild(text);
                             first.setAttribute("id","analyse")
+                            first.setAttribute("style","color: black; background: white")
                             first.addEventListener("click",function(){
                                 browser.runtime.sendMessage({
                                     type: "buttonClicked",
@@ -74,6 +75,7 @@ browser.runtime.onMessage.addListener(
                 const div = document.createElement("div");
                 const header = document.createElement("h4");
                 var text = document.createTextNode(message.content.threat);
+                header.setAttribute("style", "color:red")
                 header.appendChild(text);
                 div.setAttribute("id",message.conversationID);
                 div.setAttribute("class","analyse_content");
@@ -110,6 +112,7 @@ browser.runtime.onMessage.addListener(
                     var text = document.createTextNode("Link account");
                     first.appendChild(text);
                     first.setAttribute("id","link_account")
+                    first.setAttribute("style","color: black; background: white")
                     first.addEventListener("click",function(){
                         window.open('http://localhost:3000/','_blank')
                     })
