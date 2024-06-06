@@ -24,7 +24,7 @@ class InformationGivenModuleTests {
     fun `InformationGivenModule test for no Threat`() {
         val email = testEmail.copy(rawBody = "test no suspect info being asked here")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
@@ -34,7 +34,7 @@ class InformationGivenModuleTests {
     fun `InformationGivenModule test for giving a number`() {
         val email = testEmail.copy(rawBody = "call this number +1234567890")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -45,7 +45,7 @@ class InformationGivenModuleTests {
     fun `InformationGivenModule test for giving a iban`() {
         val email = testEmail.copy(rawBody = "send payment to this iban PT89370400440532013000")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -55,10 +55,10 @@ class InformationGivenModuleTests {
     @Test
     fun `InformationGivenModule test for giving a iban and a number`() {
         val email = testEmail.copy(
-            rawBody = "send payment to this iban PT89370400440532013000 for any question call this number +1234567890"
+            rawBody = "send payment to this iban PT50000201231234567890154 for any question call this number +1234567890"
         )
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)

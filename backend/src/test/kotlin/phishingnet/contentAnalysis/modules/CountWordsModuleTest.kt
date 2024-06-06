@@ -24,7 +24,7 @@ class CountWordsModuleTest {
     fun `CountWordsModule test for no Threat`() {
         val email = testEmailEmpty.copy(rawBody = "1word")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
@@ -34,7 +34,7 @@ class CountWordsModuleTest {
     fun `CountWordsModule test for less than 5 words`() {
         val email = testEmailEmpty.copy(rawBody = "1word 2word 3word 4word 5word")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -45,7 +45,7 @@ class CountWordsModuleTest {
     fun `CountWordsModule test for more than 10 words`() {
         val email = testEmailEmpty.copy(rawBody = "1w 2w 3w 4w 5w 6w 7w 8w 9w 10w 11w")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.MOCK_RISK, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)

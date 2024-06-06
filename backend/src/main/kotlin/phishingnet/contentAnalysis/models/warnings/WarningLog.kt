@@ -1,7 +1,5 @@
 package phishingnet.contentAnalysis.models.warnings
 
-import kotlin.collections.getOrPut
-
 
 class WarningLog{
     val warnings: MutableMap<Warning, Int> = mutableMapOf()

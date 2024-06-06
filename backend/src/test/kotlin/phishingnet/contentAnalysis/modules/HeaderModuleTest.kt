@@ -28,7 +28,7 @@ class HeaderModuleTest {
     fun `HeaderModule test for no Threat`() {
         val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email1@test.com")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
@@ -38,7 +38,7 @@ class HeaderModuleTest {
     fun `HeaderModule test for different return path and from with passing certificates`() {
         val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email2@test.com")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
@@ -48,7 +48,7 @@ class HeaderModuleTest {
     fun `HeaderModule test for different return path and failing certificates`() {
         val email = testEmailWithBadHeaders.copy(from = Sender("1", "email1@test.com"), returnPath = "email2@test.com")
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)

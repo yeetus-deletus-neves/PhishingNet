@@ -40,6 +40,7 @@ const val expectedCleanedContent1 = "Boa tarde Este email serve como teste Cumpr
 
 val testEmailEmpty = Email(
     Sender("1", "email1@test.com"),
+    0,
     Sender("1", "email1@test.com"),
     "test",
     "Medium",
@@ -52,6 +53,7 @@ val testEmailEmpty = Email(
 
 val testEmail = Email(
     Sender("1", "email1@test.com"),
+    0,
     Sender("1", "email1@test.com"),
     "test",
     "Medium",
@@ -64,6 +66,7 @@ val testEmail = Email(
 
 val testEmailWithBadHeaders = Email(
     Sender("1", "email1@test.com"),
+    0,
     Sender("1", "email1@test.com"),
     "test",
     "Medium",
@@ -76,6 +79,7 @@ val testEmailWithBadHeaders = Email(
 
 val realPhishingEmail1 = Email(
     Sender("Stansted Airport College Enquiry", "admissions@harlow-college.ac.uk"),
+    0,
     Sender("Stansted Airport College Enquiry", "admissions@harlow-college.ac.uk"),
     "Thanks for getting in touch\n",
     "",
