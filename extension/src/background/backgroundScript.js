@@ -34,7 +34,9 @@ browser.runtime.onMessage.addListener(
         const url = message.value
         const startIndex = url.indexOf("id/");
         // Extract the substring
-        const conversationID = url.substring(startIndex+3);
+        const regex= /[!"#$&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~]/g
+        const conversationID = url.substring(startIndex+3).split(regex)[0];
+
         const analyseRsp = await defaultFetch(
           'http://localhost:8080/analyse',
           "POST",

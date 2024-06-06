@@ -34,11 +34,13 @@ browser.runtime.onMessage.addListener(
                 }else{
                     email = email.innerHTML
                 }
+                console.log(email)
+                console.log(message.email)
                 let warningBar = document.getElementById("phishing-net-warning")
                 if(warningBar){
                     warningBar.remove()
                 }
-                if(email = message.email){
+                if(email == message.email){
                     warningBar = createWarningBar("Logged in phishing net")
 
                     if(location.href.includes("id/")){
@@ -49,7 +51,7 @@ browser.runtime.onMessage.addListener(
                             var text = document.createTextNode("Analyse message");
                             first.appendChild(text);
                             first.setAttribute("id","analyse")
-                            first.setAttribute("style","color: black; background: white")
+                            first.setAttribute("style","color: white; background: blue")
                             first.addEventListener("click",function(){
                                 browser.runtime.sendMessage({
                                     type: "buttonClicked",
@@ -112,7 +114,7 @@ browser.runtime.onMessage.addListener(
                     var text = document.createTextNode("Link account");
                     first.appendChild(text);
                     first.setAttribute("id","link_account")
-                    first.setAttribute("style","color: black; background: white")
+                    first.setAttribute("style","color: white; background: blue")
                     first.addEventListener("click",function(){
                         window.open('http://localhost:3000/','_blank')
                     })
