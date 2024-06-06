@@ -76,7 +76,7 @@ class PhishingNetApplication{
 			"Grammatical errors detected",
 			RiskLevel.SHOULD_LOOK_INTO_IT
 		)
-		risk3.setRequirement(Warning.BAD_GRAMMAR, 1)
+		risk3.setRequirement(Warning.BAD_GRAMMAR, 3)
 		list.add(risk3)
 
 		return list
