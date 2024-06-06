@@ -12,14 +12,11 @@ class InformationGivenModule: AnalysisModule {
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.ASKS_FOR_SENSITIVE_INFO)
 
-        val phoneNumberPattern = "\\+?[0-9]{1,3}[-.\\s]?\\(?[0-9]{1,4}?\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9}".toRegex()
         val ibanPattern = "[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}".toRegex()
 
-        val phoneNumbersCount = phoneNumberPattern.findAll(email.body).count()
         val ibanCount = ibanPattern.findAll(email.body).count()
 
-
-        warningLog[Warning.ASKS_FOR_SENSITIVE_INFO] = phoneNumbersCount + ibanCount
+        warningLog[Warning.ASKS_FOR_IBAN] = ibanCount
 
         return warningLog
     }

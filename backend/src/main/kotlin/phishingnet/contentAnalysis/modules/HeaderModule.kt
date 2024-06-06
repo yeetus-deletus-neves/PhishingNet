@@ -18,9 +18,6 @@ class HeaderModule : AnalysisModule {
         val warningLog = WarningLog(
             listOf(
                 Warning.FROM_DISTINCT_FROM_RETURN_PATH,
-                /*Warning.DMARC_AUTH_FAILED,
-                Warning.DKIM_AUTH_FAILED,
-                Warning.SPF_AUTH_FAILED,*/
                 Warning.HEADER_CERTIFICATES_AUTH_FAILED
             )
         )
@@ -31,7 +28,6 @@ class HeaderModule : AnalysisModule {
             warningLog.incrementOccurrences(Warning.DKIM_AUTH_FAILED)
         if (email.authDetails.spf == SecurityVerification.FAILED)
             warningLog.incrementOccurrences(Warning.SPF_AUTH_FAILED)
-
 
         if (email.authDetails.dmarc == SecurityVerification.FAILED ||
             email.authDetails.dkim == SecurityVerification.FAILED ||

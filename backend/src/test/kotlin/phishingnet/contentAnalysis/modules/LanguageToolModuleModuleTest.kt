@@ -43,7 +43,7 @@ class LanguageToolModuleModuleTest {
     fun `LanguageToolModule test for no Threat`() {
         val email = testEmail.copy(rawBody = rawCorrectlyWrittenEmail)
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
@@ -53,7 +53,7 @@ class LanguageToolModuleModuleTest {
     fun `LanguageToolModule test for poorly written email`() {
         val email = testEmail.copy(rawBody = rawPoorlyWrittenContent)
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
@@ -64,7 +64,7 @@ class LanguageToolModuleModuleTest {
     fun `LanguageToolModule test for gibberish content`() {
         val email = testEmail.copy(rawBody = rawContentGibberish)
 
-        val eval = processor.process(email)
+        val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
