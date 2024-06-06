@@ -1,5 +1,6 @@
 package phishingnet.api.http.controllers
 
+import mu.KotlinLogging
 import phishingnet.api.data.entities.User
 import phishingnet.api.http.ResponseTemplate
 import phishingnet.api.http.Uris
@@ -15,9 +16,12 @@ import phishingnet.api.http.models.MessageRequest
 class AnalysisController(
     private val analysisServices: AnalysisServices
 ) {
+    private val logger = KotlinLogging.logger {}
 
     @PostMapping(Uris.Analysis.ANALYSE)
     fun analyseContent(user: User, @RequestBody messageID: MessageRequest): ResponseEntity<*> {
+        logger.info { "POST: ${Uris.Analysis.ANALYSE} received" }
+
         val id = messageID.messageID
         return when(val res = analysisServices.analyseMessage(user, id)) {
             is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res.result, "Completed analysis of $id.")
