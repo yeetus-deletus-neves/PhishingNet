@@ -5,12 +5,12 @@ import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
-class InformationGivenModule: AnalysisModule {
+class IbanDetectionModule: AnalysisModule {
     override val name: String = "Information Asked Module"
     override var active: Boolean = false
 
     override fun process(email: Email): WarningLog {
-        val warningLog = WarningLog(Warning.ASKS_FOR_SENSITIVE_INFO)
+        val warningLog = WarningLog(Warning.ASKS_FOR_IBAN)
 
         val ibanPattern = "[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}".toRegex()
 

@@ -24,7 +24,7 @@ import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.modules.FromHistoryModule
 import phishingnet.contentAnalysis.modules.HeaderModule
-import phishingnet.contentAnalysis.modules.InformationGivenModule
+import phishingnet.contentAnalysis.modules.IbanDetectionModule
 import phishingnet.contentAnalysis.modules.LanguageToolModule
 import java.time.Instant
 import javax.sql.DataSource
@@ -44,7 +44,7 @@ class PhishingNetApplication{
 	fun moduleList(): List<AnalysisModule> = listOf(
 		FromHistoryModule(),
 		HeaderModule(),
-		InformationGivenModule(),
+		IbanDetectionModule(),
 		LanguageToolModule()
 	)
 

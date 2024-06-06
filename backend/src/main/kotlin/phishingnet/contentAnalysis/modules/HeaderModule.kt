@@ -30,6 +30,7 @@ class HeaderModule : AnalysisModule {
         val emailFrom = email.from.address//.split('<','>')[1]
         val returnPath = email.returnPath
         if (emailFrom != returnPath) warningLog.incrementOccurrences(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
+        println("Occurences = ${warningLog.warnings[Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK]}")
 
         return warningLog
     }
