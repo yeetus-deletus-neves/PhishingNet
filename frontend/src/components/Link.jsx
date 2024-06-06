@@ -44,21 +44,27 @@ export function LinkPage(){
     }
     if(isLinked){
         return (
-            <div id="container" className="center">
-                <h3 className="center">Link with {userInfo.email} was successfull</h3>
+            <div className="container">
+                <div id="container" className="center">
+                    <h3 className="center">Link with {userInfo.email} was successfull</h3>
+                </div>
             </div>
         )
     }else{
         if(isError){
             return (
-                <div id="container" className="center">
-                    <h1 className="center">Link was not successfull</h1>
-                </div>
+                <div className="container"> 
+                    <div id="container" className="center">
+                        <h1 className="center">Link was not successfull</h1>
+                    </div>
+                </div>    
             )    
         }else{
             return (
-                <div id="container" className="center">
-                    <h1 className="center">Waiting for linking</h1>
+                <div className="container">
+                    <div id="container" className="center">
+                        <h1 className="center">Waiting for linking</h1>
+                    </div>
                 </div>
             )
         }

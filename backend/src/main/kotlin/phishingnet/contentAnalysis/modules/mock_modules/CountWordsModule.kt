@@ -5,7 +5,6 @@ import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 import phishingnet.contentAnalysis.models.warnings.Warning
-import phishingnet.contentAnalysis.models.warnings.toOccurrences
 
 
 class CountWordsModule : AnalysisModule {
@@ -19,8 +18,8 @@ class CountWordsModule : AnalysisModule {
 
         val cleanStr = email.body.filterNot { it in punctuation }
 
-        val occurrences = cleanStr.split(" ").filter { it.isNotBlank() }.size.toOccurrences()
-        warningLog.warnings[warning] = occurrences
+        val occurrences = cleanStr.split(" ").filter { it.isNotBlank() }.size
+        warningLog[warning] = occurrences
 
         return warningLog
     }

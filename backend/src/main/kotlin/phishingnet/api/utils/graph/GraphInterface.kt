@@ -75,14 +75,31 @@ class GraphInterface {
         return extractEmail(responseBody)
     }
 
-    fun getEmailDetails(conversationId: String, token: String): GraphEmailDetails? {
-        val email = getMessageInfo(conversationId, token) ?: return null
-        val internetHeaders = getMessageInternetHeaders(email.id, token) ?: return null
+    fun countSenderHistory(fromAddress: String, token: String): Int? {
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=(from/emailAddress/address) eq '${fromAddress}'"), HttpMethod.GET)
+        request.addHeader("Authorization", "Bearer $token")
 
-        return (GraphEmailDetails(email, internetHeaders))
+        val responseBody = extractBody(
+            request.sendRequest()
+        ) ?:return null
+
+        return Gson().fromJson(responseBody, GraphMessageResponse::class.java).value.size
     }
 
-    private fun getMessageInfo(conversationId: String, token: String): GraphMessage? {
+    fun getEmailDetails(conversationId: String, token: String): List<GraphEmailDetails>? {
+        val result = mutableListOf<GraphEmailDetails>()
+
+        val emailsInfo = getMessageInfo(conversationId, token) ?: return null
+
+        for (email in emailsInfo) {
+            val internetHeaders = getMessageInternetHeaders(email.id, token) ?: continue
+            result.add(GraphEmailDetails(email, internetHeaders))
+        }
+
+        return result
+    }
+
+    private fun getMessageInfo(conversationId: String, token: String): List<GraphMessage>? {
         val request = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=conversationId eq '${conversationId}'"),
             HttpMethod.GET)
         request.addHeader("Authorization", "Bearer $token")
@@ -93,7 +110,7 @@ class GraphInterface {
 
         val extractedFlags = Gson().fromJson(responseBody, GraphMessageResponse::class.java)
         //TODO(Ver como dar handle a conversas com varios emails)
-        return extractedFlags.value[0]
+        return extractedFlags.value
     }
 
     private fun getMessageInternetHeaders(id: String, token: String): GraphInternetHeaders? {

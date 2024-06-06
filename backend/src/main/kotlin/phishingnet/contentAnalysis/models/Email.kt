@@ -4,21 +4,21 @@ import org.jsoup.Jsoup
 
 data class Email(
     val from: Sender,
+    val fromEmailCount: Int,
     val sender: Sender,
     val subject: String,
     val importance: String,
     val hasAttachments: Boolean,
     val isRead: Boolean,
-    val returnPath: String,
+    val returnPath: String?,
+    private val rawAuthResults: String?,
 
-    private val rawAuthResults: String,
     private val rawBody: String
 ) {
     val body: String
     val authDetails: AuthDetails by lazy { processAuth(rawAuthResults, "Microsoft") }
 
     init {
-        require(rawAuthResults.isNotEmpty()) { "authenticationResults cannot be empty" }
         body = cleanContent(rawBody)
     }
 
@@ -35,13 +35,14 @@ data class Sender(
 
 //implementation removes \n from the body, and indentation
 enum class SecurityVerification {
-    PASSED, FAILED
+    PASSED, FAILED, IGNORED
 }
 
 data class AuthDetails(val spf: SecurityVerification, val dkim: SecurityVerification, val dmarc: SecurityVerification)
 
-fun processAuth(authResults: String, provider: String): AuthDetails {
+fun processAuth(authResults: String?, provider: String): AuthDetails {
     require(provider == "Microsoft") { "Current Implementation only supports Microsoft" }
+    if (authResults == null) return AuthDetails(SecurityVerification.IGNORED, SecurityVerification.IGNORED, SecurityVerification.IGNORED)
     when(provider) {
         "Microsoft" -> return processAuthMicrosoft(authResults)
         "Google" -> TODO()

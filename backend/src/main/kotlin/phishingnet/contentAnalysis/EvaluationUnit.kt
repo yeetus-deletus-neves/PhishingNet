@@ -16,7 +16,7 @@ class EvaluationUnit(private val possibleRisks: List<Risk>) {
         for (risk in possibleRisks) {
             val allRequirementsMet = risk.warningRequirements.all { (warning, requiredOccurrences) ->
                 val warningIsPresent = warningsFound.warnings.containsKey(warning)
-                val occurrences = warningsFound.warnings[warning]?.get() ?: 0
+                val occurrences = warningsFound.warnings[warning] ?: 0
                 warningIsPresent && occurrences >= requiredOccurrences
             }
 

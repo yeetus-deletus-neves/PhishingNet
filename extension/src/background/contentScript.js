@@ -29,8 +29,8 @@ browser.runtime.onMessage.addListener(
                       
                     var button = document.getElementById("O365_MainLink_Me")  
                     triggerEvent(button,'click')
-                    triggerEvent(button,'click')
                     email = document.getElementById("mectrl_currentAccount_secondary").innerHTML;
+                    triggerEvent(button,'click')
                 }else{
                     email = email.innerHTML
                 }
@@ -41,21 +41,25 @@ browser.runtime.onMessage.addListener(
                 if(email = message.email){
                     warningBar = createWarningBar("Logged in phishing net")
 
-                    let button = document.getElementById("analyse") 
-                    if(!button){
-                        const first = document.createElement("button");
-                        var text = document.createTextNode("Analyse message");
-                        first.appendChild(text);
-                        first.setAttribute("id","analyse")
-                        first.addEventListener("click",function(){
-                            browser.runtime.sendMessage({
-                                type: "buttonClicked",
-                                value: location.href,
-                                token: message.token,
-                                tabId: message.tabId
+                    if(location.href.includes("id/")){
+
+                        let button = document.getElementById("analyse") 
+                        if(!button){
+                            const first = document.createElement("button");
+                            var text = document.createTextNode("Analyse message");
+                            first.appendChild(text);
+                            first.setAttribute("id","analyse")
+                            first.setAttribute("style","color: black; background: white")
+                            first.addEventListener("click",function(){
+                                browser.runtime.sendMessage({
+                                    type: "buttonClicked",
+                                    value: location.href,
+                                    token: message.token,
+                                    tabId: message.tabId
+                                })
                             })
-                        })
-                        document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(first);
+                            document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(first);
+                        }
                     }
                 }else{
                     // incorrect email o365header
@@ -71,6 +75,7 @@ browser.runtime.onMessage.addListener(
                 const div = document.createElement("div");
                 const header = document.createElement("h4");
                 var text = document.createTextNode(message.content.threat);
+                header.setAttribute("style", "color:red")
                 header.appendChild(text);
                 div.setAttribute("id",message.conversationID);
                 div.setAttribute("class","analyse_content");
@@ -107,6 +112,7 @@ browser.runtime.onMessage.addListener(
                     var text = document.createTextNode("Link account");
                     first.appendChild(text);
                     first.setAttribute("id","link_account")
+                    first.setAttribute("style","color: black; background: white")
                     first.addEventListener("click",function(){
                         window.open('http://localhost:3000/','_blank')
                     })

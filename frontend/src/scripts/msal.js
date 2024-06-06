@@ -33,7 +33,7 @@ export class MsalInterface {
         this.myMSALObj.getAuthCodeUrl(authorizationReq)
             .then(response => {
                 console.log('Response', response);
-                window.open(response);
+                window.location.replace(response);
                 // Aqui você pode usar o access token para fazer chamadas à API protegida, como o Microsoft Graph
             })
             .catch(error => {

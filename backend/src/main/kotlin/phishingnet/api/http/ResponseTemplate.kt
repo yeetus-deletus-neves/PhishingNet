@@ -60,6 +60,13 @@ object ResponseTemplate {
         return ResponseEntity(body, HttpStatus.CREATED)
     }
 
+    fun NoContent(body: Any?, log: String?): ResponseEntity<*> {
+        val code = HttpStatus.NO_CONTENT.value()
+        logger.warn { "No-content $code: $log" }
+
+        return ResponseEntity(body, HttpStatus.NO_CONTENT)
+    }
+
     fun InternalServerError(details: String): ResponseEntity<*> {
         val code = HttpStatus.INTERNAL_SERVER_ERROR.value()
         logger.warn { "Internal Server Error: $code: $details" }

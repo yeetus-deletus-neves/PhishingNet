@@ -6,7 +6,7 @@ browser.tabs.onUpdated.addListener(
     // read changeInfo data and do something with it
     // like send the new url to contentscripts.js
 
-    if(changeInfo.url && changeInfo.url.includes("outlook.live.com/mail/") && changeInfo.url.includes("id/")) {
+    if(changeInfo.url && changeInfo.url.includes("outlook.live.com/mail/")) {
       const userInfo = getStoredInfo()
 
       if(!userInfo || !userInfo.email){

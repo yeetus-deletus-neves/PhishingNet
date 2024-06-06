@@ -6,7 +6,6 @@ import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
-import phishingnet.contentAnalysis.models.warnings.Occurrences
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class Processor(
@@ -16,11 +15,23 @@ class Processor(
 
     private val evaluator = EvaluationUnit(registeredRisks)
 
+    fun process(emails: List<Email>): RiskAnalysis {
+        val risksIdentified = mutableSetOf<Risk>()
+
+        for (email in emails) {
+            processSingleEmail(email).forEach{
+                risksIdentified.add(it)
+            }
+        }
+
+        return compileAnalysis(risksIdentified)
+    }
+
     /***
      * Goes through all modules evaluating each for the current email
      * receiving a WarningLog and compiling all the received WarningLogs into a final RiskAnalysis for this email
      */
-    fun process(email: Email): RiskAnalysis {
+    private fun processSingleEmail(email: Email): Set<Risk> {
         val compiledWarnings = WarningLog(listOf())
         modules.forEach { module ->
             //evaluate module
@@ -31,7 +42,7 @@ class Processor(
                 val key = warning.key
                 val occurrences = warning.value
 
-                if (occurrences.get() == 0) continue
+                if (occurrences == 0) continue
 
                 // Checks if there's already a log with the same type of warning
                 val warningAlreadyPresent = compiledWarnings.warnings.keys.contains(key)
@@ -48,14 +59,13 @@ class Processor(
                      * than the previously registered one for the same warning
                      * we update it
                      */
-                    if (existentWarning.get() < occurrences.get()) compiledWarnings[key] = occurrences
+                    if (existentWarning < occurrences) compiledWarnings[key] = occurrences
 
                 }
             }
         }
 
-        val evaluationResult = evaluator.evaluate(compiledWarnings)
-        return compileAnalysis(evaluationResult)
+        return evaluator.evaluate(compiledWarnings)
     }
 
     private fun compileAnalysis(risks: Set<Risk>): RiskAnalysis {

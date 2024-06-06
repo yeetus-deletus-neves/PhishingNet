@@ -39,7 +39,12 @@ class AnalysisServicesImpl(
             val emailDetails = graphInterface.getEmailDetails(messageID, graphTokens.accessToken)
                 ?: throw Exception("Unable to get email details")
 
-            val compiledEmail = compileMessageInfo(emailDetails)
+            val senderHistory = graphInterface.countSenderHistory(emailDetails[0].messageInfo.from.emailAddress.address, graphTokens.accessToken)
+                ?: throw Exception("Unable to get email details")
+
+            val compiledEmail = emailDetails.map { compileMessageInfo(it, senderHistory) }.filter { it.from.address != user.linked_email }
+            if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
+
             return AnalysisResult.CompletedAnalysis(
                 analysisUnit.process(compiledEmail)
             )
@@ -72,16 +77,17 @@ class AnalysisServicesImpl(
         refreshTokenRepository.delete(refreshToken)
     }
 
-    private fun compileMessageInfo(message: GraphEmailDetails): Email{
+    private fun compileMessageInfo(message: GraphEmailDetails, fromEmailCount: Int): Email{
         return Email(
             from = Sender(message.messageInfo.from.emailAddress.name, message.messageInfo.from.emailAddress.address),
+            fromEmailCount = fromEmailCount,
             sender = Sender(message.messageInfo.sender.emailAddress.name, message.messageInfo.sender.emailAddress.address),
             subject = message.messageInfo.subject,
             importance = message.messageInfo.importance,
             hasAttachments = message.messageInfo.hasAttachments,
             isRead = message.messageInfo.isRead,
-            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
-            rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
+            returnPath = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value else null,
+            rawAuthResults = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value else null,
             rawBody = message.messageInfo.body.content
         )
     }
@@ -89,6 +95,7 @@ class AnalysisServicesImpl(
 }
 sealed class AnalysisResult{
     data class CompletedAnalysis(val result: RiskAnalysis): AnalysisResult()
+    object NoMessageToBeAnalyzed: AnalysisResult()
     object AccountNotLinked: AnalysisResult()
     data class BadRequest(val log: String): AnalysisResult()
     data class InvalidToken(val log: String): AnalysisResult()

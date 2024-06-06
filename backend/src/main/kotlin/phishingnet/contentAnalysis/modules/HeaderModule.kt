@@ -25,22 +25,22 @@ class HeaderModule : AnalysisModule {
             )
         )
 
-        /*if (email.authDetails.dmarc == SecurityVerification.FAILED)
-            warningLog[Warning.DMARC_AUTH_FAILED].incrementOccurrences()
+        if (email.authDetails.dmarc == SecurityVerification.FAILED)
+            warningLog.incrementOccurrences(Warning.DMARC_AUTH_FAILED)
         if (email.authDetails.dkim == SecurityVerification.FAILED)
-            warningLog[Warning.DKIM_AUTH_FAILED].incrementOccurrences()
+            warningLog.incrementOccurrences(Warning.DKIM_AUTH_FAILED)
         if (email.authDetails.spf == SecurityVerification.FAILED)
-            warningLog[Warning.SPF_AUTH_FAILED].incrementOccurrences()
-        */
+            warningLog.incrementOccurrences(Warning.SPF_AUTH_FAILED)
+
 
         if (email.authDetails.dmarc == SecurityVerification.FAILED ||
             email.authDetails.dkim == SecurityVerification.FAILED ||
             email.authDetails.spf == SecurityVerification.FAILED
-        ) warningLog[Warning.HEADER_CERTIFICATES_AUTH_FAILED].incrementOccurrences()
+        ) warningLog.incrementOccurrences(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
 
         val emailFrom = email.from.address//.split('<','>')[1]
         val returnPath = email.returnPath
-        if (emailFrom != returnPath) warningLog[Warning.FROM_DISTINCT_FROM_RETURN_PATH].incrementOccurrences()
+        if (emailFrom != returnPath) warningLog.incrementOccurrences(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
 
         return warningLog
     }
