@@ -76,7 +76,7 @@ class PhishingNetApplication{
 
 		val risk3 = Risk(
 			"Grammatical errors",
-			"The emails was written in a language not supported by PhishingNet. Please be careful!",
+			"The email contains grammatical errors.",
 			RiskLevel.SHOULD_LOOK_INTO_IT
 		)
 		risk3.setRequirement(Warning.BAD_GRAMMAR, 1)
