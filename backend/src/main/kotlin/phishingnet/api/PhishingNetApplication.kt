@@ -22,6 +22,10 @@ import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
+import phishingnet.contentAnalysis.modules.FromHistoryModule
+import phishingnet.contentAnalysis.modules.HeaderModule
+import phishingnet.contentAnalysis.modules.InformationGivenModule
+import phishingnet.contentAnalysis.modules.LanguageToolModule
 import phishingnet.contentAnalysis.modules.mock_modules.CountWordsModule
 import phishingnet.contentAnalysis.modules.mock_modules.HardCodedWordCounter
 import phishingnet.contentAnalysis.modules.mock_modules.MyNameWasMentionedModule
@@ -41,26 +45,49 @@ class PhishingNetApplication{
 
 	@Bean
 	fun moduleList(): List<AnalysisModule> = listOf(
-		CountWordsModule(),
-		MyNameWasMentionedModule(),
-		HardCodedWordCounter()
+		FromHistoryModule(),
+		HeaderModule(),
+		InformationGivenModule(),
+		LanguageToolModule()
 	)
 
 	@Bean
-	fun testRisk(): Risk {
-		val risk = Risk(
-			"Test Risk",
-			"My name was mentioned in a text of considerable length.",
+	fun RiskList(): List<Risk> {
+		val list = mutableListOf<Risk>()
+
+		val risk1 = Risk(
+			"Email sender suspicious",
+			"Email sender might be trying to impersonate someone you know.",
 			RiskLevel.SUSPICIOUS
 		)
-		risk.setRequirement(Warning.WORD_COUNTED, 5)
-		risk.setRequirement(Warning.NAME_MENTIONED)
-		return risk
+		risk1.setRequirement(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
+		list.add(risk1)
+
+
+		val risk2 = Risk(
+			"Possible financial scam",
+			"The email comes from a new contact and contains an IBAN.",
+			RiskLevel.ALARMING
+		)
+		risk2.setRequirement(Warning.ASKS_FOR_IBAN)
+		risk2.setRequirement(Warning.PAST_EMAILS_SENT, 1)
+		list.add(risk2)
+
+
+		val risk3 = Risk(
+			"Grammatical errors",
+			"The emails was written in a language not supported by PhishingNet. Please be careful!",
+			RiskLevel.SHOULD_LOOK_INTO_IT
+		)
+		risk3.setRequirement(Warning.BAD_GRAMMAR, 1)
+		list.add(risk3)
+
+		return list
 	}
 
 	@Bean
-	fun processor(moduleList: List<AnalysisModule>, testRisk: Risk): Processor {
-		return Processor(moduleList, listOf(testRisk))
+	fun processor(moduleList: List<AnalysisModule>, RiskList: List<Risk>): Processor {
+		return Processor(moduleList, RiskList())
 	}
 
 	@Bean
