@@ -26,9 +26,6 @@ import phishingnet.contentAnalysis.modules.FromHistoryModule
 import phishingnet.contentAnalysis.modules.HeaderModule
 import phishingnet.contentAnalysis.modules.InformationGivenModule
 import phishingnet.contentAnalysis.modules.LanguageToolModule
-import phishingnet.contentAnalysis.modules.mock_modules.CountWordsModule
-import phishingnet.contentAnalysis.modules.mock_modules.HardCodedWordCounter
-import phishingnet.contentAnalysis.modules.mock_modules.MyNameWasMentionedModule
 import java.time.Instant
 import javax.sql.DataSource
 
