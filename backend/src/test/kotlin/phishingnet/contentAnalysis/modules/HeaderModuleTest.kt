@@ -14,8 +14,7 @@ import phishingnet.contentAnalysis.testEmailWithBadHeaders
 class HeaderModuleTest {
 
     private val mockRisk = Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS).apply {
-        setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
-        setRequirement(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
+        setRequirement(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
     }
 
     private val mockAnalysisEntry =
@@ -40,8 +39,9 @@ class HeaderModuleTest {
 
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
-        Assertions.assertEquals(0, eval.threatJustification.size)
+        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(1, eval.threatJustification.size)
+        Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }
 
     @Test

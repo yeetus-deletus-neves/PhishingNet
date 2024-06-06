@@ -14,6 +14,7 @@ enum class Warning(description: String){
     BAD_GRAMMAR("bad grammar"),
     ASKS_FOR_SENSITIVE_INFO("bad grammar"),
     PAST_EMAILS_SENT("The number of emails previously exchanged with this address"),
+    FAILED_HEADERS_AND_RETURN_PATH_CHECK("Header certificates auth failed or from distinct from return path"),
 
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),

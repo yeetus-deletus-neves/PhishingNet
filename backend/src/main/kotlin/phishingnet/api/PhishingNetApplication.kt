@@ -60,7 +60,7 @@ class PhishingNetApplication{
 			"Email sender might be trying to impersonate someone you know.",
 			RiskLevel.SUSPICIOUS
 		)
-		risk1.setRequirement(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
+		risk1.setRequirement(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
 		list.add(risk1)
 
 
@@ -76,7 +76,7 @@ class PhishingNetApplication{
 
 		val risk3 = Risk(
 			"Grammatical errors",
-			"The emails was written in a language not supported by PhishingNet. Please be careful!",
+			"Grammatical errors detected",
 			RiskLevel.SHOULD_LOOK_INTO_IT
 		)
 		risk3.setRequirement(Warning.BAD_GRAMMAR, 1)
