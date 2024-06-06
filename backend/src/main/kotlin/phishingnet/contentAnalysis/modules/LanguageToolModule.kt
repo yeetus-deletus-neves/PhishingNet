@@ -1,6 +1,9 @@
 package phishingnet.contentAnalysis.modules
 
+import com.github.pemistahl.lingua.api.Language
+import com.github.pemistahl.lingua.api.LanguageDetectorBuilder
 import org.languagetool.JLanguageTool
+import org.languagetool.language.AmericanEnglish
 import org.languagetool.language.Portuguese
 import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.Email
@@ -23,8 +26,18 @@ class LanguageToolModule: AnalysisModule {
     override var active: Boolean = false
 
     override fun process(email: Email): WarningLog {
-        val langTool = JLanguageTool(Portuguese())
-        //val langTool = JLanguageTool(AmericanEnglish())
+        val emailContent = email.body
+
+        val languages = listOf(Language.ENGLISH, Language.PORTUGUESE)
+        val detector = LanguageDetectorBuilder.fromLanguages(*languages.toTypedArray()).build()
+        val detectedLanguage = detector.detectLanguageOf(emailContent)
+
+        val langTool = when(detectedLanguage.name){
+            "PORTUGUESE" -> JLanguageTool(Portuguese())
+            "ENGLISH" -> JLanguageTool(AmericanEnglish())   //TODO further tests to check if this is the best
+            else -> throw IllegalArgumentException("Language was not detected")
+        }
+        println(detectedLanguage)
 
         val warningLog = WarningLog(Warning.BAD_GRAMMAR)
 

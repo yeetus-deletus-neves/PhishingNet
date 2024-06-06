@@ -66,7 +66,8 @@ class LanguageToolModuleModuleTest {
 
         val eval = processor.process(email)
 
-        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
-        Assertions.assertEquals(0, eval.threatJustification.size)
+        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(1, eval.threatJustification.size)
+        Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }
 }

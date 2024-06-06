@@ -39,6 +39,7 @@ dependencies {
 	implementation("org.languagetool:language-en:5.9")
 	implementation("org.languagetool:language-pt:5.9")
 	implementation("com.google.guava:guava:24.0-jre")
+	implementation ("com.github.pemistahl:lingua:1.2.2")
 }
 
 tasks.withType<KotlinCompile> {
