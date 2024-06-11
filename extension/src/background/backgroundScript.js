@@ -1,4 +1,4 @@
-import { getStoredInfo } from "../utils/localstorage";
+import { getStoredContent, getStoredInfo, getStoredMap, setStoredMap } from "../utils/localstorage";
 import { defaultFetch } from "../utils/fetch";
 
 browser.tabs.onUpdated.addListener(
@@ -36,24 +36,29 @@ browser.runtime.onMessage.addListener(
         // Extract the substring
         const regex= /[!"#$&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~]/g
         const conversationID = url.substring(startIndex+3).split(regex)[0];
-
-        const analyseRsp = await defaultFetch(
-          'http://localhost:8080/analyse',
-          "POST",
-          {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${message.token}`,
-          },
-          {
-            "messageID":`${conversationID}`
-          }
-        )
+        let analyseRsp = getStoredContent(conversationID) 
+        if(!analyseRsp){
+          analyseRsp = await defaultFetch(
+            'http://localhost:8080/analyse',
+            "POST",
+            {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${message.token}`,
+            },
+            {
+              "messageID":`${conversationID}`
+            }
+          )
+        }else{
+          analyseRsp = analyseRsp.value
+        }
         console.log(analyseRsp)
         browser.tabs.sendMessage(message.tabId,{
           type: "analysed",
           content: analyseRsp,
           conversationID: conversationID
         })
+        setStoredMap(conversationID,analyseRsp)
         break;
       }
     }
