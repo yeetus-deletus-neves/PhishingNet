@@ -12,8 +12,7 @@
       "default_popup": "index.html"
     },
     "background": {
-      "scripts": ["backgroundScript.js"],
-      "persistent": false
+      "scripts": ["backgroundScript.js"]
     },
     "content_scripts": [
     {
@@ -21,5 +20,13 @@
       "js": ["contentScript.js"],
       "run_at": "document_start"
     }],
-    "permissions": ["tabs","activeTab", "storage"]
+    "permissions": ["tabs","activeTab", "storage"],
+    "web_accessible_resources": [
+      {
+        "resources": ["icons/*.png", "icons/warnings.gif"], 
+        "matches": ["*://*/*" ],
+        "use_dynamic_url": true
+      }
+    ]
+
 }

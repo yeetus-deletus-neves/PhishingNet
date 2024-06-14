@@ -1,3 +1,14 @@
+const warningMap = new Map([
+    ["NO_THREAT",'a'],
+    ["SHOULD_LOOK_INTO_IT",'b'],
+    ["SUSPICIOUS",'c'],
+    ["VERY_SUSPICIOUS","d"],
+    ["ALARMING","e"]
+]
+)
+
+
+
 function createWarningBar(message){
     const div = document.createElement("div");
     const header = document.createElement("h2"); 
@@ -9,6 +20,23 @@ function createWarningBar(message){
     return div
 }
 
+function createPhishingBar(){
+    const div = document.createElement("div");
+    div.setAttribute("id","phishing-net-bar")
+    div.setAttribute("style","height: 48px; line-height: 48px; display: flex; justify-content: center; align-items: center;")
+    return div
+}
+
+function changePhishingBar(element){
+    const div = document.getElementById("phishing-net-bar")
+    let nodes = div.childNodes
+    nodes.forEach((n)=>{
+        div.removeChild(n)
+    })
+    div.appendChild(element)
+}
+
+
 browser.runtime.onMessage.addListener(
     function(message, sender, sendResponse) {
         console.log(sender.tab ?
@@ -19,7 +47,7 @@ browser.runtime.onMessage.addListener(
             case "background": {
                 const content =  document.getElementsByClassName("analyse_content")[0]
                 if(content && !location.href.includes(content.id)){
-                    content.remove()
+                    content.parentElement.remove()
                 }
 
                 let email = document.getElementById("mectrl_currentAccount_secondary");
@@ -52,7 +80,15 @@ browser.runtime.onMessage.addListener(
                             first.appendChild(text);
                             first.setAttribute("id","analyse")
                             first.setAttribute("style","color: white; background: blue")
+                            const url = browser.runtime.getURL("icons/warnings.gif")
                             first.addEventListener("click",function(){
+                                document.getElementById("analyse").remove()
+                                let gif = document.createElement("img")
+                                gif.setAttribute("id","analyse")
+                                gif.setAttribute("src",url)
+                                gif.setAttribute("style","height: 48px;")
+                                //document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(gif);
+                                changePhishingBar(gif)
                                 browser.runtime.sendMessage({
                                     type: "buttonClicked",
                                     value: location.href,
@@ -60,7 +96,9 @@ browser.runtime.onMessage.addListener(
                                     tabId: message.tabId
                                 })
                             })
-                            document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(first);
+                            const div = createPhishingBar()
+                            div.appendChild(first)
+                            document.getElementsByClassName("NTPm6 WWy1F")[0].after(div);
                         }
                     }
                 }else{
@@ -72,35 +110,37 @@ browser.runtime.onMessage.addListener(
                 break;
             }
             case "analysed":{
-                let button = document.getElementById("analyse")
-                button.remove()
-                const div = document.createElement("div");
-                const header = document.createElement("h4");
-                var text = document.createTextNode(message.content.threat);
-                header.setAttribute("style", "color:red")
-                header.appendChild(text);
-                div.setAttribute("id",message.conversationID);
-                div.setAttribute("class","analyse_content");
-                const threats = message.content.threatJustification
-                if(threats){
-                    let title = ""
-                    threats.forEach(t => {
-                        title += `${t.name}: ${t.description}\n`
-                    });
-                    div.setAttribute("title",title)
-                }
-                div.appendChild(header)
-                document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(div);
+                const img  = document.createElement("img");
+                img.setAttribute("id",message.conversationID);
+                img.setAttribute("class","analyse_content");
+                const url = browser.runtime.getURL(`icons/${warningMap.get(message.content.threat)}_warning.png`)
+                img.setAttribute("src",url)
+                img.setAttribute("style","height: 48px;")
+                changePhishingBar(img)
+/* 
+const div = document.createElement("div");
+const header = document.createElement("h4");
+var text = document.createTextNode(message.content.threat);
+header.setAttribute("style", "color:red")
+header.appendChild(text);
+div.setAttribute("id",message.conversationID);
+div.setAttribute("class","analyse_content");
+const threats = message.content.threatJustification
+if(threats){
+    let title = ""
+    threats.forEach(t => {
+        title += `${t.name}: ${t.description}\n`
+        });
+        div.setAttribute("title",title)
+        }
+        div.appendChild(header)
+        */
                 break;
             }
             case "clean":{
-                let button = document.getElementById("analyse")
-                if(button){
-                    button.remove()
-                }
-                let content = document.getElementsByClassName("analyse_content")[0]
-                if(content){
-                    content.remove()
+                let phishingBar = document.getElementById("phishing-net-bar")
+                if(phishingBar){
+                    phishingBar.remove()
                 }
                 let warningBar = document.getElementById("phishing-net-warning")
                 if(warningBar){
