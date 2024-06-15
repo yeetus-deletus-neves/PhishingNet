@@ -75,12 +75,11 @@ browser.runtime.onMessage.addListener(
 
                         let button = document.getElementById("analyse") 
                         if(!button){
-                            const first = document.createElement("button");
-                            var text = document.createTextNode("Analyse message");
-                            first.appendChild(text);
+                            const first = document.createElement("img");
                             first.setAttribute("id","analyse")
-                            first.setAttribute("style","color: white; background: blue")
-                            const url = browser.runtime.getURL("icons/warnings.gif")
+                            let url = browser.runtime.getURL("icons/phishing_btn.png")
+                            first.setAttribute("src",url)
+                            url = browser.runtime.getURL("icons/warnings.gif")
                             first.addEventListener("click",function(){
                                 document.getElementById("analyse").remove()
                                 let gif = document.createElement("img")
