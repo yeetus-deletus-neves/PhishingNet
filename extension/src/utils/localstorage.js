@@ -36,3 +36,7 @@ export function setStoredMap(conversationID,content){
 
     window.localStorage.setItem(mapName,JSON.stringify(storedMap))
 }
+
+export function deleteStoredMap(){
+    window.localStorage.removeItem(mapName)
+}

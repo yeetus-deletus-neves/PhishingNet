@@ -1,7 +1,7 @@
 import React from "react"
 import { useState, useContext,createContext } from "react"
 import { ClientLog } from "../errorHandling/ClientLog"
-import { deleteStoredInfo } from "../utils/localstorage"
+import { deleteStoredInfo, deleteStoredMap } from "../utils/localstorage"
 import { useAuthentication } from "../auth/authenticationProvider"
 
 const AlertContext = createContext([undefined, () => {}])
@@ -25,6 +25,7 @@ export function Layout({children}){
                         <button type="submit" class="btn btn-primary" style={{width: "12rem"}} onClick={()=>{
                             deleteStoredInfo()
                             setUserInfo(null)
+                            deleteStoredMap()
                             setAlert({alert: "warning", message: "user logged out"})
                         }}>Logout</button>
                         :

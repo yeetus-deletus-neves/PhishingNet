@@ -1,5 +1,5 @@
 import { useAuthentication } from "../auth/authenticationProvider";
-import { setStoredInfo } from "../utils/localstorage";
+import { deleteStoredInfo, setStoredInfo } from "../utils/localstorage";
 import { defaultFetch } from "../utils/fetch";
 import { useAlertContext } from "./Layout";
 
@@ -36,6 +36,7 @@ export function Login(){
                         tokenRsp.username = username
                         setStoredInfo(tokenRsp)
                         setUserInfo(tokenRsp)
+                        deleteStoredInfo()
                     }catch(error){
                         setAlert({alert: "error", message: `${error.details}`})
                     }

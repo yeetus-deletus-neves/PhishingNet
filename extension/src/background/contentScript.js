@@ -45,7 +45,7 @@ browser.runtime.onMessage.addListener(
         console.log(message.type)
         switch(message.type) {
             case "background": {
-                const content =  document.getElementsByClassName("analyse_content")[0]
+                const content =  document.getElementsByClassName("analyze_content")[0]
                 if(content && !location.href.includes(content.id)){
                     content.parentElement.remove()
                 }
@@ -73,17 +73,17 @@ browser.runtime.onMessage.addListener(
 
                     if(location.href.includes("id/")){
 
-                        let button = document.getElementById("analyse") 
+                        let button = document.getElementById("analyze") 
                         if(!button){
                             const first = document.createElement("img");
-                            first.setAttribute("id","analyse")
+                            first.setAttribute("id","analyze")
                             let url = browser.runtime.getURL("icons/phishing_btn.png")
                             first.setAttribute("src",url)
                             url = browser.runtime.getURL("icons/warnings.gif")
                             first.addEventListener("click",function(){
-                                document.getElementById("analyse").remove()
+                                document.getElementById("analyze").remove()
                                 let gif = document.createElement("img")
-                                gif.setAttribute("id","analyse")
+                                gif.setAttribute("id","analyze")
                                 gif.setAttribute("src",url)
                                 gif.setAttribute("style","height: 48px;")
                                 //document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(gif);
@@ -108,10 +108,10 @@ browser.runtime.onMessage.addListener(
                 doc.insertBefore(warningBar,doc.firstChild)
                 break;
             }
-            case "analysed":{
+            case "analyzed":{
                 const img  = document.createElement("img");
                 img.setAttribute("id",message.conversationID);
-                img.setAttribute("class","analyse_content");
+                img.setAttribute("class","analyze_content");
                 const url = browser.runtime.getURL(`icons/${warningMap.get(message.content.threat)}_warning.png`)
                 img.setAttribute("src",url)
                 img.setAttribute("style","height: 48px;")
@@ -123,7 +123,7 @@ var text = document.createTextNode(message.content.threat);
 header.setAttribute("style", "color:red")
 header.appendChild(text);
 div.setAttribute("id",message.conversationID);
-div.setAttribute("class","analyse_content");
+div.setAttribute("class","analyze_content");
 const threats = message.content.threatJustification
 if(threats){
     let title = ""
