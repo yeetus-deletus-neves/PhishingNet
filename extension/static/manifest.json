@@ -1,32 +1,35 @@
 {
-    "manifest_version": 3,
-    "name": "Pishing Net",
-    "version": "1.0",
-    "icons": {
-      "48": "icons/phishing-net-48.png"
-    },
+  "manifest_version": 3,
+  "name": "Pishing Net",
+  "version": "1.0",
+  "icons": {
+    "48": "icons/phishing-net-48.png"
+  },
   
-    "description": "Warns the user of probable phishing attempts",
+  "description": "Warns the user of probable phishing attempts",
   
-    "action": {
-      "default_popup": "index.html"
-    },
-    "background": {
-      "scripts": ["backgroundScript.js"]
-    },
-    "content_scripts": [
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "scripts": ["backgroundScript.js"]
+  },
+  "content_scripts": [
+  {
+    "matches": ["<all_urls>"],
+    "js": ["contentScript.js"],
+    "run_at": "document_start"
+  }],
+  "permissions": ["tabs","activeTab", "storage"],
+  "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "run_at": "document_start"
-    }],
-    "permissions": ["tabs","activeTab", "storage"],
-    "web_accessible_resources": [
-      {
-        "resources": ["icons/*.png", "icons/warnings.gif"], 
-        "matches": ["*://*/*" ],
-        "use_dynamic_url": true
-      }
-    ]
-
+      "resources": ["icons/*.png", "icons/warnings.gif"], 
+      "matches": ["*://*/*" ]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "phishing@net"
+    }
+  }
 }

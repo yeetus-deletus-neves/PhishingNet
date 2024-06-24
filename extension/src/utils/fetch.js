@@ -4,9 +4,11 @@ export async function defaultFetch(
     headers,
     body
 ){
+
     const response = await fetch(uri, method == 'GET' ?{
         method: method,
         headers: headers,
+        signal: AbortSignal.timeout(3000)
     } :{
         method: method,
         headers: headers,
@@ -20,5 +22,6 @@ export async function defaultFetch(
             details: rsp.details
         }
     }
-    return await response.json()
+
+    return response
 }

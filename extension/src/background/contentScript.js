@@ -84,6 +84,7 @@ browser.runtime.onMessage.addListener(
                                 document.getElementById("analyze").remove()
                                 let gif = document.createElement("img")
                                 gif.setAttribute("id","analyze")
+                                gif.setAttribute("class","analyze_content");
                                 gif.setAttribute("src",url)
                                 gif.setAttribute("style","height: 48px;")
                                 //document.getElementsByClassName("NTPm6 WWy1F")[0].appendChild(gif);
@@ -116,24 +117,6 @@ browser.runtime.onMessage.addListener(
                 img.setAttribute("src",url)
                 img.setAttribute("style","height: 48px;")
                 changePhishingBar(img)
-/* 
-const div = document.createElement("div");
-const header = document.createElement("h4");
-var text = document.createTextNode(message.content.threat);
-header.setAttribute("style", "color:red")
-header.appendChild(text);
-div.setAttribute("id",message.conversationID);
-div.setAttribute("class","analyze_content");
-const threats = message.content.threatJustification
-if(threats){
-    let title = ""
-    threats.forEach(t => {
-        title += `${t.name}: ${t.description}\n`
-        });
-        div.setAttribute("title",title)
-        }
-        div.appendChild(header)
-        */
                 break;
             }
             case "clean":{
@@ -166,6 +149,16 @@ if(threats){
                 }
                 let doc = document.getElementById("appContainer")
                 doc.insertBefore(warningBar,doc.firstChild)
+                break;
+            }
+            case "error":{
+                const img  = document.createElement("img");
+                img.setAttribute("id",message.conversationID);
+                img.setAttribute("class","analyze_content");
+                const url = browser.runtime.getURL('icons/error_red.png')
+                img.setAttribute("src",url)
+                img.setAttribute("style","height: 48px;")
+                changePhishingBar(img)
                 break;
             }
         }

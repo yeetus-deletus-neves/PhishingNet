@@ -1,5 +1,5 @@
 import { useAuthentication } from "../auth/authenticationProvider";
-import { deleteStoredInfo, setStoredInfo } from "../utils/localstorage";
+import { deleteStoredMap, setStoredInfo } from "../utils/localstorage";
 import { defaultFetch } from "../utils/fetch";
 import { useAlertContext } from "./Layout";
 
@@ -22,7 +22,7 @@ export function Login(){
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
                     try{
-                        const tokenRsp = await defaultFetch(
+                        const rsp = await defaultFetch(
                             'http://localhost:8080/user/signIn',
                             "POST",
                             {
@@ -33,12 +33,18 @@ export function Login(){
                                 "password": password
                             }
                         )
+                        const tokenRsp = await rsp.json()
                         tokenRsp.username = username
                         setStoredInfo(tokenRsp)
                         setUserInfo(tokenRsp)
-                        deleteStoredInfo()
+                        deleteStoredMap()
                     }catch(error){
-                        setAlert({alert: "error", message: `${error.details}`})
+                        console.log(error)
+                        if(!error.status){
+                            setAlert({alert: "error", message: "Server timeout"})
+                        }else{
+                            setAlert({alert: "error", message: `${error.details}`})
+                        }
                     }
                 }}>Login</button>
             </div>
