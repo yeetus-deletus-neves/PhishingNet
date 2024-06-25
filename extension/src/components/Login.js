@@ -18,7 +18,7 @@ export function Login(){
             </div>
             <div style={{height: "1rem"}}/>
             <div class= "form-group">
-                <button type="submit" class="btn btn-primary" style={{width: "12rem"}} onClick={ async ()=>{
+                <button type="submit" class="btn btn-dark" style={{width: "12rem"}} onClick={ async ()=>{
                     let username = document.getElementById('username').value;
                     let password = document.getElementById('password').value;
                     try{

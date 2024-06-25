@@ -11,6 +11,12 @@ const App = () => {
         return (
             <Login/>
         )
+    }else{
+        return(
+            <div>
+                <h4 class="card-title">{userInfo.username}</h4> 
+            </div>
+        )
     }
 }
 

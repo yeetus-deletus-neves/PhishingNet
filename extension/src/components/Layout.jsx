@@ -22,7 +22,7 @@ export function Layout({children}){
                     {alert ? <ClientLog context={{alert: alert.alert, message: alert.message}} onClose={()=> {setAlert(undefined)}}/> : null}
                     <br></br>
                     {userInfo ? 
-                        <button type="submit" class="btn btn-primary" style={{width: "12rem"}} onClick={()=>{
+                        <button type="submit" class="btn btn-dark" style={{width: "12rem"}} onClick={()=>{
                             deleteStoredInfo()
                             setUserInfo(null)
                             deleteStoredMap()
