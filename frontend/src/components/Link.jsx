@@ -29,9 +29,8 @@ export function LinkPage(){
                 ).then( rsp => {
                     console.log(rsp)
                     if(rsp.email){
-                        userInfo.email = rsp.email
                         setLinked(true)
-                        setUserInfo(userInfo)
+                        setUserInfo({userId:userInfo.userId,email:rsp.email,token:userInfo.token,username:userInfo.username})
                         setStoredInfo(userInfo)
                     }else{
                         setError(true)

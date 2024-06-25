@@ -4,6 +4,7 @@ import { useAuthentication } from "./auth/AuthProvider";
 
 export function HomePage(){
     const [userInfo,setUserInfo] = useAuthentication()
+    console.log(userInfo)
     if(userInfo){
 
         if(userInfo.email){
@@ -24,7 +25,7 @@ export function HomePage(){
                     <div id="container" className="center">
                         <h2 className="center">Hello {userInfo.username}!</h2>
                         <h3 className="center">Account not linked</h3>
-                        <button class="btn btn-dark" onClick={()=>{
+                        <button className="btn btn-dark" onClick={()=>{
                             const msalAgent = new MsalInterface()
                             msalAgent.login()
                         }
