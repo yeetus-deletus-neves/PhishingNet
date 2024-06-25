@@ -24,8 +24,9 @@ export function UnlinkPage(){
                                     'Authorization': `Bearer ${userInfo.token.token}`
                                 }
                             )
-                            setUserInfo({userId:userInfo.userId,email:null,token:userInfo.token,username:userInfo.username})
-                            setStoredInfo(userInfo)
+                            const newInfo = {userId:userInfo.userId,email:null,token:userInfo.token,username:userInfo.username}
+                            setUserInfo(newInfo)
+                            setStoredInfo(newInfo)
                         }catch(error){
                             setAlert({alert: "error", message: `${error.details}`})
                         }
