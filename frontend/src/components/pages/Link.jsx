@@ -1,6 +1,6 @@
-import { setStoredInfo } from "../scripts/localstorage";
-import { defaultFetch } from "../utils/fetch";
-import { useAuthentication } from "./auth/AuthProvider";
+import { setStoredInfo } from "../../scripts/localstorage";
+import { defaultFetch } from "../../utils/fetch";
+import { useAuthentication } from "../auth/AuthProvider";
 import { useState } from "react";
 import { useAlertContext } from "./Layout";
 

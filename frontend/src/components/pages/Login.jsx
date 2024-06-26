@@ -1,7 +1,7 @@
-import { defaultFetch } from "../utils/fetch";
+import { defaultFetch } from "../../utils/fetch";
 import {useNavigate} from "react-router-dom"
-import { useAuthentication } from "./auth/AuthProvider";
-import { setStoredInfo, deleteStoredInfo } from "../scripts/localstorage";
+import { useAuthentication } from "../auth/AuthProvider";
+import { setStoredInfo, deleteStoredInfo } from "../../scripts/localstorage";
 import { useAlertContext } from "./Layout";
 
 export function LoginPage(){

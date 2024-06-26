@@ -1,7 +1,7 @@
-import { useAuthentication } from "./auth/AuthProvider";
-import { defaultFetch } from "../utils/fetch";
-import { MsalInterface } from "../scripts/msal";
-import { setStoredInfo, takeEmailFromStoredInfo } from "../scripts/localstorage";
+import { useAuthentication } from "../auth/AuthProvider";
+import { defaultFetch } from "../../utils/fetch";
+import { MsalInterface } from "../../scripts/msal";
+import { setStoredInfo, takeEmailFromStoredInfo } from "../../scripts/localstorage";
 import { useAlertContext } from "./Layout";
 
 export function UnlinkPage(){

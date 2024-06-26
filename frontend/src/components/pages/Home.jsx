@@ -1,6 +1,6 @@
 import React from "react";
-import { MsalInterface } from "../scripts/msal";
-import { useAuthentication } from "./auth/AuthProvider";
+import { MsalInterface } from "../../scripts/msal";
+import { useAuthentication } from "../auth/AuthProvider";
 
 export function HomePage(){
     const [userInfo,setUserInfo] = useAuthentication()
