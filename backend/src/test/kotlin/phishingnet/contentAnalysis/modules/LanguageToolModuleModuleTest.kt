@@ -3,10 +3,12 @@ package phishingnet.contentAnalysis.modules
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import phishingnet.contentAnalysis.Processor
+import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
+import phishingnet.contentAnalysis.realPromotionalEmail
 import phishingnet.contentAnalysis.testEmail
 
 class LanguageToolModuleModuleTest {
@@ -70,4 +72,12 @@ class LanguageToolModuleModuleTest {
         Assertions.assertEquals(1, eval.threatJustification.size)
         Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }
+
+    /*@Test
+    fun `LanguageToolModule test for real promotional email`() {
+        val eval = processor.process(listOf(realPromotionalEmail))
+
+        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
+        Assertions.assertEquals(0, eval.threatJustification.size)
+    }*/
 }

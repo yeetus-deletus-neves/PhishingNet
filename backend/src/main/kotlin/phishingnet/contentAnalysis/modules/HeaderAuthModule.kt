@@ -6,31 +6,23 @@ import phishingnet.contentAnalysis.models.SecurityVerification
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 import phishingnet.contentAnalysis.models.warnings.Warning
 
-class HeaderModule : AnalysisModule {
+/***
+ * O retorno deste Módulo é um inteiro com significado correspondente a um booleano
+ */
+class HeaderAuthModule : AnalysisModule {
     override val name: String = "Header Module"
     override var active: Boolean = false
-
-    //TODO change implementation
-    // we can't assume that just because these two: mailHeaderInfo.from, emailHeaderInfo.returnPath differ
-    // that it is illegitimate
-
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(
             listOf(
-                Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK,
+                Warning.HEADER_CERTIFICATES_AUTH_FAILED,
             )
         )
-
 
         if (email.authDetails.dmarc == SecurityVerification.FAILED ||
             email.authDetails.dkim == SecurityVerification.FAILED ||
             email.authDetails.spf == SecurityVerification.FAILED
-        ) warningLog.incrementOccurrences(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
-
-        val emailFrom = email.from.address//.split('<','>')[1]
-        val returnPath = email.returnPath
-        if (emailFrom != returnPath) warningLog.incrementOccurrences(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
-        println("Occurences = ${warningLog.warnings[Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK]}")
+        ) warningLog.incrementOccurrences(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
 
         return warningLog
     }

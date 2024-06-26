@@ -9,23 +9,27 @@ import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.testEmail
-import phishingnet.contentAnalysis.testEmailWithBadHeaders
 
-class HeaderModuleTest {
+class ReturnPathModuleTest {
 
-    private val mockRisk = Risk("header auth failed", "header auth failed", RiskLevel.SUSPICIOUS).apply {
-        setRequirement(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
-    }
+    private val mockRisk =
+        Risk("from and return path differ", "from and return path differ", RiskLevel.SUSPICIOUS).apply {
+            setRequirement(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
+        }
 
     private val mockAnalysisEntry =
-        RiskAnalysisEntry("header auth failed", "header auth failed", RiskLevel.SUSPICIOUS)
+        RiskAnalysisEntry(
+            "from and return path differ",
+            "from and return path differ",
+            RiskLevel.SUSPICIOUS
+        )
 
-    private val processor = Processor(listOf(HeaderAuthModule()), listOf(mockRisk))
+    private val processor = Processor(listOf(ReturnPathModule()), listOf(mockRisk))
 
 
     @Test
-    fun `HeaderModule test for no Threat`() {
-        val email = testEmail
+    fun `ReturnPathModule test for no Threat`() {
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email1@test.com")
         val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
@@ -33,8 +37,8 @@ class HeaderModuleTest {
     }
 
     @Test
-    fun `HeaderModule test for failing certificates`() {
-        val email = testEmailWithBadHeaders
+    fun `ReturnPathModule test for different return path`() {
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email2@test.com")
         val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
