@@ -3,24 +3,22 @@ package phishingnet.contentAnalysis.modules
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import phishingnet.contentAnalysis.Processor
-import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
-import phishingnet.contentAnalysis.realPromotionalEmail
 import phishingnet.contentAnalysis.testEmail
 
 class LanguageToolModuleModuleTest {
 
     private val mockRisk =
-        Risk("Incorrect Grammar", "email is not properly written", RiskLevel.SUSPICIOUS)
+        Risk("Incorrect Grammar", "email is not properly written", RiskLevel.C)
             .apply { setRequirement(Warning.BAD_GRAMMAR, 1) }
 
     private val processor = Processor(listOf(LanguageToolModule()), listOf(mockRisk))
 
     private val mockAnalysisEntry =
-        RiskAnalysisEntry("Incorrect Grammar", "email is not properly written", RiskLevel.SUSPICIOUS)
+        RiskAnalysisEntry("Incorrect Grammar", "email is not properly written", RiskLevel.C)
 
     val rawCorrectlyWrittenEmail =
         """<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><div dir=\"ltr\">
@@ -47,7 +45,7 @@ class LanguageToolModuleModuleTest {
 
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
+        Assertions.assertEquals(RiskLevel.A, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
     }
 
@@ -57,7 +55,7 @@ class LanguageToolModuleModuleTest {
 
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(RiskLevel.C, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
         Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }
@@ -68,7 +66,7 @@ class LanguageToolModuleModuleTest {
 
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(RiskLevel.C, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
         Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }

@@ -51,7 +51,7 @@ class PhishingNetApplication {
         Risk(
             "Email sender suspicious",
             "Email sender might be trying to impersonate someone you know.",
-            RiskLevel.SUSPICIOUS,
+            RiskLevel.C,
             warningRequirements = mutableMapOf(
                 Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1),
                 Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
@@ -59,7 +59,7 @@ class PhishingNetApplication {
         ), Risk(
             "Possible financial scam",
             "The email comes from a new contact and contains an IBAN.",
-            RiskLevel.ALARMING,
+            RiskLevel.E,
             warningRequirements = mutableMapOf(
                 Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
                 Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
@@ -67,7 +67,7 @@ class PhishingNetApplication {
         ), Risk(
             "Grammatical errors",
             "Grammatical errors detected",
-            RiskLevel.SHOULD_LOOK_INTO_IT,
+            RiskLevel.B,
             warningRequirements = mutableMapOf(
                 Warning.BAD_GRAMMAR to Requirement(minimum = 3)
 

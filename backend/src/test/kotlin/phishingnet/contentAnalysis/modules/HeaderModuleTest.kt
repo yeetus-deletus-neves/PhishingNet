@@ -3,8 +3,8 @@ package phishingnet.contentAnalysis.modules
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import phishingnet.contentAnalysis.Processor
-import phishingnet.contentAnalysis.models.Sender
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
+import phishingnet.contentAnalysis.models.risks.Requirement
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
@@ -13,12 +13,15 @@ import phishingnet.contentAnalysis.testEmailWithBadHeaders
 
 class HeaderModuleTest {
 
-    private val mockRisk = Risk("header auth failed", "header auth failed", RiskLevel.SUSPICIOUS).apply {
-        setRequirement(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
-    }
+    private val mockRisk = Risk(
+        "header auth failed",
+        "header auth failed",
+        RiskLevel.C,
+        mutableMapOf(Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1))
+    )
 
     private val mockAnalysisEntry =
-        RiskAnalysisEntry("header auth failed", "header auth failed", RiskLevel.SUSPICIOUS)
+        RiskAnalysisEntry("header auth failed", "header auth failed", RiskLevel.C)
 
     private val processor = Processor(listOf(HeaderAuthModule()), listOf(mockRisk))
 
@@ -28,7 +31,7 @@ class HeaderModuleTest {
         val email = testEmail
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
+        Assertions.assertEquals(RiskLevel.A, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
     }
 
@@ -37,7 +40,7 @@ class HeaderModuleTest {
         val email = testEmailWithBadHeaders
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.SUSPICIOUS, eval.threat)
+        Assertions.assertEquals(RiskLevel.C, eval.threat)
         Assertions.assertEquals(1, eval.threatJustification.size)
         Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
     }

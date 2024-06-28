@@ -26,7 +26,7 @@ class CountWordsModuleTest {
 
         val eval = processor.process(listOf(email))
 
-        Assertions.assertEquals(RiskLevel.NO_THREAT, eval.threat)
+        Assertions.assertEquals(RiskLevel.A, eval.threat)
         Assertions.assertEquals(0, eval.threatJustification.size)
     }
 
