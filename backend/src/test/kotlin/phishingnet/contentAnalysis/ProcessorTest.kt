@@ -67,18 +67,26 @@ class ProcessorTest {
         )
     )
 
-
-    @Test
-    fun `evaluate phishing email`() {
-        val eval = processor.process(listOf(realPhishingEmail1))
-
-        val expectedAnalysisEntry = RiskAnalysisEntry(
+    private val expectedAnalysisEntryImpersonationC =
+        RiskAnalysisEntry(
             "Sender might be trying to impersonate someone else",
             "Email sender might be trying to impersonate someone you know",
             RiskLevel.C
         )
 
-        val expectedEvaluation = RiskAnalysis(RiskLevel.C, listOf(expectedAnalysisEntry))
+    private val expectedAnalysisEntryImpersonationB =
+        RiskAnalysisEntry(
+            "Sender might be trying to impersonate someone else",
+            "Email sender might be trying to impersonate someone you know",
+            threat=RiskLevel.B
+        )
+
+
+    @Test
+    fun `evaluate phishing email`() {
+        val eval = processor.process(listOf(realPhishingEmail1))
+
+        val expectedEvaluation = RiskAnalysis(RiskLevel.C, listOf(expectedAnalysisEntryImpersonationC))
 
         Assertions.assertEquals(expectedEvaluation.threat, eval.threat)
         Assertions.assertEquals(expectedEvaluation.threatJustification, eval.threatJustification)
@@ -88,16 +96,7 @@ class ProcessorTest {
     fun `evaluate real promotional email`() {
         val eval = processor.process(listOf(realPromotionalEmail))
 
-        val expectedEvaluation = RiskAnalysis(
-            RiskLevel.B,
-            listOf(
-                RiskAnalysisEntry(
-                    "Sender might be trying to impersonate someone else",
-                    "Email sender might be trying to impersonate someone you know",
-                    threat=RiskLevel.B
-                )
-            )
-        )
+        val expectedEvaluation = RiskAnalysis(RiskLevel.B, listOf(expectedAnalysisEntryImpersonationB))
 
         Assertions.assertEquals(expectedEvaluation.threat, eval.threat)
         Assertions.assertEquals(expectedEvaluation.threatJustification, eval.threatJustification)
@@ -107,16 +106,7 @@ class ProcessorTest {
     fun `evaluate test empty email`() {
         val eval = processor.process(listOf(realPromotionalEmail))
 
-        val expectedEvaluation = RiskAnalysis(
-            RiskLevel.B,
-            listOf(
-                RiskAnalysisEntry(
-                    "Sender might be trying to impersonate someone else",
-                    "Email sender might be trying to impersonate someone you know",
-                    RiskLevel.B
-                )
-            )
-        )
+        val expectedEvaluation = RiskAnalysis(RiskLevel.B, listOf(expectedAnalysisEntryImpersonationB))
 
         Assertions.assertEquals(expectedEvaluation.threat, eval.threat)
         Assertions.assertEquals(expectedEvaluation.threatJustification, eval.threatJustification)
@@ -126,13 +116,7 @@ class ProcessorTest {
     fun `evaluate test email with bad headers`() {
         val eval = processor.process(listOf(testEmailWithBadHeaders))
 
-        val expectedAnalysisEntry = RiskAnalysisEntry(
-            "Sender might be trying to impersonate someone else",
-            "Email sender might be trying to impersonate someone you know",
-            RiskLevel.C
-        )
-
-        val expectedEvaluation = RiskAnalysis(RiskLevel.C, listOf(expectedAnalysisEntry))
+        val expectedEvaluation = RiskAnalysis(RiskLevel.C, listOf(expectedAnalysisEntryImpersonationC))
 
         Assertions.assertEquals(expectedEvaluation.threat, eval.threat)
         Assertions.assertEquals(expectedEvaluation.threatJustification, eval.threatJustification)

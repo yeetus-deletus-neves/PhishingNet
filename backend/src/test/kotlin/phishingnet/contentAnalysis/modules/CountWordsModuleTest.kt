@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
+import phishingnet.contentAnalysis.models.risks.Requirement
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
@@ -12,8 +13,12 @@ import phishingnet.contentAnalysis.testEmailEmpty
 
 class CountWordsModuleTest {
 
-    private val mockRisk = Risk("To many words", "to many words in email", RiskLevel.MOCK_RISK)
-        .apply { setRequirement(Warning.WORD_COUNTED, 5) }
+    private val mockRisk = Risk(
+        "To many words",
+        "to many words in email",
+        RiskLevel.MOCK_RISK,
+        mutableMapOf(Warning.WORD_COUNTED to Requirement(5))
+    )
 
     private val mockAnalysisEntry =
         RiskAnalysisEntry("To many words", "to many words in email", RiskLevel.MOCK_RISK)

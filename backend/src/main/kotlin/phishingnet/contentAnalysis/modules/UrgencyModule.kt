@@ -9,7 +9,7 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
  * O retorno deste Módulo é um inteiro com significado correspondente a um booleano
  */
 class UrgencyModule : AnalysisModule {
-    override val name: String = "Return Path Module"
+    override val name: String = "Urgency Module"
     override var active: Boolean = false
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(listOf(Warning.URGENCY))

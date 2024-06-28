@@ -16,6 +16,7 @@ enum class Warning(description: String){
     PAST_EMAILS_SENT("The number of emails previously exchanged with this address"),
     FAILED_HEADERS_AND_RETURN_PATH_CHECK("Header certificates auth failed or from distinct from return path"),
     URGENCY("Email in flagged as urgent"),
+    URL_SHORTENED("Url was shortened"),
 
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),
