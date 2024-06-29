@@ -28,7 +28,11 @@ export function UnlinkPage(){
                             setUserInfo(newInfo)
                             setStoredInfo(newInfo)
                         }catch(error){
-                            setAlert({alert: "error", message: `${error.details}`})
+                            if(error.details){
+                                setAlert({alert: "error", message: `${error.details}`})
+                            }else{
+                                setAlert({alert: "error", message: "Interanl server error"})
+                            }
                         }
                     }
                 }>

@@ -58,12 +58,10 @@ browser.runtime.onMessage.addListener(
                     var button = document.getElementById("O365_MainLink_Me")  
                     triggerEvent(button,'click')
                     email = document.getElementById("mectrl_currentAccount_secondary").innerHTML;
-                    triggerEvent(button,'click')
                 }else{
                     email = email.innerHTML
                 }
-                console.log(email)
-                console.log(message.email)
+
                 let warningBar = document.getElementById("phishing-net-warning")
                 if(warningBar){
                     warningBar.remove()

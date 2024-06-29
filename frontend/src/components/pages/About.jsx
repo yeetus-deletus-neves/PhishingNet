@@ -3,10 +3,15 @@ export function AboutPage(){
     return(
         <div>
             <div className="card" style={{ textAlign:"center"}}>
-                <div className="card-body">
-                    <img class="card-img-top" style={{width:"5%", height: "10%" }} src="./icons/pj.png" alt="Card image cap"/>
-                    <img class="card-img-top" style={{width:"5%", height: "10%" }} src="./icons/phishing-net-48.png" alt="Card image cap"/>
-                    <h3 className="card-text"> The phishing net application was made with the help and feedback from the judicial police's cybercrime department UNC3T </h3>
+                <div className="card-body container-fluid">
+                    <div className="row justify-content-center" style={{alignContent:'center'}}>
+                        <div className="col-md-1" style={{textAlign: "left"}}>
+                            <img className="d-inline-block align-top" width="100" height="100"src="./icons/pj.png" alt="Card image cap"/>
+                        </div>
+                        <div className="col-md-6" style={{textAlign: "center", alignContent:'center'}}>
+                            <h3 className="card-text"> The phishing net application was made with the help and feedback from the judicial police's cybercrime department UNC3T </h3>
+                        </div>
+                    </div>
                 </div>
             </div>
             <h2>Developers:</h2>

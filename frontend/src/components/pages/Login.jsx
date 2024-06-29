@@ -54,7 +54,11 @@ export function LoginPage(){
                                 setUserInfo(tokenRsp)
                                 navigate("/")
                             }catch(error){
-                                setAlert({alert: "error", message: `${error.details}`})
+                                if(error.details){
+                                    setAlert({alert: "error", message: `${error.details}`})
+                                }else{
+                                    setAlert({alert: "error", message: "Interanl server error"})
+                                }
                             }
                         }}>Login</button>
                 </div>

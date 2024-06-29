@@ -13,7 +13,11 @@ export function Layout(){
         <AlertContext.Provider value={[alert,setAlert]}>
             <div>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <a className="navbar-brand">Phishing Net</a>
+                    <a className="navbar-brand">
+                        <img class="d-inline-block align-top" width="30" height="30" src="./icons/phishing-net-48.png" alt="Card image cap"/>
+                        Phishing Net
+                    </a>
+                    
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

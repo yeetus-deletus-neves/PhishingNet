@@ -50,7 +50,11 @@ export function SignUpPage(){
                                 }
                             }
                         }catch(error){
-                            setAlert({alert: "error", message: `${error.details}`})
+                            if(error.details){
+                                setAlert({alert: "error", message: `${error.details}`})
+                            }else{
+                                setAlert({alert: "error", message: "Interanl server error"})
+                            }
                         }
                 }}>Create User</button>
             </div>
