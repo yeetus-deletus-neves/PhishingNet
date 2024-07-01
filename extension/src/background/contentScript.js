@@ -49,7 +49,11 @@ browser.runtime.onMessage.addListener(
                 if(content && !location.href.includes(content.id)){
                     content.parentElement.remove()
                 }
-
+                let threat = document.getElementById("threat-justification")
+                if(threat){
+                    threat.remove()
+                }
+                
                 let email = document.getElementById("mectrl_currentAccount_secondary");
                 if(!email){
                     const triggerEvent = (el, eventType, detail) =>
@@ -114,6 +118,30 @@ browser.runtime.onMessage.addListener(
                 const url = browser.runtime.getURL(`icons/${warningMap.get(message.content.threat)}_warning.png`)
                 img.setAttribute("src",url)
                 img.setAttribute("style","height: 48px;")
+                const content = message.content
+                const conversationID = message.conversationID
+                img.addEventListener("click",function(){
+                    if(!document.getElementById("threat-justification")){
+                        const lu = document.createElement("lu")
+                        lu.setAttribute("id","threat-justification")
+                        lu.setAttribute("style","justify-content: center; align-items: center;")
+                        if(content.threatJustification.length > 0){
+                            content.threatJustification.forEach(t => {
+                                let li = document.createElement("li")
+                                let liText = document.createTextNode(`${t.name}: ${t.description}`)
+                                li.appendChild(liText)
+                                lu.appendChild(li)
+                                document.getElementById("phishing-net-bar").after(lu)
+                            })
+                        }else{
+                            let li = document.createElement("li")
+                            let liText = document.createTextNode("No threat detected")
+                            li.appendChild(liText)
+                            lu.appendChild(li)
+                            document.getElementById("phishing-net-bar").after(lu)
+                        }
+                    }
+                })
                 changePhishingBar(img)
                 break;
             }
@@ -125,6 +153,10 @@ browser.runtime.onMessage.addListener(
                 let warningBar = document.getElementById("phishing-net-warning")
                 if(warningBar){
                     warningBar.remove()
+                }
+                let threat = document.getElementById("threat-justification")
+                if(threat){
+                    threat.remove()
                 }
 
                 if(message.user){
