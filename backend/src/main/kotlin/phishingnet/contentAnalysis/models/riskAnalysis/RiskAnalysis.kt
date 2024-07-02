@@ -1,7 +1,9 @@
 package phishingnet.contentAnalysis.models.riskAnalysis
 
+import kotlinx.serialization.Serializable
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 
+@Serializable
 data class RiskAnalysis (
     val threat: RiskLevel,
     val threatJustification: List<RiskAnalysisEntry>,

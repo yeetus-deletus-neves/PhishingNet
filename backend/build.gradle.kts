@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.2.4"
 	id("io.spring.dependency-management") version "1.1.4"
 	kotlin("jvm") version "1.9.23"
+	kotlin("plugin.serialization") version "2.0.0"
 	kotlin("plugin.spring") version "1.9.23"
 	kotlin("plugin.jpa") version "1.9.23"
 }
@@ -20,6 +21,7 @@ repositories {
 }
 
 dependencies {
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 	implementation ("io.github.microutils:kotlin-logging-jvm:2.0.11")
 	implementation ("com.google.code.gson:gson:2.10.1")
 	implementation("org.jdbi:jdbi3-core:3.32.0")

@@ -1,5 +1,7 @@
 package phishingnet.api.services.analysisServices
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import phishingnet.api.data.entities.RefreshToken
 import phishingnet.api.data.entities.User
 import phishingnet.api.data.repositories.RefreshTokenRepository
@@ -7,6 +9,9 @@ import phishingnet.api.data.repositories.UsersRepository
 import phishingnet.api.security.SymmetricEncoder
 import phishingnet.api.utils.graph.GraphInterface
 import org.springframework.stereotype.Service
+import phishingnet.api.data.entities.CacheID
+import phishingnet.api.data.entities.UserCache
+import phishingnet.api.data.repositories.UserCacheRepository
 import phishingnet.api.utils.graph.models.GraphEmailDetails
 import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.Email
@@ -17,6 +22,7 @@ import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
 class AnalysisServicesImpl(
     private val usersRepository: UsersRepository,
     private val refreshTokenRepository: RefreshTokenRepository,
+    private val userCacheRepository: UserCacheRepository,
     private val symmetricEncoder: SymmetricEncoder,
     private val analysisUnit: Processor
 ): AnalysisServices {
@@ -32,6 +38,11 @@ class AnalysisServicesImpl(
             val decodedRefresh = symmetricEncoder.decode(retrievedRefresh.rtoken)
                 ?: throw Exception("Unable to decrypt refresh token from DB")
 
+            val cacheEmail = userCacheRepository.findUserCacheByIdAndConversationid(user.id, messageID)
+            if (cacheEmail != null) {
+                return AnalysisResult.WasInCache(cacheEmail.threat)
+            }
+
             val graphTokens = graphInterface.getTokensFromRefresh(decodedRefresh)
                 ?: throw Exception("Unable to get graph tokens")
             updateRefreshToken(retrievedRefresh, graphTokens.refreshToken)
@@ -45,9 +56,17 @@ class AnalysisServicesImpl(
             val compiledEmail = emailDetails.map { compileMessageInfo(it, senderHistory) }.filter { it.from.address != user.linked_email }
             if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
 
-            return AnalysisResult.CompletedAnalysis(
-                analysisUnit.process(compiledEmail)
-            )
+            val res = analysisUnit.process(compiledEmail)
+            userCacheRepository.saveAndFlush(UserCache(CacheID( user.id, messageID),Json.encodeToString(res)))
+            val count = userCacheRepository.countUserCachesById(user.id)
+            if (count > 10){
+                val firstout = userCacheRepository.getFirstById(user.id)
+                if (firstout != null){
+                    userCacheRepository.removeByIdAndConversationid(user.id,firstout.conversationid)
+                }
+            }
+
+            return AnalysisResult.CompletedAnalysis(res)
         }
         catch (e: IllegalArgumentException) {
             return AnalysisResult.BadRequest(e.stackTraceToString())
@@ -95,6 +114,7 @@ class AnalysisServicesImpl(
 }
 sealed class AnalysisResult{
     data class CompletedAnalysis(val result: RiskAnalysis): AnalysisResult()
+    data class WasInCache(val result:String):AnalysisResult()
     object NoMessageToBeAnalyzed: AnalysisResult()
     object AccountNotLinked: AnalysisResult()
     data class BadRequest(val log: String): AnalysisResult()

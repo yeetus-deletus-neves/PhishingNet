@@ -25,6 +25,7 @@ class AnalysisController(
         val id = messageID.messageID
         return when(val res = analysisServices.analyseMessage(user, id)) {
             is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res.result, "Completed analysis of $id.")
+            is AnalysisResult.WasInCache -> ResponseTemplate.Ok(res.result,"Completed analysis of $id.")
             is AnalysisResult.NoMessageToBeAnalyzed -> ResponseTemplate.NoContent("No message to be analyzed.", "Completed analysis of $id.")
             is AnalysisResult.AccountNotLinked ->  ResponseTemplate.NotFound("The account is not linked to a Microsoft account.")
             is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Invalid while communicating with the Microsoft Servers. \n")
