@@ -22,10 +22,7 @@ import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
-import phishingnet.contentAnalysis.modules.FromHistoryModule
-import phishingnet.contentAnalysis.modules.HeaderModule
-import phishingnet.contentAnalysis.modules.IbanDetectionModule
-import phishingnet.contentAnalysis.modules.LanguageToolModule
+import phishingnet.contentAnalysis.modules.*
 import java.time.Instant
 import javax.sql.DataSource
 
@@ -45,7 +42,8 @@ class PhishingNetApplication{
 		FromHistoryModule(),
 		HeaderModule(),
 		IbanDetectionModule(),
-		LanguageToolModule()
+		LanguageToolModule(),
+		AttachmentExtensionModule()
 	)
 
 	@Bean
@@ -53,31 +51,38 @@ class PhishingNetApplication{
 		val list = mutableListOf<Risk>()
 
 		val risk1 = Risk(
-			"Email sender suspicious",
-			"Email sender might be trying to impersonate someone you know.",
-			RiskLevel.SUSPICIOUS
-		)
-		risk1.setRequirement(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
-		list.add(risk1)
-
-
-		val risk2 = Risk(
-			"Possible financial scam",
-			"The email comes from a new contact and contains an IBAN.",
+			"Email is urgent and contains potentially dangerous file.",
+			"Email is urgent and contains potentially dangerous file.",
 			RiskLevel.ALARMING
 		)
-		risk2.setRequirement(Warning.ASKS_FOR_IBAN)
-		risk2.setRequirement(Warning.PAST_EMAILS_SENT, 1)
-		list.add(risk2)
-
-
-		val risk3 = Risk(
-			"Grammatical errors",
-			"Grammatical errors detected",
-			RiskLevel.SHOULD_LOOK_INTO_IT
-		)
-		risk3.setRequirement(Warning.BAD_GRAMMAR, 3)
-		list.add(risk3)
+		risk1.setRequirement(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS)
+		list.add(risk1)
+		//val risk1 = Risk(
+		//	"Email sender suspicious",
+		//	"Email sender might be trying to impersonate someone you know.",
+		//	RiskLevel.SUSPICIOUS
+		//)
+		//risk1.setRequirement(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
+		//list.add(risk1)
+//
+//
+		//val risk2 = Risk(
+		//	"Possible financial scam",
+		//	"The email comes from a new contact and contains an IBAN.",
+		//	RiskLevel.ALARMING
+		//)
+		//risk2.setRequirement(Warning.ASKS_FOR_IBAN)
+		//risk2.setRequirement(Warning.PAST_EMAILS_SENT, 1)
+		//list.add(risk2)
+//
+//
+		//val risk3 = Risk(
+		//	"Grammatical errors",
+		//	"Grammatical errors detected",
+		//	RiskLevel.SHOULD_LOOK_INTO_IT
+		//)
+		//risk3.setRequirement(Warning.BAD_GRAMMAR, 3)
+		//list.add(risk3)
 
 		return list
 	}

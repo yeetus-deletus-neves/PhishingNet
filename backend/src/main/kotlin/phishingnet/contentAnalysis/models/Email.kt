@@ -13,18 +13,13 @@ data class Email(
     val returnPath: String?,
     private val rawAuthResults: String?,
 
-    private val rawBody: String
+    private val rawBody: String,
+    val attachments: List<String>
+
+
 ) {
-    val body: String
+    val body: String = Jsoup.parse(rawBody).text()
     val authDetails: AuthDetails by lazy { processAuth(rawAuthResults, "Microsoft") }
-
-    init {
-        body = cleanContent(rawBody)
-    }
-
-    private fun cleanContent(content: String): String {
-        return Jsoup.parse(content).text()
-    }
 }
 
 data class Sender(

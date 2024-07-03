@@ -107,7 +107,8 @@ class AnalysisServicesImpl(
             isRead = message.messageInfo.isRead,
             returnPath = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value else null,
             rawAuthResults = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value else null,
-            rawBody = message.messageInfo.body.content
+            rawBody = message.messageInfo.body.content,
+            attachments = message.attachments.value.map { it.name }
         )
     }
 
