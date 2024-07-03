@@ -27,7 +27,8 @@ class LanguageToolModule: AnalysisModule {
 
     override fun process(email: Email): WarningLog {
         val emailContent = email.body
-
+        val warningLog = WarningLog(Warning.BAD_GRAMMAR)
+        if (emailContent.isEmpty()) return warningLog
         val languages = listOf(Language.ENGLISH, Language.PORTUGUESE)
         val detector = LanguageDetectorBuilder.fromLanguages(*languages.toTypedArray()).build()
         val detectedLanguage = detector.detectLanguageOf(emailContent)
@@ -39,7 +40,6 @@ class LanguageToolModule: AnalysisModule {
         }
         println(detectedLanguage)
 
-        val warningLog = WarningLog(Warning.BAD_GRAMMAR)
 
         val detectedErrors = langTool.check(email.body)
         val cnt = detectedErrors.size
