@@ -53,11 +53,12 @@ export function AboutPage(){
                 </div>
                 <div className="card" style={{ textAlign:"center"}}>
                     <div className="card-body">
-                        <h5 className="card-title">APAV - Odivelas</h5>
-                        <p className="card-text">Localition: APAV - Gabinete de Apoio à Vítima de Odivelas, Parque do Pingo Doce, R. Júlio Borba, 2620-101 Póvoa de Santo Adrião</p>
-                        <p className="card-text">Telephone: 800 502 357</p>
+                        <h5 className="card-title">APAV - Gabinete de Apoio à Vítima</h5>
+                        <p className="card-text">Localition: R. José Estêvão 135 A, 1150-201 Lisboa</p>
+                        <p className="card-text">Telephone: 800 219 090</p>
+                        <p className="card-text">E-mail: apav.sede@apav.pt</p>
                         <p className="card-text">Website: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
-                                    window.open('https://apav.pt/cibercrime/','_blank')}}>https://apav.pt/cibercrime/</a>
+                                    window.open('https://apav.pt/cibercrime/','_blank')}}>https://apav.pt/apav_v3/index.php/pt/apav-1/contactos-onde-estamos</a>
                         </p>
                     </div>
                 </div>
