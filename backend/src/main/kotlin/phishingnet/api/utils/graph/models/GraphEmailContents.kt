@@ -32,3 +32,11 @@ data class GraphEmailAddress(
     val name: String,
     val address: String
 )
+
+data class GraphAttachments(
+    val attachments: List<GraphAttachment>
+)
+
+data class GraphAttachment(
+    val name: String
+)

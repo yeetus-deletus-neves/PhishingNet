@@ -93,11 +93,24 @@ class GraphInterface {
 
         for (email in emailsInfo) {
             val internetHeaders = getMessageInternetHeaders(email.id, token) ?: continue
-            result.add(GraphEmailDetails(email, internetHeaders))
+            val attachments = getAttachments(email.id, token) ?: continue
+            result.add(GraphEmailDetails(email, internetHeaders, attachments))
         }
 
         return result
     }
+
+    private fun getAttachments(id: String,token: String):GraphAttachments?{
+        val request = HttpRequest(GRAPH_BASE_URL.plus("/messages/${id}/attachments"), HttpMethod.GET)
+        request.addHeader("Authorization", "Bearer $token")
+
+        val responseBody = extractBody(
+            request.sendRequest()
+        )?:return null
+
+        return Gson().fromJson(responseBody,GraphAttachments::class.java)
+    }
+
 
     private fun getMessageInfo(conversationId: String, token: String): List<GraphMessage>? {
         val request = HttpRequest(GRAPH_BASE_URL.plus("/messages?\$filter=conversationId eq '${conversationId}'"),
