@@ -33,15 +33,15 @@ class AnalysisServicesImpl(
         try {
             if (user.linked_email!!.isEmpty()) return AnalysisResult.AccountNotLinked
 
-            val retrievedRefresh = refreshTokenRepository.findRefreshTokensByUserid(user)
-                ?: throw Exception("Unable to find refresh token")
-            val decodedRefresh = symmetricEncoder.decode(retrievedRefresh.rtoken)
-                ?: throw Exception("Unable to decrypt refresh token from DB")
-
             val cacheEmail = userCacheRepository.findUserCacheByIdAndConversationid(user.id, messageID)
             if (cacheEmail != null) {
                 return AnalysisResult.WasInCache(cacheEmail.threat)
             }
+
+            val retrievedRefresh = refreshTokenRepository.findRefreshTokensByUserid(user)
+                ?: throw Exception("Unable to find refresh token")
+            val decodedRefresh = symmetricEncoder.decode(retrievedRefresh.rtoken)
+                ?: throw Exception("Unable to decrypt refresh token from DB")
 
             val graphTokens = graphInterface.getTokensFromRefresh(decodedRefresh)
                 ?: throw Exception("Unable to get graph tokens")
@@ -57,6 +57,7 @@ class AnalysisServicesImpl(
             if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
 
             val res = analysisUnit.process(compiledEmail)
+            
             userCacheRepository.saveAndFlush(UserCache(CacheID( user.id, messageID),Json.encodeToString(res)))
             val count = userCacheRepository.countUserCachesById(user.id)
             if (count > 10){

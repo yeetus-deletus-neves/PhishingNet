@@ -23,6 +23,7 @@ import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.modules.*
+import phishingnet.contentAnalysis.modules.experimental_modules.llmModule
 import java.time.Instant
 import javax.sql.DataSource
 
@@ -44,7 +45,8 @@ class PhishingNetApplication{
 		IbanDetectionModule(),
 		LanguageToolModule(),
 		AttachmentExtensionModule(),
-		ImportanceAnalysis()
+		ImportanceAnalysis(),
+		llmModule()
 	)
 
 	@Bean
@@ -86,6 +88,14 @@ class PhishingNetApplication{
 		risk4.setRequirement(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS)
 		risk4.setRequirement(Warning.HIGH_IMPORTANCE)
 		list.add(risk4)
+
+		val risk5 = Risk(
+			"Automatic analysis trigger",
+			"Upon deep analysis, this email contains many traits that reassemble a phishing email. Please be careful.",
+			RiskLevel.SUSPICIOUS
+		)
+		risk5.setRequirement(Warning.LLM_TRIGGERED)
+		list.add(risk5)
 
 		return list
 	}
