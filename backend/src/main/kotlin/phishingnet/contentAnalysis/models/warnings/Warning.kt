@@ -21,4 +21,7 @@ enum class Warning(description: String){
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),
     NAME_MENTIONED("My name was mentioned."),
+
+    // EXPERIMENTAL WARNINGS
+    LLM_TRIGGERED("Upon deep analysis, this email contains many traits that reassemble a phishing email. Please be careful.")
 }

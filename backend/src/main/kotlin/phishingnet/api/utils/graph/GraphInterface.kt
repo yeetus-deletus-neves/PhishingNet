@@ -44,7 +44,6 @@ class GraphInterface {
     fun getTokensFromRefresh(refreshToken: String): GraphAPITokens?{
         val request = HttpRequest(TOKEN_URL, HttpMethod.POST)
 
-        request.addHeader("Content-Type", "application/x-www-form-urlencoded")
         request.addHeader("Accept", "*/*")
         request.addHeader("Connection", "keep-alive")
         request.addHeader("Accept-Encoding", "gzip, deflate, br")

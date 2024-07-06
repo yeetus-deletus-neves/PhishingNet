@@ -11,7 +11,7 @@ class AttachmentExtensionModule: AnalysisModule{
 
     override fun process(email: Email): WarningLog {
 
-        val abc = arrayOf("exe", "dll", "xls", "lnk", "ps1", "jar", "doc", "xlsb", "vbs", "xlsm", "ppt", "scr", "rtf", "bat")
+        val abc = arrayOf("exe", "pdf" ,"dll", "xls", "lnk", "ps1", "jar", "doc", "xlsb", "vbs", "xlsm", "ppt", "scr", "rtf", "bat")
         val warningLog = WarningLog(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS)
 
         for (file in email.attachments){

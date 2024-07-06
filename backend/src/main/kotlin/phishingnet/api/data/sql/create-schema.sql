@@ -28,7 +28,7 @@ create table dbo.RefreshToken(
 
 create table dbo.UserCache(
     id uuid not null,
-    conversation_id varchar(128) not null,
+    conversation_id varchar(256) not null,
     threat varchar(1024) not null,
     primary key (id,conversation_id),
     foreign key (id) references dbo.User(id)

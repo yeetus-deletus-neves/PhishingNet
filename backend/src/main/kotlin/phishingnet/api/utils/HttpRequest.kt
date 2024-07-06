@@ -2,11 +2,19 @@ package phishingnet.api.utils
 
 import okhttp3.*
 
+
+
 class HttpRequest(private var url: String, private var method: HttpMethod) {
 
     private val client = OkHttpClient()
     private val headers: MutableMap<String, String> = mutableMapOf()
-    private val body: MutableMap<String, String> = mutableMapOf()
+    private var body: FormBody.Builder? = null
+
+    init {
+        if (method == HttpMethod.POST) {
+            body = FormBody.Builder()
+        }
+    }
 
     fun addHeader(name: String, value: String) {
         headers[name] = value
@@ -14,7 +22,7 @@ class HttpRequest(private var url: String, private var method: HttpMethod) {
 
     fun addBody(name: String, value: String) {
         if (method == HttpMethod.POST) {
-            body[name] = value
+            body!!.add(name, value)
         }
     }
 
@@ -26,11 +34,8 @@ class HttpRequest(private var url: String, private var method: HttpMethod) {
         }
 
         if (method == HttpMethod.POST) {
-            val formBuilder = FormBody.Builder()
-            for ((key, value) in body) {
-                formBuilder.add(key, value)
-            }
-            requestBuilder.post(formBuilder.build())
+            val builtBody = body!!.build()
+            requestBuilder.post(builtBody)
         }
 
         val request = requestBuilder.build()
