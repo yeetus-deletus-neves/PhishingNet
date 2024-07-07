@@ -7,23 +7,28 @@ import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 import com.google.gson.Gson
+import mu.KotlinLogging
 
 class llmModule: AnalysisModule {
     override val name = "LLM analysis module"
     override var active = false
 
     private val criteria: Double = 80.0
+    private val logger = KotlinLogging.logger {}
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.LLM_TRIGGERED)
+        try{
+            val evaluation = evaluate(email.body)
 
-        val evaluation = evaluate(email.body)
-
-        if (evaluation != null && evaluation >= criteria) {
-            warningLog.incrementOccurrences(Warning.LLM_TRIGGERED)
+            if (evaluation != null && evaluation >= criteria) {
+                warningLog.incrementOccurrences(Warning.LLM_TRIGGERED)
+            }
+            return warningLog
+        }catch(e:Exception){
+            logger.warn(":LLMModule: Unable to connect to LLM Python Server.")
+            return warningLog
         }
-
-        return warningLog
     }
 
     private fun evaluate(text: String): Double? {
