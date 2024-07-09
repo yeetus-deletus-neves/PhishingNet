@@ -35,7 +35,7 @@ class GoogleSafeBrowsingApi: AnalysisModule {
         return regex.findAll(body).map { it.value }.toList()
     }
 
-    fun checkUrl(url: String) {
+    fun checkUrl(url: String) {//add return empty if fails
         val apiKey = System.getenv("GOOGLE_SAFE_BROWSING_API") ?: throw IllegalStateException("API_KEY environment variable not set")
         val client = OkHttpClient()
         val gson = Gson()

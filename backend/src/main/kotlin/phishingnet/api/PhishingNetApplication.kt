@@ -38,91 +38,59 @@ class PhishingNetApplication {
     @Bean
     fun symmetricEncoder() = SymmetricEncoder()
 
-	@Bean
-	fun moduleList(): List<AnalysisModule> = listOf(
-		FromHistoryModule(),
-		HeaderModule(),
-		IbanDetectionModule(),
-		LanguageToolModule(),
-		AttachmentExtensionModule(),
-		ImportanceAnalysis(),
-		llmModule()
-	)
-
-    @Bean
-    fun riskList(): List<Risk> = listOf(
-        Risk(
-            "Email sender suspicious",
-            "Email sender might be trying to impersonate someone you know.",
-            RiskLevel.C,
-            warningRequirements = mutableMapOf(
-                Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1),
-                Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
-            )
-        ), Risk(
-            "Possible financial scam",
-            "The email comes from a new contact and contains an IBAN.",
-            RiskLevel.E,
-            warningRequirements = mutableMapOf(
-                Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
-                Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
-            )
-        ), Risk(
-            "Grammatical errors",
-            "Grammatical errors detected",
-            RiskLevel.B,
-            warningRequirements = mutableMapOf(
-                Warning.BAD_GRAMMAR to Requirement(minimum = 3)
-
+    @get:Bean //TODO SHOULDN'T BE MUTABLE
+    val processor: Processor = Processor(
+        listOf(
+            FromHistoryModule(),
+            HeaderAuthModule(),
+            ReturnPathModule(),
+            IbanDetectionModule(),
+            LanguageToolModule(),
+            UrgencyModule()
+        ), mutableListOf(
+            Risk(
+                "Sender might be trying to impersonate someone else",
+                "Email sender might be trying to impersonate someone you know",
+                RiskLevel.B,
+                warningRequirements = mutableMapOf(
+                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
+                ),
+            ), Risk(
+                "Sender might be trying to impersonate someone else",
+                "Email sender might be trying to impersonate someone you know",
+                RiskLevel.C,
+                warningRequirements = mutableMapOf(
+                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
+                ),
+            ), Risk(
+                "Sender might be trying to impersonate someone else",
+                "Email sender might be trying to impersonate someone you know",
+                RiskLevel.E,
+                warningRequirements = mutableMapOf(
+                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1),
+                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
+                ),
+            ), Risk(
+                "Possible financial scam",
+                "The email comes from a new contact and contains an IBAN",
+                RiskLevel.E,
+                warningRequirements = mutableMapOf(
+                    Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
+                    Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
+                )
+            ), Risk(
+                "Urgency",
+                "Email is marked as urgent",
+                RiskLevel.C,
+                warningRequirements = mutableMapOf(Warning.URGENCY to Requirement(exact = 1))
+            ), Risk(
+                "Possible Bad Grammar",
+                "Several instances of bad grammar, however this might be due to the way the email is formatted",
+                RiskLevel.B,
+                warningRequirements = mutableMapOf(Warning.BAD_GRAMMAR to Requirement(minimum = 3))
             )
         )
     )
-
-    @Bean
-    fun processor(moduleList: List<AnalysisModule>, riskList: List<Risk>): Processor = Processor(moduleList, riskList())
-
-		val risk2 = Risk(
-			"Possible financial scam",
-			"The email comes from a new contact and contains an IBAN.",
-			RiskLevel.ALARMING
-		)
-		risk2.setRequirement(Warning.ASKS_FOR_IBAN)
-		risk2.setRequirement(Warning.PAST_EMAILS_SENT, 1)
-		list.add(risk2)
-
-
-		val risk3 = Risk(
-			"Grammatical errors",
-			"Grammatical errors detected",
-			RiskLevel.SHOULD_LOOK_INTO_IT
-		)
-		risk3.setRequirement(Warning.BAD_GRAMMAR, 3)
-		list.add(risk3)
-
-		val risk4 = Risk(
-			"Email is urgent and contains potentially dangerous file.",
-			"Email is urgent and contains potentially dangerous file and is marked as highly important.",
-			RiskLevel.ALARMING
-		)
-		risk4.setRequirement(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS)
-		risk4.setRequirement(Warning.HIGH_IMPORTANCE)
-		list.add(risk4)
-
-		val risk5 = Risk(
-			"Automatic analysis trigger",
-			"Upon deep analysis, this email contains many traits that reassemble a phishing email. Please be careful.",
-			RiskLevel.SUSPICIOUS
-		)
-		risk5.setRequirement(Warning.LLM_TRIGGERED)
-		list.add(risk5)
-
-		return list
-	}
-
-	@Bean
-	fun processor(moduleList: List<AnalysisModule>, RiskList: List<Risk>): Processor {
-		return Processor(moduleList, RiskList())
-	}
 
 	@Bean
 	fun clock() = object : Clock {
