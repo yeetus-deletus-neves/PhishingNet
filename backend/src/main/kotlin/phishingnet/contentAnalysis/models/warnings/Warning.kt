@@ -17,6 +17,8 @@ enum class Warning(description: String){
     FAILED_HEADERS_AND_RETURN_PATH_CHECK("Header certificates auth failed or from distinct from return path"),
     FILE_ATTACHED_CAN_BE_DANGEROUS("At least one of the files attached to the email allows code execution."),
     HIGH_IMPORTANCE("Email is marked as high priority."),
+    URGENCY("Email in flagged as urgent"),
+    URL_SHORTENED("Url was shortened"),
 
     //MOCK WARNINGS
     WORD_COUNTED("We counted words."),

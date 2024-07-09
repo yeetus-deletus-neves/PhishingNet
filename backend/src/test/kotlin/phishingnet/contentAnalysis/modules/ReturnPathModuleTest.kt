@@ -3,32 +3,37 @@ package phishingnet.contentAnalysis.modules
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import phishingnet.contentAnalysis.Processor
+import phishingnet.contentAnalysis.models.Sender
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
 import phishingnet.contentAnalysis.models.risks.Requirement
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.testEmail
-import phishingnet.contentAnalysis.testEmailWithBadHeaders
 
-class HeaderModuleTest {
+class ReturnPathModuleTest {
 
-    private val mockRisk = Risk(
-        "header auth failed",
-        "header auth failed",
-        RiskLevel.C,
-        mutableMapOf(Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1))
-    )
+    private val mockRisk =
+        Risk(
+            "from and return path differ",
+            "from and return path differ",
+            RiskLevel.C,
+            mutableMapOf(Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1))
+        )
 
     private val mockAnalysisEntry =
-        RiskAnalysisEntry("header auth failed", "header auth failed", RiskLevel.C)
+        RiskAnalysisEntry(
+            "from and return path differ",
+            "from and return path differ",
+            RiskLevel.C
+        )
 
-    private val processor = Processor(listOf(HeaderAuthModule()), listOf(mockRisk))
+    private val processor = Processor(listOf(ReturnPathModule()), listOf(mockRisk))
 
 
     @Test
-    fun `HeaderModule test for no Threat`() {
-        val email = testEmail
+    fun `ReturnPathModule test for no Threat`() {
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email1@test.com")
         val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.A, eval.threat)
@@ -36,8 +41,8 @@ class HeaderModuleTest {
     }
 
     @Test
-    fun `HeaderModule test for failing certificates`() {
-        val email = testEmailWithBadHeaders
+    fun `ReturnPathModule test for different return path`() {
+        val email = testEmail.copy(from = Sender("1", "email1@test.com"), returnPath = "email2@test.com")
         val eval = processor.process(listOf(email))
 
         Assertions.assertEquals(RiskLevel.C, eval.threat)

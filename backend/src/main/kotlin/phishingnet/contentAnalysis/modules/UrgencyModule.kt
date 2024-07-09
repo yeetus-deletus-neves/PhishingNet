@@ -5,18 +5,18 @@ import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
-class IbanDetectionModule: AnalysisModule {
-    override val name: String = "Iban Detection Module"
+/***
+ * O retorno deste Módulo é um inteiro com significado correspondente a um booleano
+ */
+class UrgencyModule : AnalysisModule {
+    override val name: String = "Urgency Module"
     override var active: Boolean = false
-
     override fun process(email: Email): WarningLog {
-        val warningLog = WarningLog(Warning.ASKS_FOR_IBAN)
+        val warningLog = WarningLog(listOf(Warning.URGENCY))
 
-        val ibanPattern = "[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}".toRegex()
+        val importance = email.importance
 
-        val ibanCount = ibanPattern.findAll(email.body).count()
-
-        warningLog[Warning.ASKS_FOR_IBAN] = ibanCount
+        if (importance == "high") warningLog.incrementOccurrences(Warning.URGENCY)
 
         return warningLog
     }

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.AnalysisModule
+import phishingnet.contentAnalysis.models.risks.Requirement
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
@@ -28,15 +29,14 @@ import java.time.Instant
 import javax.sql.DataSource
 
 
-
 @SpringBootApplication
-class PhishingNetApplication{
+class PhishingNetApplication {
 
-	@Bean
-	fun saltPepperEncoder() = SaltPepperEncoder()
+    @Bean
+    fun saltPepperEncoder() = SaltPepperEncoder()
 
-	@Bean
-	fun symmetricEncoder() = SymmetricEncoder()
+    @Bean
+    fun symmetricEncoder() = SymmetricEncoder()
 
 	@Bean
 	fun moduleList(): List<AnalysisModule> = listOf(
@@ -49,18 +49,37 @@ class PhishingNetApplication{
 		llmModule()
 	)
 
-	@Bean
-	fun RiskList(): List<Risk> {
-		val list = mutableListOf<Risk>()
+    @Bean
+    fun riskList(): List<Risk> = listOf(
+        Risk(
+            "Email sender suspicious",
+            "Email sender might be trying to impersonate someone you know.",
+            RiskLevel.C,
+            warningRequirements = mutableMapOf(
+                Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1),
+                Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
+            )
+        ), Risk(
+            "Possible financial scam",
+            "The email comes from a new contact and contains an IBAN.",
+            RiskLevel.E,
+            warningRequirements = mutableMapOf(
+                Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
+                Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
+            )
+        ), Risk(
+            "Grammatical errors",
+            "Grammatical errors detected",
+            RiskLevel.B,
+            warningRequirements = mutableMapOf(
+                Warning.BAD_GRAMMAR to Requirement(minimum = 3)
 
-		val risk1 = Risk(
-			"Email sender suspicious",
-			"Email sender might be trying to impersonate someone you know.",
-			RiskLevel.SUSPICIOUS
-		)
-		risk1.setRequirement(Warning.FAILED_HEADERS_AND_RETURN_PATH_CHECK)
-		list.add(risk1)
+            )
+        )
+    )
 
+    @Bean
+    fun processor(moduleList: List<AnalysisModule>, riskList: List<Risk>): Processor = Processor(moduleList, riskList())
 
 		val risk2 = Risk(
 			"Possible financial scam",
@@ -114,44 +133,44 @@ class PhishingNetApplication{
 @Configuration
 @Component
 class SetDataSource {
-	@ConfigurationProperties(prefix = "spring.datasource")
-	@Bean
-	@Primary
-	fun dataSource(): DataSource? {
-		val url = System.getenv("DB_URL")
+    @ConfigurationProperties(prefix = "spring.datasource")
+    @Bean
+    @Primary
+    fun dataSource(): DataSource? {
+        val url = System.getenv("DB_URL")
 
-		return DataSourceBuilder
-			.create()
-			.url(url)
-			.build()
-	}
+        return DataSourceBuilder
+            .create()
+            .url(url)
+            .build()
+    }
 }
 
 @Configuration
 class WebConfig : WebMvcConfigurer {
-	override fun addCorsMappings(registry: CorsRegistry) {
-		registry.addMapping("/**")
-			.allowedOrigins("*") // Troque para a origem da sua extensão
-			.allowedMethods("GET", "POST", "PUT", "DELETE")
-			.allowedHeaders("*") // Permitir todos os headers necessários
-	}
+    override fun addCorsMappings(registry: CorsRegistry) {
+        registry.addMapping("/**")
+            .allowedOrigins("*") // Troque para a origem da sua extensão
+            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*") // Permitir todos os headers necessários
+    }
 }
 
 @Configuration
 class PipelineConfigurer(
-	val authenticationInterceptor: AuthenticationInterceptor,
-	val userArgumentResolver: UserArgumentResolver,
+    val authenticationInterceptor: AuthenticationInterceptor,
+    val userArgumentResolver: UserArgumentResolver,
 ) : WebMvcConfigurer {
 
-	override fun addInterceptors(registry: InterceptorRegistry) {
-		registry.addInterceptor(authenticationInterceptor)
-	}
+    override fun addInterceptors(registry: InterceptorRegistry) {
+        registry.addInterceptor(authenticationInterceptor)
+    }
 
-	override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-		resolvers.add(userArgumentResolver)
-	}
+    override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
+        resolvers.add(userArgumentResolver)
+    }
 }
 
 fun main(args: Array<String>) {
-	runApplication<PhishingNetApplication>(*args)
+    runApplication<PhishingNetApplication>(*args)
 }

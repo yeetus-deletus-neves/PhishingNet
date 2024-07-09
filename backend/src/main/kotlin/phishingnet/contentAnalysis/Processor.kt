@@ -8,10 +8,7 @@ import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
-class Processor(
-    private val modules: List<AnalysisModule>,
-    private val registeredRisks: List<Risk>
-) {
+class Processor(private val modules: List<AnalysisModule>, registeredRisks: List<Risk>) {
 
     private val evaluator = EvaluationUnit(registeredRisks)
 
@@ -36,7 +33,6 @@ class Processor(
         modules.forEach { module ->
             //evaluate module
             val warningLog = module.process(email)
-            val from = module.name
 
             for (warning in warningLog.warnings) {
                 val key = warning.key
@@ -69,7 +65,7 @@ class Processor(
     }
 
     private fun compileAnalysis(risks: Set<Risk>): RiskAnalysis {
-        if (risks.isEmpty()) return RiskAnalysis(RiskLevel.NO_THREAT, listOf())
+        if (risks.isEmpty()) return RiskAnalysis(RiskLevel.A, listOf())
 
         val sortedRisks = risks.sortedByDescending { it.level.level }
 
