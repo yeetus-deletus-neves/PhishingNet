@@ -114,7 +114,8 @@ val testEmailEmpty = Email(
     isRead = false,
     "email1@test.com",
     testAuthStr,
-    ""
+    "",
+    listOf()
 )
 
 val testEmail = Email(
@@ -127,7 +128,8 @@ val testEmail = Email(
     isRead = false,
     "email1@test.com",
     testAuthStr,
-    rawBody1
+    rawBody1,
+    listOf()
 )
 
 val testEmailWithBadHeaders = Email(
@@ -140,7 +142,8 @@ val testEmailWithBadHeaders = Email(
     isRead = false,
     "email1@test.com",
     rawAuthResults = testFailingAuthStr,
-    rawBody1
+    rawBody1,
+    listOf()
 )
 
 val realPhishingEmail1 = Email(
@@ -153,7 +156,8 @@ val realPhishingEmail1 = Email(
     isRead = false,
     "admissions@harlow-college.ac.uk",
     realPhishingHeaders1,
-    realPhishingBody1
+    realPhishingBody1,
+    listOf()
 )
 
 val realPromotionalEmail = Email(
@@ -166,5 +170,6 @@ val realPromotionalEmail = Email(
     isRead = false,
     "bounce-mc.us20_116605254.14813282-71f1a20f08@mail113.suw111.mcdlv.net",
     realPromotionalEmailHeaders,
-    realPromotionalEmailBody
+    realPromotionalEmailBody,
+    listOf()
 )
