@@ -10,26 +10,22 @@ import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.testEmailEmpty
 
-class BlackListedTinyUrlModuleTests {
+class googleSafeBrowsingApiTests {
 
     private val mockRisk = Risk(
-        "Urls are shortened",
-        "we can't predict were you're going to be redirected to",
-        RiskLevel.B,
-        mutableMapOf(Warning.URL_SHORTENED to Requirement(1))
+        "Test",
+        "test",
+        RiskLevel.MOCK_RISK,
+        mutableMapOf(Warning.MALICIOUS_URL to Requirement(5))
     )
 
     private val mockAnalysisEntry =
-        RiskAnalysisEntry(
-            "Urls are shortened",
-            "we can't predict were you're going to be redirected to",
-            RiskLevel.B
-        )
+        RiskAnalysisEntry("Test", "test", RiskLevel.MOCK_RISK)
+    private val processor = Processor(listOf(GoogleSafeBrowsingApi()), listOf(mockRisk))
 
-    private val processor = Processor(listOf(BlackListedTinyUrlModule()), listOf(mockRisk))
 
     @Test
-    fun `BlackListedTinyUrlModule test`() {
+    fun `CountWordsModule test for no Threat`() {
         val email = testEmailEmpty.copy(rawBody = "Use this site https://bit.ly/3L486EI or just click here https://bit.ly/3W22CR9")
 
         val eval = processor.process(listOf(email))

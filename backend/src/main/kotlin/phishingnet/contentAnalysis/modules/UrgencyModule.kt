@@ -16,8 +16,7 @@ class UrgencyModule : AnalysisModule {
 
         val importance = email.importance
 
-        //TODO change to word returned from email data
-        if (importance != "urgent") warningLog.incrementOccurrences(Warning.URGENCY)
+        if (importance == "high") warningLog.incrementOccurrences(Warning.URGENCY)
 
         return warningLog
     }
