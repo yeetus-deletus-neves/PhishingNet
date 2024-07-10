@@ -8,45 +8,55 @@ import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 import java.io.IOException
+import kotlin.jvm.Throws
 
 data class ThreatEntry(val url: String)
-data class ThreatInfo(val threatTypes: List<String>, val platformTypes: List<String>, val threatEntryTypes: List<String>, val threatEntries: List<ThreatEntry>)
+data class ThreatInfo(
+    val threatTypes: List<String>,
+    val platformTypes: List<String>,
+    val threatEntryTypes: List<String>,
+    val threatEntries: List<ThreatEntry>
+)
+
 data class SafeBrowsingRequest(val client: Map<String, String>, val threatInfo: ThreatInfo)
 data class SafeBrowsingResponse(val matches: List<Any>?)
 
-class GoogleSafeBrowsingApi: AnalysisModule {
+class GoogleSafeBrowsingApi : AnalysisModule {
     override val name = "Google API Module"
-    override var active = false
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.MALICIOUS_URL)
         warningLog[Warning.MALICIOUS_URL] = 0
-        val urls = extractUrlsFromEmailBody(email.body)
-        urls.forEach { url ->
-            checkUrl(url)
+        val urls = extractUrlsFromEmailBodyToThreats(email.body)
+        try {
+            warningLog[Warning.MALICIOUS_URL] = checkUrls(urls)
+        }catch (ex: Exception){
+            println("Modulo não foi avaliado devido a ${ex.message}")
         }
-
         return warningLog
     }
 
-    private fun extractUrlsFromEmailBody(body: String): List<String>{
+    private fun extractUrlsFromEmailBodyToThreats(body: String): List<ThreatEntry> {
         val urlPattern = "https?://[\\w-]+(\\.[\\w-]+)+(/[\\w-./?%&=]*)?"
         val regex = Regex(urlPattern)
-        return regex.findAll(body).map { it.value }.toList()
+        return regex.findAll(body).map { ThreatEntry(it.value) }.toList()
     }
 
-    fun checkUrl(url: String) {//add return empty if fails
-        val apiKey = System.getenv("GOOGLE_SAFE_BROWSING_API") ?: throw IllegalStateException("API_KEY environment variable not set")
+    @Throws(IllegalStateException::class)
+    fun checkUrls(urls: List<ThreatEntry>): Int {
+        var occurrences = 0
+        val apiKey = System.getenv("GOOGLE_SAFE_BROWSING_API")
+            ?: throw IllegalStateException("chave da api google safe browsing não se encontra corretamente configurada")
         val client = OkHttpClient()
         val gson = Gson()
 
         val requestBody = SafeBrowsingRequest(
-            client = mapOf("clientId" to "yourcompanyname", "clientVersion" to "1.5.2"),
+            client = mapOf("clientId" to "phishing net", "clientVersion" to "1.5.2"),
             threatInfo = ThreatInfo(
                 threatTypes = listOf("MALWARE", "SOCIAL_ENGINEERING"),
                 platformTypes = listOf("ANY_PLATFORM"),
                 threatEntryTypes = listOf("URL"),
-                threatEntries = listOf(ThreatEntry(url))
+                threatEntries = urls
             )
         )
 
@@ -66,16 +76,15 @@ class GoogleSafeBrowsingApi: AnalysisModule {
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
                     val safeBrowsingResponse = gson.fromJson(responseBody, SafeBrowsingResponse::class.java)
-                    if (safeBrowsingResponse.matches.isNullOrEmpty()) {
-                        println("The URL is safe.")
-                    } else {
+                    if (safeBrowsingResponse.matches.isNullOrEmpty()) println("The URL is safe.")
+                    else {
                         println("The URL is not safe. Threats found: ${safeBrowsingResponse.matches}")
+                        occurrences++
                     }
-                } else {
-                    println("Failed to get a response from the Safe Browsing API. Code: ${response.code}")
-                }
+                } else println("Failed to get a response from the Safe Browsing API. Code: ${response.code}")
             }
         })
+        return occurrences
     }
 
 }

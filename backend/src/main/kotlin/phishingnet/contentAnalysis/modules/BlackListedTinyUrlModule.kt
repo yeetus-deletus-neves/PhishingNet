@@ -7,7 +7,6 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class BlackListedTinyUrlModule: AnalysisModule {
     override val name = "BlackListed Tiny Url Module"
-    override var active = false
 
     //links are always added with https:// or http://
     override fun process(email: Email): WarningLog {

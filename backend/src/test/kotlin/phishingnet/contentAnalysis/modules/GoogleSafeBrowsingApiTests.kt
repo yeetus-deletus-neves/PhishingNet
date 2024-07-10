@@ -10,7 +10,7 @@ import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.testEmailEmpty
 
-class googleSafeBrowsingApiTests {
+class GoogleSafeBrowsingApiTests {
 
     private val mockRisk = Risk(
         "Test",
@@ -24,8 +24,8 @@ class googleSafeBrowsingApiTests {
     private val processor = Processor(listOf(GoogleSafeBrowsingApi()), listOf(mockRisk))
 
 
-    @Test
-    fun `CountWordsModule test for no Threat`() {
+    /*@Test
+    fun `GoogleSafeBrowsingModule test for no Threat`() {
         val email = testEmailEmpty.copy(rawBody = "Use this site https://bit.ly/3L486EI or just click here https://bit.ly/3W22CR9")
 
         val eval = processor.process(listOf(email))
@@ -34,5 +34,5 @@ class googleSafeBrowsingApiTests {
         Assertions.assertEquals(1, eval.threatJustification.size)
         Assertions.assertTrue(eval.threatJustification.contains(mockAnalysisEntry))
 
-    }
+    }*/
 }

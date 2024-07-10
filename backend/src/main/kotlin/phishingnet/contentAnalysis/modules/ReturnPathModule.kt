@@ -8,14 +8,10 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 /***
  * O retorno deste Módulo é um inteiro com significado correspondente a um booleano
+ * não podemos assumir que só porque emailHeaderInfo.from e emailHeaderInfo.returnPath diferem que é ilegítimo
  */
 class ReturnPathModule : AnalysisModule {
     override val name: String = "Return Path Module"
-    override var active: Boolean = false
-
-    //TODO change implementation
-    // we can't assume that just because these two: mailHeaderInfo.from, emailHeaderInfo.returnPath differ
-    // that it is illegitimate
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(listOf(Warning.FROM_DISTINCT_FROM_RETURN_PATH))

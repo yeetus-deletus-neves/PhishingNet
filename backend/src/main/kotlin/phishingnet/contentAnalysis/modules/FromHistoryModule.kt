@@ -7,7 +7,6 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class FromHistoryModule: AnalysisModule {
     override val name = "From History Module"
-    override var active = false
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.PAST_EMAILS_SENT)

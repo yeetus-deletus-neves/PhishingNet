@@ -43,8 +43,9 @@ class Processor(private val modules: List<AnalysisModule>, registeredRisks: List
                 // Checks if there's already a log with the same type of warning
                 val warningAlreadyPresent = compiledWarnings.warnings.keys.contains(key)
 
-                // If there's no such warning, the module result is added to the analysis. If there's already a log with the same
-                // warning, the one with the most amount of occurrences is chosen.
+                /*** If there's no such warning, the module result is added to the analysis.
+                 * If there's already a log with the same warning, the one with the most amount of occurrences is chosen.
+                 */
                 if (!warningAlreadyPresent) {
                     compiledWarnings[key] = occurrences
                 }else{

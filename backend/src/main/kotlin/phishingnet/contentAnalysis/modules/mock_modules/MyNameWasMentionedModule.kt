@@ -6,8 +6,7 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 import phishingnet.contentAnalysis.models.warnings.Warning
 
 class MyNameWasMentionedModule: AnalysisModule {
-    override val name = "My name was mentioned somewhere"
-    override var active = true
+    override val name = "Módulo de deteção de nome"
 
     override fun process(email: Email): WarningLog {
         val warning = Warning.NAME_MENTIONED

@@ -23,7 +23,6 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class LanguageToolModule: AnalysisModule {
     override val name: String = "Language Tool"
-    override var active: Boolean = false
 
     override fun process(email: Email): WarningLog {
         val emailContent = email.body
@@ -35,19 +34,19 @@ class LanguageToolModule: AnalysisModule {
 
         val langTool = when(detectedLanguage.name){
             "PORTUGUESE" -> JLanguageTool(Portuguese())
-            "ENGLISH" -> JLanguageTool(AmericanEnglish())   //TODO further tests to check if this is the best
+            "ENGLISH" -> JLanguageTool(AmericanEnglish())
             else -> throw IllegalArgumentException("Language was not detected")
         }
-        println(detectedLanguage)
 
 
         val detectedErrors = langTool.check(email.body)
         val cnt = detectedErrors.size
 
         //for debug purposes
+        /*println(detectedLanguage)
         println("For this content: ${email.body}")
         println("Detected this errors: $detectedErrors")
-        println("Number of errors: ${detectedErrors.size}")
+        println("Number of errors: ${detectedErrors.size}")*/
 
         warningLog[Warning.BAD_GRAMMAR] = cnt
 

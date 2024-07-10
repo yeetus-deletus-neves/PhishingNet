@@ -12,11 +12,8 @@ data class Email(
     val isRead: Boolean,
     val returnPath: String?,
     private val rawAuthResults: String?,
-
     private val rawBody: String,
     val attachments: List<String>
-
-
 ) {
     val body: String = Jsoup.parse(rawBody).text()
     val authDetails: AuthDetails by lazy { processAuth(rawAuthResults, "Microsoft") }
@@ -26,7 +23,6 @@ data class Sender(
     val name: String,
     val address: String
 )
-
 
 //implementation removes \n from the body, and indentation
 enum class SecurityVerification {
@@ -40,9 +36,9 @@ fun processAuth(authResults: String?, provider: String): AuthDetails {
     if (authResults == null) return AuthDetails(SecurityVerification.IGNORED, SecurityVerification.IGNORED, SecurityVerification.IGNORED)
     when(provider) {
         "Microsoft" -> return processAuthMicrosoft(authResults)
-        "Google" -> TODO()
-        "Yahoo" -> TODO()
-        else -> throw IllegalArgumentException("Invalid Provider")
+        "Google" -> throw IllegalArgumentException("Implementation Not Done For Google email Provider")
+        "Yahoo" -> throw IllegalArgumentException("Implementation Not Done For Yahoo email Provider")
+        else -> throw IllegalArgumentException("Invalid Provider, or not implemented email Provider")
     }
 }
 

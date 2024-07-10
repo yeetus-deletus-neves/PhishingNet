@@ -16,7 +16,7 @@ data class RiskAnalysis (
         return str.dropLast(1)
     }
 
-    //FOR TESTING PURPOSES
+    //Para efeitos de teste
     override fun toString(): String {
         var str = ""
 

@@ -39,19 +39,19 @@ class AnalysisServicesImpl(
             }
 
             val retrievedRefresh = refreshTokenRepository.findRefreshTokensByUserid(user)
-                ?: throw Exception("Unable to find refresh token")
+                ?: throw Exception("Não foi possível encontrar o refresh token")
             val decodedRefresh = symmetricEncoder.decode(retrievedRefresh.rtoken)
-                ?: throw Exception("Unable to decrypt refresh token from DB")
+                ?: throw Exception("Não foi possível desencriptar o refresh token da base de dados")
 
             val graphTokens = graphInterface.getTokensFromRefresh(decodedRefresh)
-                ?: throw Exception("Unable to get graph tokens")
+                ?: throw Exception("Não foi possível obter graph tokens")
             updateRefreshToken(retrievedRefresh, graphTokens.refreshToken)
 
             val emailDetails = graphInterface.getEmailDetails(messageID, graphTokens.accessToken)
-                ?: throw Exception("Unable to get email details")
+                ?: throw Exception("Não foi possível obter os detalhes do email")
 
             val senderHistory = graphInterface.countSenderHistory(emailDetails[0].messageInfo.from.emailAddress.address, graphTokens.accessToken)
-                ?: throw Exception("Unable to get email details")
+                ?: throw Exception("Não foi possível obter os detalhes do email")
 
             val compiledEmail = emailDetails.map { compileMessageInfo(it, senderHistory) }.filter { it.from.address != user.linked_email }
             if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
@@ -61,9 +61,9 @@ class AnalysisServicesImpl(
             userCacheRepository.saveAndFlush(UserCache(CacheID( user.id, messageID),Json.encodeToString(res)))
             val count = userCacheRepository.countUserCachesById(user.id)
             if (count > 10){
-                val firstout = userCacheRepository.getFirstById(user.id)
-                if (firstout != null){
-                    userCacheRepository.removeByIdAndConversationid(user.id,firstout.conversationid)
+                val firstOut = userCacheRepository.getFirstById(user.id)
+                if (firstOut != null){
+                    userCacheRepository.removeByIdAndConversationid(user.id,firstOut.conversationid)
                 }
             }
 
@@ -106,8 +106,8 @@ class AnalysisServicesImpl(
             importance = message.messageInfo.importance,
             hasAttachments = message.messageInfo.hasAttachments,
             isRead = message.messageInfo.isRead,
-            returnPath = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value else null,
-            rawAuthResults = if(message.headers.internetMessageHeaders != null) message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value else null,
+            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
+            rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
             rawBody = message.messageInfo.body.content,
             attachments = message.attachments.value.map { it.name }
         )

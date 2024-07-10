@@ -18,10 +18,8 @@ class EvaluationUnit(private val possibleRisks: List<Risk>) {
         for (risk in possibleRisks) {
             val allRequirementsMet =
                 if (risk.condition == Condition.INCLUSIVE) risk.warningRequirements.all { (warning, requirement) ->
-                    //if(!warningsFound.warnings.containsKey(warning)) false else
                     occurrencesMatchRequirement(warningsFound.warnings[warning] ?: 0, requirement)
                 } else risk.warningRequirements.any { (warning, requirement) ->
-                    //if(!warningsFound.warnings.containsKey(warning)) false else
                     occurrencesMatchRequirement(warningsFound.warnings[warning] ?: 0, requirement)
                 }
             if (allRequirementsMet) threatsFound.add(risk)

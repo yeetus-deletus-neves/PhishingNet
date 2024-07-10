@@ -22,7 +22,7 @@ open class UserToken(token: String, user: User, instant: Instant) {
     open var lastUsedAt: Long = instant.toEpochMilli()
 
     companion object{
-        val MAX_TOKENS: Int = 3
+        const val MAX_TOKENS: Int = 3
         val TOKENS_TTL: Duration = Duration.ofDays(1)
     }
 }

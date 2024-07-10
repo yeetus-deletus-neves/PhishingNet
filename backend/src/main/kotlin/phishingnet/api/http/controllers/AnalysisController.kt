@@ -20,18 +20,18 @@ class AnalysisController(
 
     @PostMapping(Uris.Analysis.ANALYSE)
     fun analyseContent(user: User, @RequestBody messageID: MessageRequest): ResponseEntity<*> {
-        logger.info { "POST: ${Uris.Analysis.ANALYSE} received" }
+        logger.info { "POST: ${Uris.Analysis.ANALYSE} recebido" }
 
         val id = messageID.messageID
         return when(val res = analysisServices.analyseMessage(user, id)) {
-            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res.result, "Completed analysis of $id.")
-            is AnalysisResult.WasInCache -> ResponseTemplate.Ok(res.result,"Completed analysis of $id.")
-            is AnalysisResult.NoMessageToBeAnalyzed -> ResponseTemplate.NoContent("No message to be analyzed.", "Completed analysis of $id.")
-            is AnalysisResult.AccountNotLinked ->  ResponseTemplate.NotFound("The account is not linked to a Microsoft account.")
-            is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Invalid while communicating with the Microsoft Servers. \n")
-            is AnalysisResult.InvalidToken -> ResponseTemplate.Unauthorized("Unauthorized access to the Microsoft Servers. \n")
-            is AnalysisResult.MessageNotFound -> ResponseTemplate.NotFound("Message was not found. Please make sure the messageID is correct.")
-            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Unexpected error occurred while analysing $id. \n")
+            is AnalysisResult.CompletedAnalysis -> ResponseTemplate.Ok(res.result, "Análise completa para o $id.")
+            is AnalysisResult.WasInCache -> ResponseTemplate.Ok(res.result,"Análise completa para o $id.")
+            is AnalysisResult.NoMessageToBeAnalyzed -> ResponseTemplate.NoContent("Nenhuma mensagem a ser analisada.", "Nenhuma mensagem a ser analisada.")
+            is AnalysisResult.AccountNotLinked ->  ResponseTemplate.NotFound("A conta não está ligada a uma conta Microsoft.")
+            is AnalysisResult.BadRequest -> ResponseTemplate.BadRequest("Comunicação inválida com os servidores da Microsoft.\n")
+            is AnalysisResult.InvalidToken -> ResponseTemplate.Unauthorized("Acesso não autorizado aos servidores Microsoft. \n")
+            is AnalysisResult.MessageNotFound -> ResponseTemplate.NotFound("A mensagem não foi encontrada. Certifique-se de que o messageID está correto.")
+            is AnalysisResult.UnexpectedError -> ResponseTemplate.InternalServerError("Ocorreu um erro inesperado durante a análise $id. \n")
         }
     }
 }

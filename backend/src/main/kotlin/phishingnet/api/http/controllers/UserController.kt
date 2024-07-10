@@ -15,25 +15,32 @@ class UserController(private val userServices: UserServices) {
     private val logger = KotlinLogging.logger {}
 
     @PostMapping(Uris.Users.USER)
-    fun create(@RequestBody input: UserCreateInputModel): ResponseEntity<*>{
-        logger.info { "POST: ${Uris.Users.USER} received" }
+    fun create(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
+        logger.info { "POST: ${Uris.Users.USER} recebido" }
 
-        return when(val res = userServices.createUser(input.username, input.password)) {
+        return when (val res = userServices.createUser(input.username, input.password)) {
             is CreateUserInfo.UserCreated -> ResponseTemplate.Created(
                 UserOutputModel(
-                res.user.id.toString(),
-                res.user.username
-            ), "User ${input.username} created")
-            is CreateUserInfo.UserAlreadyExists -> ResponseTemplate.Conflict("The provided username is already being used by another user.")
-            is CreateUserInfo.UnsafePassword -> ResponseTemplate.BadRequest("Password is unsafe, it must contain capital letters, numbers, and have a length of at least 8 characters.")
+                    res.user.id.toString(),
+                    res.user.username
+                ), "User ${input.username} created"
+            )
+
+            is CreateUserInfo.UserAlreadyExists ->
+                ResponseTemplate.Conflict("O username fornecido já está a ser utilizado por outro utilizador.")
+
+            is CreateUserInfo.UnsafePassword ->
+                ResponseTemplate.BadRequest(
+                    "A palavra-passe não é segura, deve conter letras maiúsculas, números e ter pelo menos 8 caracteres."
+                )
         }
     }
 
     @PostMapping(Uris.Users.TOKEN)
-    fun token(@RequestBody input: UserCreateInputModel): ResponseEntity<*>{
-        logger.info { "POST: ${Uris.Users.TOKEN} received" }
+    fun token(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
+        logger.info { "POST: ${Uris.Users.TOKEN} recebido" }
 
-        return when(val res = userServices.createUserToken(input.username, input.password)){
+        return when (val res = userServices.createUserToken(input.username, input.password)) {
             is CreateUserTokenInfo.TokenCreated -> ResponseTemplate.Ok(
                 TokenOutputModel(
                     res.user.id.toString(),
@@ -42,47 +49,76 @@ class UserController(private val userServices: UserServices) {
                         res.token.tokenvalidationinfo,
                         res.token.createdAt.toString(),
                         res.token.lastUsedAt.toString()
-                )
-                ), "Token generated")
-            is CreateUserTokenInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed: Invalid password.")
+                    )
+                ), "Token gerado"
+            )
+
+            is CreateUserTokenInfo.AuthenticationFailed ->
+                ResponseTemplate.Unauthorized("Falha na autenticação: palavra-passe inválida.")
         }
     }
 
     @GetMapping(Uris.Users.BY_ID)
-    fun getById(@PathVariable id: String): ResponseEntity<*>{
-        logger.info { "GET: ${Uris.Users.BY_ID} received" }
+    fun getById(@PathVariable id: String): ResponseEntity<*> {
+        logger.info { "GET: ${Uris.Users.BY_ID} recebido" }
 
-        return when (val res = userServices.getUserById(id)){
+        return when (val res = userServices.getUserById(id)) {
             is GetUserInfo.UserFound -> ResponseTemplate.Ok(
                 UserOutputModel(
-                res.user.id.toString(),
+                    res.user.id.toString(),
                     res.user.username
-            ), "User ${res.user.username} found by ID")
-            is GetUserInfo.UserNotFound -> ResponseTemplate.NotFound("There is no used with ID $id.")
-            is GetUserInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Authentication failed.")
-            is GetUserInfo.InvalidID -> ResponseTemplate.BadRequest("The provided ID is invalid. Plase make sure the format is correct.")
+                ), "Utilizador ${res.user.username} encontrado por ID"
+            )
+
+            is GetUserInfo.UserNotFound -> ResponseTemplate.NotFound(
+                "Não existe nenhum utilizador com este ID $id."
+            )
+
+            is GetUserInfo.AuthenticationFailed -> ResponseTemplate.Unauthorized("Falha na autenticação.")
+            is GetUserInfo.InvalidID -> ResponseTemplate.BadRequest(
+                "O ID fornecido é inválido. Por favor, certifique-se de que o formato está correto."
+            )
         }
     }
 
     @PostMapping(Uris.Users.LINK)
-    fun linkAccount(user: User, @RequestBody token: TokenInputModel): ResponseEntity<*>{
-        logger.info { "POST: ${Uris.Users.LINK} received" }
+    fun linkAccount(user: User, @RequestBody token: TokenInputModel): ResponseEntity<*> {
+        logger.info { "POST: ${Uris.Users.LINK} recebido" }
 
-        return when (userServices.createRefreshToken(user,token.token)){
-            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(LinkingOutputModel(user.linked_email), "Account ${user.username} linked.")
-            is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict("User already has a linked account.")
-            is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest("The provided Microsoft token is invalid.")
-            is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError("Something went wrong: Unable to obtain user information.")
+        return when (userServices.createRefreshToken(user, token.token)) {
+            is CreateRefreshTokenInfo.TokenCreated -> ResponseTemplate.Ok(
+                LinkingOutputModel(user.linked_email),
+                "Conta ${user.username} vinculada."
+            )
+
+            is CreateRefreshTokenInfo.TokenAlreadyExists -> ResponseTemplate.Conflict(
+                "O utilizador já possui uma conta vinculada."
+            )
+
+            is CreateRefreshTokenInfo.InvalidToken -> ResponseTemplate.BadRequest(
+                "O token Microsoft fornecido é inválido."
+            )
+
+            is CreateRefreshTokenInfo.UnableToObtainUserInformation -> ResponseTemplate.InternalServerError(
+                "Algo correu mal: não foi possível obter as informações do utilizador."
+            )
         }
     }
 
     @DeleteMapping(Uris.Users.UNLINK)
-    fun unlinkAccount(user: User): ResponseEntity<*>{
-        logger.info { "DELETE: ${Uris.Users.UNLINK} received" }
+    fun unlinkAccount(user: User): ResponseEntity<*> {
+        logger.info { "DELETE: ${Uris.Users.UNLINK} recebido" }
 
-        return when (userServices.removeRefreshToken(user)){
-            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(MessageOutputModel("Unlinked"), "Account ${user.username} unlinked.")
-            is RemoveRefreshTokenInfo.AccountNotLinked -> ResponseTemplate.Conflict("Unable to remove account link: User is not linked to any Microsoft account.")
+        return when (userServices.removeRefreshToken(user)) {
+            is RemoveRefreshTokenInfo.AccountUnlinked -> ResponseTemplate.Ok(
+                MessageOutputModel("Unlinked"),
+                "Conta ${user.username} desvinculada."
+            )
+
+            is RemoveRefreshTokenInfo.AccountNotLinked -> ResponseTemplate.Conflict(
+                "Não foi possível remover a vinculação da conta com a Microsoft: " +
+                        "o utilizador não se encontra vinculado a nenhuma conta Microsoft."
+            )
         }
     }
 }

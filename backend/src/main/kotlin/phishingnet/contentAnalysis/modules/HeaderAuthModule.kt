@@ -11,7 +11,6 @@ import phishingnet.contentAnalysis.models.warnings.Warning
  */
 class HeaderAuthModule : AnalysisModule {
     override val name: String = "Header Module"
-    override var active: Boolean = false
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(
             listOf(

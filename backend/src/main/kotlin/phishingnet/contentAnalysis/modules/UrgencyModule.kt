@@ -10,7 +10,6 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
  */
 class UrgencyModule : AnalysisModule {
     override val name: String = "Urgency Module"
-    override var active: Boolean = false
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(listOf(Warning.URGENCY))
 

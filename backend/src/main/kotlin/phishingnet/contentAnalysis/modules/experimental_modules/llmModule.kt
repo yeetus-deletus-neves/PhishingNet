@@ -11,7 +11,6 @@ import mu.KotlinLogging
 
 class llmModule: AnalysisModule {
     override val name = "LLM analysis module"
-    override var active = false
 
     private val criteria: Double = 80.0
     private val logger = KotlinLogging.logger {}

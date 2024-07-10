@@ -8,7 +8,7 @@ import java.util.*
 @Component
 class SaltPepperEncoder {
 
-    //Pepper value
+    //valor Pepper para todas as contas do serviço
     private val PEPPER = "C*eRYczkr5Lci&3n4F5R*Lc5LsNi8@Mot%#!^Wg"
 
     fun encode(value: String): HashResult {

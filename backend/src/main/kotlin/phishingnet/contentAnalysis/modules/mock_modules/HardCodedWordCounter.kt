@@ -6,8 +6,7 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 import phishingnet.contentAnalysis.models.warnings.Warning
 
 class HardCodedWordCounter: AnalysisModule {
-    override val name: String = "Hard Coded Word Counter"
-    override var active: Boolean = true
+    override val name: String = "Módulo de contagem de palavras com resultado constante"
 
     override fun process(email: Email): WarningLog {
         val warning = Warning.WORD_COUNTED

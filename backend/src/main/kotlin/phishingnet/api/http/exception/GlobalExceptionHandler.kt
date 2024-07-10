@@ -18,9 +18,12 @@ class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     fun handleException(e: Exception): ResponseEntity<*> {
-        logger.error(e) { "An error occurred while handling request. \n Error: ${e.localizedMessage}" }
+        logger.error(e) { "Ocorreu um erro ao processar o pedido. \n Erro: ${e.localizedMessage}" }
 
-        return ResponseTemplate.InternalServerError("Internal Server Error: Something went wrong! Please try again later or contact the server administrators.")
+        return ResponseTemplate.InternalServerError(
+            "Erro interno do servidor: algo correu mal! " +
+                    "Por favor tente novamente mais tarde ou contacte os administradores do servidor."
+        )
     }
 
 }

@@ -22,7 +22,7 @@ class AuthenticationInterceptor(
             val user = authorizationHeaderProcessor.process(request.getHeader(NAME_AUTHORIZATION_HEADER))
             return if (user == null) {
                 response.status = 401
-                response.writer.write(Gson().toJson(ResponseTemplate.Unauthorized("Authentication failed").body))
+                response.writer.write(Gson().toJson(ResponseTemplate.Unauthorized("Falha na autenticação").body))
                 response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, AuthorizationHeaderProcessor.SCHEME)
                 response.addHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                 false

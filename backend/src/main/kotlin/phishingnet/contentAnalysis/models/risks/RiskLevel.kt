@@ -8,11 +8,4 @@ enum class RiskLevel(val level: Int) {
     D(3),
     E(4),
     F(4);
-
-    /*override fun toString(): String {
-        val words = name.split('_')
-        return words.joinToString(" ") { word ->
-            word.lowercase().replaceFirstChar { it.uppercase() }
-        }
-    }*/
 }

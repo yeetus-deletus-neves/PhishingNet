@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import phishingnet.contentAnalysis.Processor
-import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.risks.Requirement
 import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
@@ -38,7 +37,7 @@ class PhishingNetApplication {
     @Bean
     fun symmetricEncoder() = SymmetricEncoder()
 
-    @get:Bean //TODO SHOULDN'T BE MUTABLE
+    @get:Bean
     val processor: Processor = Processor(
         listOf(
             FromHistoryModule(),
@@ -46,56 +45,62 @@ class PhishingNetApplication {
             ReturnPathModule(),
             IbanDetectionModule(),
             LanguageToolModule(),
-            UrgencyModule()
-        ), mutableListOf(
+            UrgencyModule(),
+            llmModule()
+        ), listOf(
             Risk(
-                "Sender might be trying to impersonate someone else",
-                "Email sender might be trying to impersonate someone you know",
+                "O remetente pode se estar a tentar passar por outra pessoa",
+                "O remetente do email é diferente do caminho de retorno, " +
+                        "pode ser indicativo de uma tentativa de falsificação, " +
+                        "mas é também uma prática comum em emails empresariais e em particular emails comerciais.",
                 RiskLevel.B,
                 warningRequirements = mutableMapOf(
                     Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
                 ),
             ), Risk(
-                "Sender might be trying to impersonate someone else",
-                "Email sender might be trying to impersonate someone you know",
+                "O remetente pode se estar a tentar passar por outra pessoa",
+                "Os protocolos de autenticação falharam.",
                 RiskLevel.C,
                 warningRequirements = mutableMapOf(
                     Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
                 ),
             ), Risk(
-                "Sender might be trying to impersonate someone else",
-                "Email sender might be trying to impersonate someone you know",
+                "O remetente pode se estar a tentar passar por outra pessoa",
+                "Os protocolos de autenticação falharam, " +
+                        "e o remetente de email é diferente do caminho de retorno.",
                 RiskLevel.E,
                 warningRequirements = mutableMapOf(
                     Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1),
                     Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
                 ),
             ), Risk(
-                "Possible financial scam",
-                "The email comes from a new contact and contains an IBAN",
+                "Possível burla financeira",
+                "Este remetente não tem um historial de troca de emails consigo e contém um IBAN, " +
+                        "informe-se antes de efetuar pagamentos.",
                 RiskLevel.E,
                 warningRequirements = mutableMapOf(
                     Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
                     Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
                 )
             ), Risk(
-                "Urgency",
-                "Email is marked as urgent",
+                "Urgência",
+                "O email está marcado como urgente, potencialmente de forma a o apressar a efetuar uma ação " +
+                        "ou a tomar uma decisão potencialmente danosa",
                 RiskLevel.C,
                 warningRequirements = mutableMapOf(Warning.URGENCY to Requirement(exact = 1))
             ), Risk(
-                "Possible Bad Grammar",
-                "Several instances of bad grammar, however this might be due to the way the email is formatted",
+                "Erros gramaticais",
+                "Vários casos de erros gramaticais, no entanto, isto pode se dever à formatação do email.",
                 RiskLevel.B,
                 warningRequirements = mutableMapOf(Warning.BAD_GRAMMAR to Requirement(minimum = 3))
-            )
+            ), //llm module
         )
     )
 
-	@Bean
-	fun clock() = object : Clock {
-		override fun now() = Instant.now()
-	}
+    @Bean
+    fun clock() = object : Clock {
+        override fun now() = Instant.now()
+    }
 }
 
 @Configuration

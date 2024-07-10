@@ -16,7 +16,6 @@ const val KEYSTORE_PASSWORD = "admin"
 
 class SymmetricEncoder {
 
-    //
     private val secret: SecretKey?
 
     init {
@@ -47,19 +46,19 @@ class SymmetricEncoder {
 
     fun decode(data: String): String? {
         try {
-            // Criar uma instância do Cipher para descriptografia AES
+            // Cria uma instância do Cipher para desencriptar AES
             val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
 
-            // Inicializar o Cipher no modo de descriptografia com a chave simétrica
+            // Inicializa o Cipher no modo de desencriptação com a chave simétrica
             cipher.init(Cipher.DECRYPT_MODE, secret)
 
-            // Decodificar os dados criptografados a partir da representação em Base64
+            // Decodifica os dados criptografados a partir da representação em Base64
             val encryptedBytes = Base64.getDecoder().decode(data)
 
             // Descriptografar os bytes
             val decryptedBytes = cipher.doFinal(encryptedBytes)
 
-            // Converter os bytes descriptografados de volta para uma string
+            // Converte os bytes desencriptados para uma string
             return String(decryptedBytes)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -74,16 +73,16 @@ class SymmetricEncoder {
 
             if (!keyStoreFile.exists()) {
 
-                // Criar um novo keystore se ele não existir
+                // Cria um keystore novo, se não existir um
                 val keyStore = KeyStore.getInstance("PKCS12")
                 val password: CharArray = KEYSTORE_PASSWORD.toCharArray()
                 keyStore.load(null, password) // Cria um keystore vazio
 
-                // Gerar uma nova chave simétrica (AES)
+                // Gera uma nova chave simétrica (AES)
                 val keyGen: KeyGenerator = KeyGenerator.getInstance("AES")
                 val secretKey: SecretKey = keyGen.generateKey()
 
-                // Armazenar a chave no keystore
+                // Armazena a chave no keystore
                 val entryPassword: KeyStore.ProtectionParameter = KeyStore.PasswordProtection(password)
                 val keyEntry = KeyStore.SecretKeyEntry(secretKey)
                 keyStore.setEntry(KEY_ALIAS, keyEntry, entryPassword)
@@ -93,9 +92,7 @@ class SymmetricEncoder {
                     println("Keystore criado e chave criptográfica armazenada com sucesso.")
                 }
 
-            } else {
-                println("Keystore já existe. Não é necessário criar um novo.");
-            }
+            } else println("Keystore já existe. Não é necessário criar um novo.");
         }  catch (e:Exception){
             e.printStackTrace();
         }
@@ -111,7 +108,7 @@ class SymmetricEncoder {
                 keyStore.load(fis, password)
             }
 
-            // Recuperar a chave simétrica do KeyStore
+            // Recupera a chave simétrica do KeyStore
             val keyEntry = keyStore.getEntry(KEY_ALIAS, KeyStore.PasswordProtection(password)) as? KeyStore.SecretKeyEntry
             return keyEntry?.secretKey
         } catch (e: Exception) {
