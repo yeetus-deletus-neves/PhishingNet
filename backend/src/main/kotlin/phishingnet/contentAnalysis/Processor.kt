@@ -25,13 +25,15 @@ class Processor(private val modules: List<AnalysisModule>, registeredRisks: List
     }
 
     /***
-     * Goes through all modules evaluating each for the current email
-     * receiving a WarningLog and compiling all the received WarningLogs into a final RiskAnalysis for this email
+     * Percorre todos os módulos avaliando cada um para o email atual
+     * recebe um WarningLog por email e compila todos os WarningLogs recebidos numa RiskAnalysis final para esta conversa de emails
+     *
      */
     private fun processSingleEmail(email: Email): Set<Risk> {
         val compiledWarnings = WarningLog(listOf())
         modules.forEach { module ->
-            //evaluate module
+
+            //avalia módulo
             val warningLog = module.process(email)
 
             for (warning in warningLog.warnings) {
@@ -40,24 +42,17 @@ class Processor(private val modules: List<AnalysisModule>, registeredRisks: List
 
                 if (occurrences == 0) continue
 
-                // Checks if there's already a log with the same type of warning
+                // Verifica se já existe algum warningLog com o mesmo tipo de warning
                 val warningAlreadyPresent = compiledWarnings.warnings.keys.contains(key)
 
-                /*** If there's no such warning, the module result is added to the analysis.
-                 * If there's already a log with the same warning, the one with the most amount of occurrences is chosen.
+                /***
+                 * Se não existir o warning, o resultado do módulo é adicionado à análise.
+                 * Caso já exista um warning com o mesmo aviso, é escolhido aquele que tiver maior número de ocorrências
                  */
-                if (!warningAlreadyPresent) {
-                    compiledWarnings[key] = occurrences
-                }else{
-                    val existentWarning = compiledWarnings[key]
-
-                    /***
-                     * if the newly found warning as a bigger number of occurrences,
-                     * than the previously registered one for the same warning
-                     * we update it
-                     */
-                    if (existentWarning < occurrences) compiledWarnings[key] = occurrences
-
+                if (!warningAlreadyPresent) compiledWarnings[key] = occurrences
+                else{
+                    val existentWarningOccurrences = compiledWarnings[key]
+                    if (existentWarningOccurrences < occurrences) compiledWarnings[key] = occurrences
                 }
             }
         }

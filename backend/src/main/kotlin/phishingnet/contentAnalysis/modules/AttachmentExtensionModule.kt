@@ -6,7 +6,7 @@ import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class AttachmentExtensionModule: AnalysisModule{
-    override val name = "File Extension Analysis Module"
+    override val name = "Módulo Análise extensões de ficheiros"
 
     override fun process(email: Email): WarningLog {
 

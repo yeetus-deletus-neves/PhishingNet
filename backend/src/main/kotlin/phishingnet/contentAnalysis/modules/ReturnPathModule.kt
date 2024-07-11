@@ -11,14 +11,14 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
  * não podemos assumir que só porque emailHeaderInfo.from e emailHeaderInfo.returnPath diferem que é ilegítimo
  */
 class ReturnPathModule : AnalysisModule {
-    override val name: String = "Return Path Module"
+    override val name: String = "Módulo Caminho de Retorno"
 
     override fun process(email: Email): WarningLog {
-        val warningLog = WarningLog(listOf(Warning.FROM_DISTINCT_FROM_RETURN_PATH))
+        val warningLog = WarningLog(listOf(Warning.FROM_DISTINCT_RETURN_PATH))
 
         val emailFrom = email.from.address//.split('<','>')[1]
         val returnPath = email.returnPath
-        if (emailFrom != returnPath) warningLog.incrementOccurrences(Warning.FROM_DISTINCT_FROM_RETURN_PATH)
+        if (emailFrom != returnPath) warningLog.incrementOccurrences(Warning.FROM_DISTINCT_RETURN_PATH)
 
         return warningLog
     }

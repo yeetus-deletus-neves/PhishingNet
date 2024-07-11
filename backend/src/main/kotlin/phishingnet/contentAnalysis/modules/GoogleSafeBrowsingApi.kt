@@ -22,7 +22,7 @@ data class SafeBrowsingRequest(val client: Map<String, String>, val threatInfo: 
 data class SafeBrowsingResponse(val matches: List<Any>?)
 
 class GoogleSafeBrowsingApi : AnalysisModule {
-    override val name = "Google API Module"
+    override val name = "Módulo Google Safe API"
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.MALICIOUS_URL)
@@ -76,12 +76,12 @@ class GoogleSafeBrowsingApi : AnalysisModule {
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
                     val safeBrowsingResponse = gson.fromJson(responseBody, SafeBrowsingResponse::class.java)
-                    if (safeBrowsingResponse.matches.isNullOrEmpty()) println("The URL is safe.")
+                    if (safeBrowsingResponse.matches.isNullOrEmpty()) println("O URL é seguro.")
                     else {
-                        println("The URL is not safe. Threats found: ${safeBrowsingResponse.matches}")
+                        println("O URL não é seguro. Ameaças encontradas: ${safeBrowsingResponse.matches}")
                         occurrences++
                     }
-                } else println("Failed to get a response from the Safe Browsing API. Code: ${response.code}")
+                } else println("Falha ao obter uma resposta da API Safe Browsing. Código: ${response.code}")
             }
         })
         return occurrences

@@ -37,9 +37,7 @@ class EmailProcessorsTests {
         Assertions.assertEquals(cleanRealEmailContent(realPhishingCleanContent1), email.body)
     }
 
-    //cleans body to remove indentation, new lines
+    //limpa body para remover indentação e \n
     private fun cleanRealEmailContent(str: String): String = str.trimIndent().replace(Regex("[\\r\\n]+"), " ")
 
-
-    //TODO(auth details failed test)
 }

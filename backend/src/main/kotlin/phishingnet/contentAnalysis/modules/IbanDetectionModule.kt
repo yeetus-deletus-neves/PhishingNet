@@ -6,7 +6,7 @@ import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 
 class IbanDetectionModule: AnalysisModule {
-    override val name: String = "Iban Detection Module"
+    override val name: String = "Módulo de Deteção Iban"
 
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(Warning.ASKS_FOR_IBAN)

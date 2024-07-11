@@ -23,7 +23,7 @@ import phishingnet.contentAnalysis.models.risks.Risk
 import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.modules.*
-import phishingnet.contentAnalysis.modules.experimental_modules.llmModule
+import phishingnet.contentAnalysis.modules.experimental_modules.LLMModule
 import java.time.Instant
 import javax.sql.DataSource
 
@@ -46,7 +46,9 @@ class PhishingNetApplication {
             IbanDetectionModule(),
             LanguageToolModule(),
             UrgencyModule(),
-            llmModule()
+            AttachmentExtensionModule(),
+            //GoogleSafeBrowsingApi(),
+            LLMModule()
         ), listOf(
             Risk(
                 "O remetente pode se estar a tentar passar por outra pessoa",
@@ -55,7 +57,7 @@ class PhishingNetApplication {
                         "mas é também uma prática comum em emails empresariais e em particular emails comerciais.",
                 RiskLevel.B,
                 warningRequirements = mutableMapOf(
-                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
+                    Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1)
                 ),
             ), Risk(
                 "O remetente pode se estar a tentar passar por outra pessoa",
@@ -70,7 +72,7 @@ class PhishingNetApplication {
                         "e o remetente de email é diferente do caminho de retorno.",
                 RiskLevel.E,
                 warningRequirements = mutableMapOf(
-                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1),
+                    Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1),
                     Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
                 ),
             ), Risk(
@@ -85,7 +87,7 @@ class PhishingNetApplication {
             ), Risk(
                 "Urgência",
                 "O email está marcado como urgente, potencialmente de forma a o apressar a efetuar uma ação " +
-                        "ou a tomar uma decisão potencialmente danosa",
+                        "ou a tomar uma decisão potencialmente danosa.",
                 RiskLevel.C,
                 warningRequirements = mutableMapOf(Warning.URGENCY to Requirement(exact = 1))
             ), Risk(
@@ -93,7 +95,13 @@ class PhishingNetApplication {
                 "Vários casos de erros gramaticais, no entanto, isto pode se dever à formatação do email.",
                 RiskLevel.B,
                 warningRequirements = mutableMapOf(Warning.BAD_GRAMMAR to Requirement(minimum = 3))
-            ), //llm module
+            ), Risk(
+                "Anexo potencialmente malicioso detetado",
+                "Foi detetada a existência de anexos executáveis.",
+                RiskLevel.D,
+                warningRequirements = mutableMapOf(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS to Requirement(minimum = 1))
+            ),
+            //llm module
         )
     )
 

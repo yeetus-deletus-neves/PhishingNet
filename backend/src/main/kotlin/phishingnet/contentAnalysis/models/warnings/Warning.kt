@@ -3,7 +3,7 @@ package phishingnet.contentAnalysis.models.warnings
 enum class Warning(description: String){
     ASKS_FOR_IBAN("Pede IBAN"),
     SEEMS_LIKE_A_COPY_OF_ANOTHER_EMAIL("Parece uma cópia de outro email"),
-    FROM_DISTINCT_FROM_RETURN_PATH("Remetente diferente do caminho de retorno"),
+    FROM_DISTINCT_RETURN_PATH("Remetente diferente do caminho de retorno"),
     HEADER_CERTIFICATES_AUTH_FAILED("Falha na autenticação dos certificados de cabeçalho"),
     DMARC_AUTH_FAILED("Autorização DMARC falhou"),
     DKIM_AUTH_FAILED("Autorização DKIM falhou"),
@@ -12,7 +12,7 @@ enum class Warning(description: String){
     MALICIOUS_URL("url malicioso"),
     MALICIOUS_ATTACHMENT("anexo malicioso"),
     BAD_GRAMMAR("Má gramática"),
-    PAST_EMAILS_SENT("Número de emails trocados anteriormente com este endereço"), //TODO alterar descrição para reduzido numero de emails?
+    PAST_EMAILS_SENT("Número de emails trocados anteriormente com este endereço"),
     FILE_ATTACHED_CAN_BE_DANGEROUS("Pelo menos um dos ficheiros anexados ao email é um executável"),
     URGENCY("Email marcado como urgente"),
     URL_SHORTENED("Url foi encurtado"),

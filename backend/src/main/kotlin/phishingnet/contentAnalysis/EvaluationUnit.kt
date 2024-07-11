@@ -8,9 +8,11 @@ import phishingnet.contentAnalysis.models.risks.Risk
 class EvaluationUnit(private val possibleRisks: List<Risk>) {
 
     /***
-     * Checks if all requirements are met to consider a risk exists
-     * by requirements we consider the that every warning is present
-     * and its occurrences match the required occurrences
+     * Verifica se todos os requisitos foram cumpridos para considerar que um risco existe
+     * por cumprimento dos requisitos consideramos, no caso da condition ser INCLUSIVE:
+     *  -> presença de todos os warnings, e os valores de ocorrências necessários para os mesmos se encontrarem como ativos,
+     * caso a condition seja EXCLUSIVE:
+     *  -> presença de pelo menos um warning, e os valores de ocorrências necessários para os mesmo se encontrar ativo.
      */
     fun evaluate(warningsFound: WarningLog): Set<Risk> {
         val threatsFound = mutableSetOf<Risk>()
@@ -33,6 +35,6 @@ class EvaluationUnit(private val possibleRisks: List<Risk>) {
         requirement.minimum == null && requirement.maximum != null -> occurrences <= requirement.maximum
         requirement.minimum != null && requirement.maximum != null ->
             occurrences >= requirement.minimum && occurrences <= requirement.maximum
-        else -> false //TODO TEST IF ITS REACHABLE AND MAYBE THROW EXCEPTION
+        else -> false //TODO testar se é alcançavel e talvez atirar excepção?
     }
 }

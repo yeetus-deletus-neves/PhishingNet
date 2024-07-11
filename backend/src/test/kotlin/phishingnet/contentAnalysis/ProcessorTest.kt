@@ -10,15 +10,9 @@ import phishingnet.contentAnalysis.models.risks.RiskLevel
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.modules.*
 
-/***
- * NOTES FROM TESTS
- * removed Warning.FROM_DISTINCT_FROM_RETURN_PATH from Email sender suspicious
- * removed Grammatical errors risk, some emails keep some html tags, and will be illegitimately flagged for errors
- *
- */
+
 class ProcessorTest {
 
-    //maybe add various possible evaluations for each risk, without needing to create a new risk
     private val processor = Processor(
         listOf(
             FromHistoryModule(),
@@ -33,7 +27,7 @@ class ProcessorTest {
                 "Email sender might be trying to impersonate someone you know",
                 RiskLevel.B,
                 warningRequirements = mutableMapOf(
-                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1)
+                    Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1)
                 ),
             ), Risk(
                 "Sender might be trying to impersonate someone else",
@@ -47,7 +41,7 @@ class ProcessorTest {
                 "Email sender might be trying to impersonate someone you know",
                 RiskLevel.E,
                 warningRequirements = mutableMapOf(
-                    Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1),
+                    Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1),
                     Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
                 ),
             ), Risk(

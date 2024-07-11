@@ -18,7 +18,7 @@ class ReturnPathModuleTest {
             "from and return path differ",
             "from and return path differ",
             RiskLevel.C,
-            mutableMapOf(Warning.FROM_DISTINCT_FROM_RETURN_PATH to Requirement(exact = 1))
+            mutableMapOf(Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1))
         )
 
     private val mockAnalysisEntry =

@@ -5,6 +5,6 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 interface AnalysisModule {
     val name: String
 
-    //TO ANALYSE CONTENT WE SHOULD USE THE CLEANED CONTENT NOT THE BODY
+    //A análise de contúdo analisa o body já limpo de tags de html
     fun process(email: Email): WarningLog
 }

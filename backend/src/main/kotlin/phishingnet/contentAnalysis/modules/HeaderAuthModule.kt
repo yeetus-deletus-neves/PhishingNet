@@ -10,7 +10,7 @@ import phishingnet.contentAnalysis.models.warnings.Warning
  * O retorno deste Módulo é um inteiro com significado correspondente a um booleano
  */
 class HeaderAuthModule : AnalysisModule {
-    override val name: String = "Header Module"
+    override val name: String = "Módulo de cabeçalho"
     override fun process(email: Email): WarningLog {
         val warningLog = WarningLog(
             listOf(

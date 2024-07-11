@@ -8,6 +8,6 @@ interface Clock {
 }
 @Component
 object RealClock : Clock {
-    // To only have second precision
+    // Para ter precisão a nivel do segundo
     override fun now(): Instant = Instant.ofEpochSecond(Instant.now().epochSecond)
 }

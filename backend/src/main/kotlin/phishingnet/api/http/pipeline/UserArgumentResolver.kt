@@ -21,8 +21,8 @@ class UserArgumentResolver : HandlerMethodArgumentResolver {
         binderFactory: WebDataBinderFactory?
     ): Any? {
         val request = webRequest.getNativeRequest(HttpServletRequest::class.java)
-            ?: throw IllegalStateException("TODO")//TODO()
-        return getUserFrom(request) ?: throw IllegalStateException("TODO")//TODO()
+            ?: throw IllegalStateException("Não foi possível resolver o request")
+        return getUserFrom(request) ?: throw IllegalStateException("Não foi obter o utilizador")
     }
 
     companion object {

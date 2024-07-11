@@ -121,7 +121,7 @@ class UserServicesImpl(
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //                                  AUXILIARY FUNCTIONS                                       //
+    //                                     FUNÇÕES AUXILIARES                                     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private fun isPasswordSecure(password: String): Boolean{
@@ -147,7 +147,7 @@ class UserServicesImpl(
     private fun getToken(user: User): UserToken {
         val tokenCount = userTokenRepository.countUserTokensByUserid(user)
 
-        // If theres already the max number of tokens, deletes the last used
+        // Se já existir o número máximo de tokens, elimina o último utilizado
         if (tokenCount >= UserToken.MAX_TOKENS) {
             val toDelete = tokenCount - UserToken.MAX_TOKENS + 1
             for (n in 1..toDelete) {

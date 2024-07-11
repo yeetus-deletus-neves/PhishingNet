@@ -9,8 +9,8 @@ import phishingnet.contentAnalysis.models.warnings.WarningLog
 import com.google.gson.Gson
 import mu.KotlinLogging
 
-class llmModule: AnalysisModule {
-    override val name = "LLM analysis module"
+class LLMModule: AnalysisModule {
+    override val name = "Módulo LLM"
 
     private val criteria: Double = 80.0
     private val logger = KotlinLogging.logger {}
