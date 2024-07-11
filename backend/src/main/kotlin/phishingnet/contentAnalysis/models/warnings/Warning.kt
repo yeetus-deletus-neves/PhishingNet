@@ -10,7 +10,6 @@ enum class Warning(description: String){
     SPF_AUTH_FAILED("Autorização SPF falhou"),
     SPELLING_MISTAKES_AND_BAD_GRAMMAR("Erros ortográficos e má gramática"),
     MALICIOUS_URL("url malicioso"),
-    MALICIOUS_ATTACHMENT("anexo malicioso"),
     BAD_GRAMMAR("Má gramática"),
     PAST_EMAILS_SENT("Número de emails trocados anteriormente com este endereço"),
     FILE_ATTACHED_CAN_BE_DANGEROUS("Pelo menos um dos ficheiros anexados ao email é um executável"),

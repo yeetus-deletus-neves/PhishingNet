@@ -47,7 +47,8 @@ class PhishingNetApplication {
             LanguageToolModule(),
             UrgencyModule(),
             AttachmentExtensionModule(),
-            //GoogleSafeBrowsingApi(),
+            BlackListedTinyUrlModule(),
+            GoogleSafeBrowsingApi(),
             LLMModule()
         ), listOf(
             Risk(
@@ -61,47 +62,79 @@ class PhishingNetApplication {
                 ),
             ), Risk(
                 "O remetente pode se estar a tentar passar por outra pessoa",
-                "Os protocolos de autenticação falharam.",
-                RiskLevel.C,
+                "Os protocolos de autenticação DKIM e/ou SPF falharam.",
+                RiskLevel.D,
                 warningRequirements = mutableMapOf(
-                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
+                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(minimum = 1)
                 ),
             ), Risk(
                 "O remetente pode se estar a tentar passar por outra pessoa",
-                "Os protocolos de autenticação falharam, " +
+                "Os protocolos de autenticação DKIM e/ou SPF falharam, " +
                         "e o remetente de email é diferente do caminho de retorno.",
                 RiskLevel.E,
                 warningRequirements = mutableMapOf(
                     Warning.FROM_DISTINCT_RETURN_PATH to Requirement(exact = 1),
-                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(exact = 1)
+                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(minimum = 1)
                 ),
             ), Risk(
+                "O email pode ter sido comprometido no caminho entre o remetente e o recetor",
+                "Os protocolo de autenticação DKIM falhou.",
+                RiskLevel.C,
+                warningRequirements = mutableMapOf(
+                    Warning.DKIM_AUTH_FAILED to Requirement(exact = 1)
+                ),
+            ),Risk(
                 "Possível burla financeira",
                 "Este remetente não tem um historial de troca de emails consigo e contém um IBAN, " +
                         "informe-se antes de efetuar pagamentos.",
-                RiskLevel.E,
+                RiskLevel.C,
                 warningRequirements = mutableMapOf(
                     Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
                     Warning.PAST_EMAILS_SENT to Requirement(maximum = 3)
                 )
             ), Risk(
-                "Urgência",
-                "O email está marcado como urgente, potencialmente de forma a o apressar a efetuar uma ação " +
-                        "ou a tomar uma decisão potencialmente danosa.",
-                RiskLevel.C,
-                warningRequirements = mutableMapOf(Warning.URGENCY to Requirement(exact = 1))
+                "Possível burla financeira",
+                "O email está marcado como urgente e contém um IBAN, potencialmente de forma a o apressar " +
+                        "a efetuar um pagamento informe-se antes de efetuar pagamentos.",
+                RiskLevel.E,
+                warningRequirements = mutableMapOf(
+                    Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
+                    Warning.URGENCY to Requirement(exact = 1)
+                )
+            ), Risk(
+                "Possível burla financeira",
+                "Os protocolos de autenticação DKIM e/ou SPF falharam e contém um IBAN.",
+                RiskLevel.F,
+                warningRequirements = mutableMapOf(
+                    Warning.ASKS_FOR_IBAN to Requirement(minimum = 1),
+                    Warning.HEADER_CERTIFICATES_AUTH_FAILED to Requirement(minimum = 1)
+                )
             ), Risk(
                 "Erros gramaticais",
                 "Vários casos de erros gramaticais, no entanto, isto pode se dever à formatação do email.",
                 RiskLevel.B,
-                warningRequirements = mutableMapOf(Warning.BAD_GRAMMAR to Requirement(minimum = 3))
+                warningRequirements = mutableMapOf(Warning.BAD_GRAMMAR to Requirement(minimum = 5))
             ), Risk(
                 "Anexo potencialmente malicioso detetado",
                 "Foi detetada a existência de anexos executáveis.",
                 RiskLevel.D,
                 warningRequirements = mutableMapOf(Warning.FILE_ATTACHED_CAN_BE_DANGEROUS to Requirement(minimum = 1))
+            ), Risk(
+                "Existem links encurtados no email",
+                "Os links presentes no email têm um destino deconhecido, e por isso potencialmente perigoso",
+                RiskLevel.D,
+                warningRequirements = mutableMapOf(Warning.URL_SHORTENED to Requirement(minimum = 1))
+            ), Risk(
+                "Existem links maliciosos no email",
+                "Os links presentes no email foram detetados como sendo maliciosos pela Google Safe API.",
+                RiskLevel.F,
+                warningRequirements = mutableMapOf(Warning.MALICIOUS_URL to Requirement(minimum = 1))
+            ), Risk(
+                "O modelo de Inteligência Artificial detetou uma possível ameaça de phishing",
+                "O modelo de Inteligência Artificial detetou que o email analisado se assemelha a um email de phishing",
+                RiskLevel.E,
+                warningRequirements = mutableMapOf(Warning.LLM_TRIGGERED to Requirement(exact = 1))
             ),
-            //llm module
         )
     )
 

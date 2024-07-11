@@ -25,7 +25,7 @@ class LLMModule: AnalysisModule {
             }
             return warningLog
         }catch(e:Exception){
-            logger.warn(":LLMModule: Unable to connect to LLM Python Server.")
+            logger.warn(":LLMModule: Incapaz de se connectar ao servidor Python da LLM.")
             return warningLog
         }
     }
