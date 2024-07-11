@@ -1,13 +1,3 @@
-const warningMap = new Map([
-    ["NO_THREAT",'a'],
-    ["SHOULD_LOOK_INTO_IT",'b'],
-    ["SUSPICIOUS",'c'],
-    ["VERY_SUSPICIOUS","d"],
-    ["ALARMING","e"]
-]
-)
-
-
 
 function createWarningBar(message){
     const div = document.createElement("div");
@@ -71,7 +61,7 @@ browser.runtime.onMessage.addListener(
                     warningBar.remove()
                 }
                 if(email == message.email){
-                    warningBar = createWarningBar("Logged in phishing net")
+                    warningBar = createWarningBar("Logado na app phishing net")
 
                     if(location.href.includes("id/")){
 
@@ -105,7 +95,7 @@ browser.runtime.onMessage.addListener(
                     }
                 }else{
                     // incorrect email o365header
-                    warningBar = createWarningBar(`Incorrect email, should be on the inbox of ${message.email}, instead you are on the inbox of ${email}`)
+                    warningBar = createWarningBar(`Email incorreto, deveria de estar na caixa de mensagens de ${message.email}, no entanto, encontra-se na de ${email}`)
                 }
                 let doc = document.getElementById("appContainer")
                 doc.insertBefore(warningBar,doc.firstChild)
@@ -115,7 +105,7 @@ browser.runtime.onMessage.addListener(
                 const img  = document.createElement("img");
                 img.setAttribute("id",message.conversationID);
                 img.setAttribute("class","analyze_content");
-                const url = browser.runtime.getURL(`icons/${warningMap.get(message.content.threat)}_warning.png`)
+                const url = browser.runtime.getURL(`icons/${message.content.threat}_warning.png`)
                 img.setAttribute("src",url)
                 img.setAttribute("style","height: 48px;")
                 const content = message.content
@@ -161,9 +151,9 @@ browser.runtime.onMessage.addListener(
 
                 if(message.user){
                     // not linked
-                    warningBar = createWarningBar("No account linked to your phishing net account")
+                    warningBar = createWarningBar("Nenhum email vinculado à conta phishing net")
                     const first = document.createElement("button");
-                    var text = document.createTextNode("Link account");
+                    var text = document.createTextNode("Vincular conta");
                     first.appendChild(text);
                     first.setAttribute("id","link_account")
                     first.setAttribute("style","color: white; background: blue")
@@ -175,7 +165,7 @@ browser.runtime.onMessage.addListener(
                }
                 else{
                     // not logged on
-                    warningBar = createWarningBar("Not logged in any phishing net account")
+                    warningBar = createWarningBar("Não está logado numa conta phishing net")
                 }
                 let doc = document.getElementById("appContainer")
                 doc.insertBefore(warningBar,doc.firstChild)
