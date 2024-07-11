@@ -9,12 +9,12 @@ export function AboutPage(){
                             <img className="d-inline-block align-top" width="100" height="100"src="./icons/pj.png" alt="Card image cap"/>
                         </div>
                         <div className="col-md-6" style={{textAlign: "center", alignContent:'center'}}>
-                            <h3 className="card-text"> The phishing net application was made with the help and feedback from the judicial police's cybercrime department UNC3T </h3>
+                            <h3 className="card-text">A aplicação phishing net foi feita com a ajuda e feedback do departamento de crimes cibernéticos da polícia judiciária UNC3T</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <h2>Developers:</h2>
+            <h2>Autores:</h2>
             <div className="row card-deck" style={{ textAlign:"center"}}>
                 
                 <div className="card column" style= {{width: "10rem"}}>
@@ -39,14 +39,14 @@ export function AboutPage(){
                     </div>
                 </div>
             </div>
-            <h2>Helpfull contacts and websites:</h2>
+            <h2>Contatos e sites úteis:</h2>
             <div className="row card-deck" style={{ textAlign:"center"}}>
                 <div className="card" style={{ textAlign:"center"}}>
                     <div className="card-body">
                         <h5 className="card-title">UNC3T</h5>
-                        <p className="card-text">Localition: Novo edifício-sede da Polícia Judiciária, Rua Gomes Freire 1169-007 Lisboa</p>
-                        <p className="card-text">Telephone: 211 967 000</p>
-                        <p className="card-text">Eletronic complaint: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
+                        <p className="card-text">Localização: Novo edifício-sede da Polícia Judiciária, Rua Gomes Freire 1169-007 Lisboa</p>
+                        <p className="card-text">Telefone: 211 967 000</p>
+                        <p className="card-text">Queixa eletrónica: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
                                     window.open('https://qe.pj.pt','_blank')}}>https://qe.pj.pt</a>
                         </p>
                     </div>
@@ -54,10 +54,10 @@ export function AboutPage(){
                 <div className="card" style={{ textAlign:"center"}}>
                     <div className="card-body">
                         <h5 className="card-title">APAV - Gabinete de Apoio à Vítima</h5>
-                        <p className="card-text">Localition: R. José Estêvão 135 A, 1150-201 Lisboa</p>
-                        <p className="card-text">Telephone: 800 219 090</p>
+                        <p className="card-text">Localização: R. José Estêvão 135 A, 1150-201 Lisboa</p>
+                        <p className="card-text">Telefone: 800 219 090</p>
                         <p className="card-text">E-mail: apav.sede@apav.pt</p>
-                        <p className="card-text">Website: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
+                        <p className="card-text">Site: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
                                     window.open('https://apav.pt/cibercrime/','_blank')}}>https://apav.pt/apav_v3/index.php/pt/apav-1/contactos-onde-estamos</a>
                         </p>
                     </div>
@@ -65,10 +65,10 @@ export function AboutPage(){
                 <div className="card" style={{ textAlign:"center"}}>
                     <div className="card-body">
                         <h5 className="card-title">Gabinete Cibercrime - Ministério Público</h5>
-                        <p className="card-text">Localition: Rua do Vale de Pereiro, n.º 2 - 2.º, 1269-113 Lisboa-Portugal</p>
-                        <p className="card-text">Telephone: 213 921 900</p>
+                        <p className="card-text">Localização: Rua do Vale de Pereiro, n.º 2 - 2.º, 1269-113 Lisboa-Portugal</p>
+                        <p className="card-text">Telefone: 213 921 900</p>
                         <p className="card-text">E-mail: cibercrime@pgr.pt</p>
-                        <p className="card-text">Website: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
+                        <p className="card-text">Site: <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
                                     window.open('http://cibercrime.ministeriopublico.pt/','_blank')}}>http://cibercrime.ministeriopublico.pt/</a>
                         </p>
                     </div>

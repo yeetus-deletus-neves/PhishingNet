@@ -14,14 +14,14 @@ export function LoginPage(){
         return(
             <div className="container">
                 <div id="container" className="center" >
-                    <h2 className="center">You're currently logged in {userInfo.username}!</h2>
-                    <h3 className="center">If you wish to switch accounts, you have to logout first</h3>
+                    <h2 className="center">Você está conectado em {userInfo.username}!</h2>
+                    <h3 className="center">Se desejar trocar de conta, terá que dar logout primeiro</h3>
                     <button className="btn btn-dark" onClick={ ()=>{
                         deleteStoredInfo()
                         setUserInfo(null)
                     }
                 }>
-                    Logout from current account
+                    Sair da conta atual
                     </button>
                 </div>
             </div>
@@ -57,7 +57,7 @@ export function LoginPage(){
                                 if(error.details){
                                     setAlert({alert: "error", message: `${error.details}`})
                                 }else{
-                                    setAlert({alert: "error", message: "Interanl server error"})
+                                    setAlert({alert: "error", message: "Erro interno de servidor"})
                                 }
                             }
                         }}>Login</button>

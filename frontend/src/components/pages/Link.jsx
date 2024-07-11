@@ -41,7 +41,7 @@ export function LinkPage(){
                 if(error.details){
                     setAlert({alert: "error", message: `${error.details}`})
                 }else{
-                    setAlert({alert: "error", message: "Interanl server error"})
+                    setAlert({alert: "error", message: "Erro interno de servidor"})
                 }
             }
         }
@@ -50,7 +50,7 @@ export function LinkPage(){
         return (
             <div className="container">
                 <div id="container" className="center">
-                    <h3 className="center">Link with {userInfo.email} was successfull</h3>
+                    <h3 className="center">Vínculo com {userInfo.email} foi bem-sucedido</h3>
                 </div>
             </div>
         )
@@ -59,7 +59,7 @@ export function LinkPage(){
             return (
                 <div className="container"> 
                     <div id="container" className="center">
-                        <h1 className="center">Link was not successfull</h1>
+                        <h1 className="center">Vínculo mal-sucedido</h1>
                     </div>
                 </div>    
             )    
@@ -67,7 +67,7 @@ export function LinkPage(){
             return (
                 <div className="container">
                     <div id="container" className="center">
-                        <h1 className="center">Waiting for linking</h1>
+                        <h1 className="center">Aguardando vinculação</h1>
                     </div>
                 </div>
             )

@@ -8,9 +8,9 @@ export function ErrorPage(){
             <div className="error-page center">
                 <img class="" src="./icons/oops.png"/>
                 <p className='error-info'>
-                    <h3> Error {error.status}: {error.statusText}</h3>
+                    <h3> Erro {error.status}: {error.statusText}</h3>
                 </p>
-                <Link className="btn btn-dark" to="/">Back to homepage</Link>
+                <Link className="btn btn-dark" to="/">Voltar para a página inicial</Link>
             </div>
         </div>
     );

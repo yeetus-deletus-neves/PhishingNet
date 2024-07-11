@@ -10,7 +10,7 @@ export function RequiresAuth({children}){
     if(userInfo){
         return <>{children}</>
     }else{
-        setAlert({alert: "warning", message: "Authentication required!"})
+        setAlert({alert: "warning", message: "Autenticação necessária!"})
         return <Navigate to="/login" replace={true} state={{from: location}}/>
     }
 }
