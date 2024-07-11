@@ -26,13 +26,13 @@ export function Layout({children}){
                             deleteStoredInfo()
                             setUserInfo(null)
                             deleteStoredMap()
-                            setAlert({alert: "warning", message: "user logged out"})
+                            setAlert({alert: "warning", message: "utilizador desconectado"})
                         }}>Logout</button>
                         :
                         <div>
-                            Not a member? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
+                            Não tem conta? <a style={{color: "#3d3df9", cursor: "pointer"}} onClick={()=>{
                                 window.open('http://localhost:3000/signUp','_blank')
-                            }}>Sign up here</a>
+                            }}>Crie uma aqui</a>
                         </div>
                     }
                 </div>

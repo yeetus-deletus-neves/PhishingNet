@@ -40,9 +40,4 @@ export class MsalInterface {
                 console.log('Error during login:', error);
             });
     };
-
-    requestToken(){
-        console.log('Token requested');
-    };
-
 }

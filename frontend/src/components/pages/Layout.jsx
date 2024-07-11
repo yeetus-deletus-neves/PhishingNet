@@ -23,11 +23,11 @@ export function Layout(){
                     </button>
                     <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
-                            <Link className="nav-item nav-link" to="/">Home</Link>
+                            <Link className="nav-item nav-link" to="/">Página inicial</Link>
                             <Link className="nav-item nav-link" to="/login">{userInfo ? "Logout" : "Login"}</Link>
-                            {userInfo ? <></> : <Link className="nav-item nav-link" to="/signUp">Signup</Link>}
-                            {userInfo?.email ? <Link className="nav-item nav-link" to="/unlink">Unlink</Link> : <></>}
-                            <Link className="nav-item nav-link" to="/about">About</Link>
+                            {userInfo ? <></> : <Link className="nav-item nav-link" to="/signUp">Criar conta</Link>}
+                            {userInfo?.email ? <Link className="nav-item nav-link" to="/unlink">Desvincular</Link> : <></>}
+                            <Link className="nav-item nav-link" to="/about">Sobre nós</Link>
                         </div>
                     </div>
                 </nav>

@@ -13,7 +13,7 @@ export function UnlinkPage(){
         return(
             <div className="container">
                 <div id="container" className="center">
-                    <h2 className="center">Do you want to unlink the email {userInfo.email} form your account?</h2>
+                    <h2 className="center">Quer desvincular {userInfo.email} da sua conta?</h2>
                     <button className="btn btn-dark" onClick={async ()=>{
                         try{
                             const tokenRsp = await defaultFetch(
@@ -31,12 +31,12 @@ export function UnlinkPage(){
                             if(error.details){
                                 setAlert({alert: "error", message: `${error.details}`})
                             }else{
-                                setAlert({alert: "error", message: "Interanl server error"})
+                                setAlert({alert: "error", message: "Erro interno de servidor"})
                             }
                         }
                     }
                 }>
-                    Confirm unlink
+                    Confirmar
                     </button>
                 </div>
             </div>
@@ -45,12 +45,12 @@ export function UnlinkPage(){
         return(
             <div className="container">
                 <div id="container" className="center">
-                    <h2 className="center">Unlinking was successfull</h2>
-                    <h3 className="center">Want to link a new account? Click bellow</h3>
+                    <h2 className="center">Desvinculação bem-sucedida</h2>
+                    <h3 className="center">Quer vincular uma conta nova? Clique embaixo</h3>
                     <button className="btn btn-dark" onClick={()=>{
                         const msalAgent = new MsalInterface()
                         msalAgent.login()
-                    }}>Link account</button>
+                    }}>Vincular conta</button>
                 </div>
             </div>
         )

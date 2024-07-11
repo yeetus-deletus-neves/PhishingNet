@@ -10,7 +10,7 @@ export function SignUpPage(){
     return (
         <div className="container">
             <div id="container" className="signUp-form center">
-                <h1>SignUp</h1>
+                <h1>Cria conta</h1>
                     <input placeholder="Username" type="text" name="username" id="username"/>
                     <input placeholder="Password" type="password" name="password" id="password"/>
                     <button type="submit" class="btn btn-dark" onClick={ async ()=>{
@@ -46,17 +46,17 @@ export function SignUpPage(){
                                 msalAgent.login()    
                             }else{
                                 throw {
-                                    details: "Account not linked correctly"
+                                    details: "Conta não vinculada"
                                 }
                             }
                         }catch(error){
                             if(error.details){
                                 setAlert({alert: "error", message: `${error.details}`})
                             }else{
-                                setAlert({alert: "error", message: "Interanl server error"})
+                                setAlert({alert: "error", message: "Erro interno de servidor"})
                             }
                         }
-                }}>Create User</button>
+                }}>Submeter</button>
             </div>
         </div>
     );
