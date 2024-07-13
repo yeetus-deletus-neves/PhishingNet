@@ -1,0 +1,50 @@
+version: '3.3'
+services:
+  postgredb:
+    container_name: postgredb
+    hostname: postgredb
+    image: postgres
+    volumes:
+      - ./backend/src/main/kotlin/phishingnet/api/data/sql/create-schema.sql:/docker-entrypoint-initdb.d/create-schema.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=phishingnet
+    ports:
+      - 5432:5432
+
+  llm-server:
+    container_name: llm-server
+    hostname: llm-server
+    build:
+      context: .
+      dockerfile: ./research/llm/Dockerfile
+    environment:
+      HUGGINGFACES_API_KEY: $HUGGINGFACES_API_KEY
+    ports:
+      - 8000:8000
+
+  front-end:
+    container_name: front-end
+    hostname: front-end
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - "3000:3000"
+
+  phishing-net:
+    container_name: phishing-net
+    hostname: phishing-net
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    environment:
+      DB_URL: "jdbc:postgresql://postgredb:5432/phishingnet?user=postgres&password=admin"
+      GOOGLE_SAFE_BROWSING_API: $GOOGLE_SAFE_BROWSING_API
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgredb
+
+

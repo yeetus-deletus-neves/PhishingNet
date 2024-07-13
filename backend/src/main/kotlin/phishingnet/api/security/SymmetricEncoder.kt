@@ -1,8 +1,10 @@
 package phishingnet.api.security
 
+import jdk.jfr.internal.SecuritySupport.getResourceAsStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.security.KeyStore
 import java.util.*
 import javax.crypto.Cipher
@@ -11,7 +13,7 @@ import javax.crypto.SecretKey
 
 
 const val KEY_ALIAS = "key.jks"
-const val KEYSTORE_PATH = "src/main/kotlin/phishingnet/api/security/symmetricKeys/$KEY_ALIAS"
+const val KEYSTORE_RESOURCE_PATH = "/symmetricKeys/$KEY_ALIAS"
 const val KEYSTORE_PASSWORD = "admin"
 
 class SymmetricEncoder {
@@ -67,44 +69,54 @@ class SymmetricEncoder {
     }
 
 
-    private fun generateKeyStore(){
-        try{
-            val keyStoreFile = File(KEYSTORE_PATH)
-
-            if (!keyStoreFile.exists()) {
-
-                // Cria um keystore novo, se não existir um
+    private fun generateKeyStore() {
+        try {
+            try {
+                // Carrega o KeyStore a partir do recurso embutido
                 val keyStore = KeyStore.getInstance("PKCS12")
                 val password: CharArray = KEYSTORE_PASSWORD.toCharArray()
-                keyStore.load(null, password) // Cria um keystore vazio
+
+                getResourceAsStream(KEYSTORE_RESOURCE_PATH)?.use { inputStream ->
+                    keyStore.load(inputStream, password)
+                }
+
+                // Verifica se o KeyStore já existe
+                if (keyStore.containsAlias(KEY_ALIAS)) {
+                    println("Keystore já existe. Não é necessário criar um novo.")
+                    return
+                }
 
                 // Gera uma nova chave simétrica (AES)
                 val keyGen: KeyGenerator = KeyGenerator.getInstance("AES")
                 val secretKey: SecretKey = keyGen.generateKey()
 
-                // Armazena a chave no keystore
+                // Armazena a chave no KeyStore
                 val entryPassword: KeyStore.ProtectionParameter = KeyStore.PasswordProtection(password)
                 val keyEntry = KeyStore.SecretKeyEntry(secretKey)
                 keyStore.setEntry(KEY_ALIAS, keyEntry, entryPassword)
 
-                FileOutputStream(KEYSTORE_PATH).use { fos ->
-                    keyStore.store(fos, password)
-                    println("Keystore criado e chave criptográfica armazenada com sucesso.")
-                }
+                // Salva o KeyStore de volta ao recurso embutido (opcional)
+                // getResourceAsStream(KEYSTORE_RESOURCE_PATH)?.use { inputStream ->
+                //     keyStore.store(inputStream, password)
+                // }
 
-            } else println("Keystore já existe. Não é necessário criar um novo.");
-        }  catch (e:Exception){
-            e.printStackTrace();
+                println("KeyStore criado e chave criptográfica armazenada com sucesso.")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
     // Vai buscar a chave simétrica ao ficheiro KeyStore key.jks
     private fun getSecretKey(): SecretKey? {
         try {
+
             // Carrega o KeyStore a partir do ficheiro
             val keyStore = KeyStore.getInstance("JKS")
             val password: CharArray = KEYSTORE_PASSWORD.toCharArray()
-            FileInputStream(KEYSTORE_PATH).use { fis ->
+            getResourceAsStream(KEYSTORE_RESOURCE_PATH)?.use { fis ->
                 keyStore.load(fis, password)
             }
 
@@ -115,5 +127,15 @@ class SymmetricEncoder {
             e.printStackTrace()
         }
         return null
+    }
+
+    // Obtém um stream do recurso
+    private fun getResourceAsStream(resourcePath: String): InputStream? {
+        return javaClass.getResourceAsStream(resourcePath)
+    }
+
+    // Obtém um arquivo como recurso embutido
+    private fun getResourceAsFile(resourcePath: String): File {
+        return File(javaClass.getResource(resourcePath).file)
     }
 }

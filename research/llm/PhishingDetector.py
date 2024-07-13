@@ -8,7 +8,7 @@ class PhishingDetector:
     
     model_id = "ealvaradob/bert-finetuned-phishing"
     model_path = "./model/bert-finetuned-phishing"
-    my_token = "[HUGGINGFACES_API_KEY]"
+    my_token = os.environ['HUGGINGFACES_API_KEY']
 
     def __init__(self) -> None:
         
