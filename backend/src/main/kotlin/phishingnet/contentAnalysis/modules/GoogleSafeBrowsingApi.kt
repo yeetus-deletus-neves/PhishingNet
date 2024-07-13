@@ -2,9 +2,11 @@ package phishingnet.contentAnalysis.modules
 
 import okhttp3.*
 import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import phishingnet.contentAnalysis.models.AnalysisModule
 import phishingnet.contentAnalysis.models.Email
+import phishingnet.contentAnalysis.models.Sender
 import phishingnet.contentAnalysis.models.warnings.Warning
 import phishingnet.contentAnalysis.models.warnings.WarningLog
 import java.io.IOException
@@ -30,7 +32,7 @@ class GoogleSafeBrowsingApi : AnalysisModule {
         val urls = extractUrlsFromEmailBodyToThreats(email.body)
         try {
             warningLog[Warning.MALICIOUS_URL] = checkUrls(urls)
-        }catch (ex: Exception){
+        } catch (ex: Exception) {
             println("Modulo não foi avaliado devido a ${ex.message}")
         }
         return warningLog
@@ -61,31 +63,24 @@ class GoogleSafeBrowsingApi : AnalysisModule {
         )
 
         val jsonRequestBody = gson.toJson(requestBody)
-
+        val mediaType = "application/json; charset=utf-8".toMediaType()
         val request = Request.Builder()
             .url("https://safebrowsing.googleapis.com/v4/threatMatches:find?key=$apiKey")
-            .post(jsonRequestBody.toRequestBody())
+            .post(jsonRequestBody.toRequestBody(mediaType))
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
+        return try {
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                val responseBody = response.body?.string()
+                val safeBrowsingResponse = gson.fromJson(responseBody, SafeBrowsingResponse::class.java)
+                if (safeBrowsingResponse.matches == null) 0 else safeBrowsingResponse.matches.size
+            } else {
+                0
             }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    val safeBrowsingResponse = gson.fromJson(responseBody, SafeBrowsingResponse::class.java)
-                    if (safeBrowsingResponse.matches.isNullOrEmpty()) println("O URL é seguro.")
-                    else {
-                        println("O URL não é seguro. Ameaças encontradas: ${safeBrowsingResponse.matches}")
-                        occurrences++
-                    }
-                } else println("Falha ao obter uma resposta da API Safe Browsing. Código: ${response.code}")
-            }
-        })
-        return occurrences
+        } catch (e: IOException) {
+            e.printStackTrace()
+            0
+        }
     }
-
 }
-
