@@ -17,6 +17,8 @@ import phishingnet.contentAnalysis.Processor
 import phishingnet.contentAnalysis.models.Email
 import phishingnet.contentAnalysis.models.Sender
 import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysis
+import phishingnet.contentAnalysis.models.riskAnalysis.RiskAnalysisEntry
+import phishingnet.contentAnalysis.models.risks.RiskLevel
 
 @Service
 class AnalysisServicesImpl(
@@ -54,7 +56,6 @@ class AnalysisServicesImpl(
                 ?: throw Exception("Não foi possível obter os detalhes do email")
 
             val compiledEmail = emailDetails.map { compileMessageInfo(it, senderHistory) }.filter { it.from.address != user.linked_email }
-            if (compiledEmail.isEmpty()) return AnalysisResult.NoMessageToBeAnalyzed
 
             val res = analysisUnit.process(compiledEmail)
             
@@ -101,13 +102,16 @@ class AnalysisServicesImpl(
         return Email(
             from = Sender(message.messageInfo.from.emailAddress.name, message.messageInfo.from.emailAddress.address),
             fromEmailCount = fromEmailCount,
-            sender = Sender(message.messageInfo.sender.emailAddress.name, message.messageInfo.sender.emailAddress.address),
+            sender = Sender(
+                message.messageInfo.sender.emailAddress.name,
+                message.messageInfo.sender.emailAddress.address
+            ),
             subject = message.messageInfo.subject,
             importance = message.messageInfo.importance,
             hasAttachments = message.messageInfo.hasAttachments,
             isRead = message.messageInfo.isRead,
-            returnPath = message.headers.internetMessageHeaders.find { it.name == "Return-Path" }!!.value,
-            rawAuthResults = message.headers.internetMessageHeaders.find { it.name == "Authentication-Results" }!!.value,
+            returnPath = message.headers.internetMessageHeaders?.find { it.name == "Return-Path" }?.value,
+            rawAuthResults = message.headers.internetMessageHeaders?.find { it.name == "Authentication-Results" }?.value,
             rawBody = message.messageInfo.body.content,
             attachments = message.attachments.value.map { it.name }
         )

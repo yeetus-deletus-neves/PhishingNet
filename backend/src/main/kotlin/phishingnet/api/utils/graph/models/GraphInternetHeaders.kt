@@ -1,7 +1,7 @@
 package phishingnet.api.utils.graph.models
 
 data class GraphInternetHeaders (
-    val internetMessageHeaders: List<GraphHeader>
+    val internetMessageHeaders: List<GraphHeader>?
 )
 
 data class GraphHeader(

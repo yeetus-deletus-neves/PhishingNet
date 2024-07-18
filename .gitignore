@@ -170,3 +170,8 @@ out/
 ### Kotlin ###
 .kotlin
 .env
+research/llm/model/bert-finetuned-phishing
+
+
+/research/llm/__pycache__
+.env
