@@ -11,4 +11,5 @@ RUN pip install translate
 RUN pip install accelerate
 RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 COPY ./research/llm /usr/app
-CMD ["fastapi", "dev", "./PhishingDetectionAPI.py", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8000
+CMD ["uvicorn", "PhishingDetectionAPI:app", "--host", "0.0.0.0", "--port", "8000"]

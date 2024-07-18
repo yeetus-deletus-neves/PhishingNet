@@ -26,12 +26,13 @@ class LLMModule: AnalysisModule {
             return warningLog
         }catch(e:Exception){
             logger.warn(":LLMModule: Incapaz de se connectar ao servidor Python da LLM.")
+            logger.warn(e.message)
             return warningLog
         }
     }
 
     private fun evaluate(text: String): Double? {
-        val request = HttpRequest("http://127.0.0.1:8000/prompt", HttpMethod.POST)
+        val request = HttpRequest("http://llm-server:8000/prompt", HttpMethod.POST)
 
         request.addHeader("Accept", "*/*")
         request.addHeader("Connection", "keep-alive")

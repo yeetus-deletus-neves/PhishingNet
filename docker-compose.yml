@@ -22,7 +22,7 @@ services:
     environment:
       HUGGINGFACES_API_KEY: $HUGGINGFACES_API_KEY
     ports:
-      - 8000:8000
+      - "8000:8000"
 
   front-end:
     container_name: front-end
@@ -46,5 +46,4 @@ services:
       - "8080:8080"
     depends_on:
       - postgredb
-
 

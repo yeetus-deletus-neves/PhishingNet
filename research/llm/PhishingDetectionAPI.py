@@ -22,7 +22,7 @@ async def generate_response(prompt: str = Form(...)):
         raise HTTPException(status_code=400, detail="Message is not in a supported language!")
     
     if lang == 'pt':
-        text = translator(text)
+        text = translator.translate(text)
     
     response = detector.analyze(text)
     
