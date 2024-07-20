@@ -15,7 +15,7 @@ class BlackListedTinyUrlModule: AnalysisModule {
 
         val blackList = listOf("bit.ly", "t.co", "goo.gl")
 
-        val urls = extractUrlsFromEmailBody(email.body)
+        val urls = extractUrlsFromEmailBody(email.rawBody)
         urls.forEach { url ->
             if(checkIfUrlIsShortened(blackList, url)) warningLog[Warning.URL_SHORTENED]++
         }

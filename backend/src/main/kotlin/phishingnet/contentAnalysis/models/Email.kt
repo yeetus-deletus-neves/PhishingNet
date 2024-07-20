@@ -12,7 +12,7 @@ data class Email(
     val isRead: Boolean,
     val returnPath: String?,
     private val rawAuthResults: String?,
-    private val rawBody: String,
+    val rawBody: String,
     val attachments: List<String>
 ) {
     val body: String = Jsoup.parse(rawBody).text()
