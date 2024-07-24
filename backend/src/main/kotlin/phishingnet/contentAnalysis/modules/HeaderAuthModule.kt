@@ -16,16 +16,14 @@ class HeaderAuthModule : AnalysisModule {
             listOf(
                 Warning.HEADER_CERTIFICATES_AUTH_FAILED,
                 Warning.DKIM_AUTH_FAILED,
-                Warning.SPF_AUTH_FAILED,
-                Warning.DMARC_AUTH_FAILED
+                Warning.SPF_AUTH_FAILED
             )
         )
 
-        if (email.authDetails.dmarc == SecurityVerification.FAILED) warningLog.incrementOccurrences(Warning.DMARC_AUTH_FAILED)
         if (email.authDetails.dkim == SecurityVerification.FAILED) warningLog.incrementOccurrences(Warning.DKIM_AUTH_FAILED)
         if (email.authDetails.spf == SecurityVerification.FAILED) warningLog.incrementOccurrences(Warning.SPF_AUTH_FAILED)
 
-        if (email.authDetails.dmarc == SecurityVerification.FAILED ||
+        if (
             email.authDetails.dkim == SecurityVerification.FAILED ||
             email.authDetails.spf == SecurityVerification.FAILED
         ) warningLog.incrementOccurrences(Warning.HEADER_CERTIFICATES_AUTH_FAILED)
